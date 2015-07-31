@@ -75,7 +75,11 @@ __CaRpools folder structure for Report Generation using FASTQ files AFTER REPORT
 
 \newpage
 
-## Setup Files and R-Studio
+## Start CaRpools VirtualBox Image
+
+**Please see **CaRpools-SHORTGUIDE-VirtualBox.pdf/html** or the shortguid [here](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd) for how to use it.
+
+## Setup Files and R-Studio on your own computer
 
 All packages and software tools need be installed correctly as shown before.  
 

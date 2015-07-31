@@ -27,19 +27,23 @@ The complete package with the PERL scripts and all template files can be obtaine
 
 We recommend to download the template files and Scripts from Github and install caRpools in R using the package installer `install.packages("caRpools").
 
-## Virtual Box Image - The FAST-track
+## Virtual Box Image - The FAST-track - RECOMMENDED
 
 We also included a VirtualBox Image that already includes all necessary software and package files. 
-**In this case no additional software to Virtual Box 5 needs to be installed.**  
+**In this case no additional software except for Virtual Box 5 needs to be installed.**  
+
+**We recommend using the Virtual Box image as it provides a fast, easy and convenient way of using caRpools for the generation of reports for every user.**  
+
 You just need to install VirtualBox 5 from the [Website](https://www.virtualbox.org).  
+
+**Please follow the manual** [here](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
 
 You can then download the caRpools virtual box image from our website [crispr-analyzer.de](http://www.crispr-analyzer.de) or [Github](https://github.com/boutroslab/carpools) (https://github.com/boutroslab/carpools).  
 
 ### How to use the Virtual Box caRpools
 
-Download and start the caRpools virtual box image file XXXX.
-
-HERE WE NEED A DETAILED EXPLANATION + SCREENSHOTS!
+**Please follow the manual** [here](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)  
+or the **CaRpools-SHORTGUIDE-VirtualBox.pdf** / **CaRpools-SHORTGUIDE-VirtualBox.html**
 
 
 ## Hardware Requirements

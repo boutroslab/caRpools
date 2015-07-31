@@ -1,0 +1,160 @@
+---
+title: "caRpools Shortcut User Guide"
+author: "Jan Winter"
+output:
+  pdf_document:
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    latex_engine: xelatex
+---
+
+\newpage
+
+\begin{center}
+\includegraphics{./pictures/CaRpools.png}
+\end{center}
+
+\newpage
+
+# Files and Folder Structure to use CaRpools
+
+__Please note: the MAIN FOLDER must be the R working directory!__  
+Data and Script paths can be adjusted in the MIACCS file.
+
+The following files are neccessary to use CaRpools for report generation:  
+
+**MIACCS.xls**  
+Minimum Information About CRISPR/Cas Screens.  This file needs to be filled out to provide all necessary informations about the screen.  
+
+**R Markdown Template files**  
+Either CaRpools-extended-PDF.rmd, CaRpools-PDF.rmd or CaRpools-extended-HTML.rmd or CaRpools-HTML.rmd. Is the template for report generation.  
+
+**Data Files**  
+Two replicates per Control and Treated. Can be FASTQ files OR already mapped, not normalized read count files.  
+
+**CRISPR-mapping.pl**  
+PERL script to map your extracted FASTQ files, if desired (as indicated in the MIACCS.xls)  
+
+**CRISPR-extract.pl**  
+PERL script to extract 20 nt target sequence from FAST files, if desired (as indicated in the MIACCS.xls)  
+
+**CaRpools.png**  
+The logo file  
+
+The following files are necessary to use _single_ CaRpools functions:  
+
+
+**Data Files**  
+Either raw read count files or FASTQ files (that need to be extracted and mapped using CaRpools)  
+
+Please note that CaRpools always starts with loading data files. For raw-readcount files, use `load.file`. For FASTQ files, please see the sections below.
+
+
+
+__CaRpools folder structure for Report Generation using raw Read Count files:__  
+
+![](./pictures/folder-structure-before.png)
+
+
+
+__CaRpools folder structure for Report Generation using raw Read Count files AFTER REPORT GENERATION:__
+
+![](./pictures/folder-structure-FINAL.png)
+
+
+
+__CaRpools folder structrue for Report Generation using FASTQ files:__  
+
+![](./pictures/folder-structure-FASTQ-before.png)
+
+
+
+__CaRpools folder structure for Report Generation using FASTQ files AFTER REPORT GENERATION:__
+
+![](./pictures/folder-structure-FASTQ-FINAL.png)
+
+\newpage
+
+## Setup Files and R-Studio
+
+All packages and software tools need be installed correctly as shown before.  
+
+1. Copy all files in the designated folders as shown above.
+  * __Please note: the MAIN FOLDER must be R working directory!__
+  * The MIACCS.xls as well the R markdown template and CaRpools.png must be in the same folder as the R working dir.
+2. Adjust the path to the data and scripts folder if necessary in the MIACCS.xls . Use the absolute path. If the folder structure is as shown above, you do not need to make any adjustments.
+3. Adjust and fill out the **MIACCS.xls** file.
+4. You can use `CarPools(type="check")` to check for the correct folder structure and data file presence as it is indicated in the MIACCS.xls file.
+5. You can check for your R working directory by `getwd()` and set it to any directory you want by `setwd("/PATH")`.
+
+## Check Setup
+
+You can verify that the MIACCS.xls file as well as the used template file and all necessary scripts are found by calling `check.caRpools()`.  
+See below for more information about the arguments.  
+By default, it **requires a correct MIACCS file + the script files + all packages installed + MAGeCK + Bowtie2 + Pandoc.** 
+
+## Example of a MIACCS File entry for FASTQ files
+
+![](./pictures/miaccs-fastq.png)
+
+
+## Example of a MIACCS File entry for Read-Count files
+
+![](./pictures/miaccs-readcount.png)
+
+
+# Start CaRpools Report Generation
+
+You can start caRpools Report Generation after you did the following steps:
+
+* Installed all required software and R packages (use _check.caRpools(files=FALSE)_ to verify)
+* Put every file in the correct folder (MIACCS, data files, script files, Rmd templates)
+* Put everythin in the R working directory or set the working directory to the folder of your files
+* Filled out the MIACCS file with all information, e.g. correct filenames, reference, data analysis options
+
+You can check for all requirements by calling `check.caRpools`.
+
+## Start CaRpools using R-Studio
+
+In the case you use R-Studio, you can start caRpools by just opening the corresponding Rmd template file.  
+At the top, you will find the **Knit PDF** or **Knit HTML** button, so you just need to press that and caRpools will generate the report.  
+
+![](./pictures/rstudio-knit.png)
+
+As an alternative, you can start caRpools via `use.caRpools` and provide additional parameters (see below).  
+
+## Start CaRpools using R console
+
+Moreover, caRpools report generation can also be initiated without R-studio installation, so that this can be done via R command line even on remote computers.  
+In this case, caRpools report generation can be started via `use.caRpools` with additional parameters, which are described below.  
+
+#### use.caRpools()
+
+**Usage:**  
+*use.caRpools(type=NULL, file="CaRpools-extended-PDF.Rmd", miaccs="MIACCS.xls", check=TRUE, work.dir=NULL)*  
+
+**type**  
+*Description* If you provide a custom Rmd template that can generate both, PDF and HTML reports you can indicate which version you want to generate.  
+*Default* NULL  
+*Values* "PDF", "HTML"  
+
+**file**  
+*Description* The file name of your custom Rmd template file (with extension).  
+*Default* "CaRpools-extended-PDF.Rmd"  
+*Values* filename as character  
+
+**miaccs**  
+*Description* The filename of your MIACCS file.  
+*Default* "MIACCS.xls"  
+*Values* filename as character 
+
+**check**  
+*Description* Indicates whether caRpools will check for correct installation and file access.  
+*Default* TRUE  
+*Values* TRUE or FALSE (boolean)  
+
+**work.dir**  
+*Description* You can provide the absolute path to the working directory in which all files are placed (e.g. the MIACCS.xls and Rmd template).  
+*Default* NULL 
+*Values* absolute path (character) or NULL if standard R working directory is used

@@ -1,0 +1,108 @@
+---
+title: "caRpools Installation Guide"
+author: "Jan Winter"
+output:
+  pdf_document:
+    keep_tex: yes
+    number_sections: yes
+    toc: yes
+    latex_engine: xelatex
+    toc_depth: 3
+---
+
+\newpage
+
+\begin{center}
+\includegraphics{./pictures/CaRpools.png}
+\end{center}
+
+
+\newpage
+
+
+# Requirements and Installation
+
+## Download caRpools
+
+CaRpools is avaible as an R package **caRpools** without the scripts and template files.  
+The complete package with the PERL scripts and all template files can be obtained from [Github](https://github.com/boutroslab/carpools) (https://github.com/boutroslab/carpools) and our website [crispr-analyzer.de](http://www.crispr-analyzer.org).  
+
+We recommend to download the template files and Scripts from Github and install caRpools in R using the package installer `install.packages("caRpools").
+
+## Virtual Box Image - The FAST-track
+
+We also included a VirtualBox Image that already includes all necessary software and package files. 
+**In this case no additional software to Virtual Box 5 needs to be installed.**  
+You just need to install VirtualBox 5 from the [Website](https://www.virtualbox.org).  
+
+You can then download the caRpools virtual box image from our website [crispr-analyzer.de](http://www.crispr-analyzer.de) or [Github](https://github.com/boutroslab/carpools) (https://github.com/boutroslab/carpools).  
+
+### How to use the Virtual Box caRpools
+
+Download and start the caRpools virtual box image file XXXX.
+
+HERE WE NEED A DETAILED EXPLANATION + SCREENSHOTS!
+
+
+## Hardware Requirements
+
+For CRISPR-Libraries of 12 K size (12K sgRNAs), caRpools will work on any laptop/PC with at least 4GB of RAM and a modern dual-core CPU.  
+CRISPR-Libraries with a size of more than 100 K (100 K sgRNAs) run best with at least 8 GB of RAM.
+
+## Software Requirements
+
+CaRpools was tested on MacOSX Yosemite and Ubuntu 14.04 LTS.  
+However, it should work on any operating system that fulfills the software requirments.  
+
+The following software needs to be installed:
+
+* PERL 5
+* Bowtie2 2.2.0 or higher [Website](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
+* MAGeCK 0.51 (password protected download) [Website](http://sourceforge.net/p/mageck/wiki/Home/)
+* TexLive [Website](https://www.tug.org/texlive/)
+  + pdflatex
+  + xelatex
+* R 3.2.0 or higher [Website](https://www.r-project.org/)
+* Pandoc 1.15.0.6 [Website](http://www.http://pandoc.org/)
+* R-Studio [Website](http://www.rstudio.com) (GUI)
+
+The following **R packages** need be installed (can be done via `load.packages()`):
+
+* Bioconductor Basics
+    + BiocInstaller >= 1.18.3
+    + BiocGenerics >= 0.14.0
+* __biomaRt >=2.24.0__
+* seqinr >= 3.1-3
+* xlsx >= 0.5.7
+  + rJava >= 0.9.6
+  + xlsxjars >= 0.6.1
+* stringi >= 0.5
+* scatterplot3d  >= 0.3
+* MESS >= 0.3
+* DESeq2 >= 1.8.1
+* rmarkdown >= 0.7
+* knitr >= 1.10.5
+* VennDiagram >= 1.6.9
+* sm >= 2.2
+
+## BiomaRt and Annotation Requirements
+
+__Please note that for any annotation, biomaRt needs full access to the internet.__
+In case of incorrect proxy settings, the report generation will fail with a biomaRt error.  
+This means that if any proxy server is used, this has to be configured before using the CRISPR-Analyzer as described in the following articles:  
+
+* [BiomaRt vignette](http://www.bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/biomaRt.pdf)
+* [Setting up proxy in R-Studio](https://support.rstudio.com/hc/en-us/articles/200488488-Configuring-R-to-Use-an-HTTP-Proxy)
+* [Setting up proxy in R, Stackoverflow](http://stackoverflow.com/questions/6467277/proxy-setting-for-r)
+* [Setting up Proxy for R/R-Studio in Ubuntu](http://askubuntu.com/questions/572722/setting-up-the-proxy-for-rstudio)
+* [Configuration of Proxy for R](https://bhoom.wordpress.com/2013/05/27/configuring-r-to-use-an-http-proxy-faq-knowledge-base-rstudio-support/)
+
+## Installation Procedure
+
+Install all software listed above according to the installation information stated on the software website.  
+All neccesarry R packages can be installed automatically by `load.packages()` within R or R-Studio.
+
+See [Install R packages](http://www.r-bloggers.com/installing-r-packages/) or [Install R packages with RStudio](https://www.youtube.com/watch?v=u1r5XTqrCTQ).
+
+
+

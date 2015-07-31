@@ -11,9 +11,8 @@ output:
 
 \newpage
 
-\begin{center}
-\includegraphics{./pictures/CaRpools.png}
-\end{center}
+![caRpools](./pictures/CaRpools.png)
+
 
 \newpage
 

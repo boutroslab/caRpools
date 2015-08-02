@@ -720,7 +720,7 @@ All analysis data can be found in the __`r paste(analysis.name, "HIT-CALLING.xls
 
 ```{r HT-method-DESeq2, echo=FALSE, message=FALSE,warning=FALSE}
 # DESeq2
-data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, extractpattern=g.extractpattern, sorting=FALSE, filename.deseq = paste(analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), fitType="mean")
+data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, extractpattern=g.extractpattern, sorting=FALSE, filename.deseq = paste(analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), sgRNA.pval = sig.pval.deseq, fitType="mean")
 
 xlsx::write.xlsx(as.data.frame(data.deseq$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="DESeq2", append=TRUE)
 
@@ -858,7 +858,7 @@ Genes that showed no significant effect are presented in grey or black color.
 
 ```{r HT-overview-hits, echo=FALSE, sanitize=TRUE}
 
-carpools.hit.overview(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, title="Hit Overview", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=NULL, plot.genes="overlapping")
+carpools.hit.overview(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=NULL, plot.genes="overlapping")
 
 ```
 

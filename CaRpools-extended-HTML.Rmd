@@ -16,11 +16,11 @@ if("caRpools" %in% rownames(installed.packages()) == FALSE) {install.packages("c
 load.packages()
 ```
 
-```{r logo, echo=FALSE,results='asis'}
-cat("\n")
-cat(" ![](CaRpools.png) ")
-cat("\n")
-```
+
+
+\begin{center}
+\includegraphics{CaRpools.png}
+\end{center}
 
 ```{r settings-setup, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
 
@@ -34,10 +34,10 @@ if(!exists("miaccs.file"))
 miaccs = load.file(miaccs.file, type="xlsx")
 
 ####  global options to produce the report
-opts_chunk$set(sanitize=TRUE)
-opts_chunk$set(dev=miaccs["carpools.device",3]) # ImageMagick needs to be installed!
-opts_chunk$set(dpi=as.numeric(miaccs["carpools.dpi",3]))
-opts_chunk$set(results="asis")
+knitr::opts_chunk$set(sanitize=TRUE)
+knitr::opts_chunk$set(dev=miaccs["carpools.device",3]) # ImageMagick needs to be installed!
+knitr::opts_chunk$set(dpi=as.numeric(miaccs["carpools.dpi",3]))
+knitr::opts_chunk$set(results="asis")
 options(scipen = 0)
 
 ####  Screen Information
@@ -86,7 +86,7 @@ referencefile = as.character(miaccs["carpools.lib.ref",3])
 ##  Analysis Name
 # This name will be used as file name for all tabular, PDF and HTML files.
 analysis.name = stri_replace_all_fixed(miaccs["assay.name",3], " ", "_")
-opts_chunk$set(fig.path=paste(datapath,"/",analysis.name, "/", sep=""))
+knitr::opts_chunk$set(fig.path=paste(datapath,"/",analysis.name, "/", sep=""))
 
 
 ####  PERL REGULAR EXPRESSIONS
@@ -253,10 +253,9 @@ __Description__
 if(miaccs["assay.plasmids.image",3] != "none" && !is.na(miaccs["assay.plasmids.image",3]))
   {
     plasmid.image = strsplit(miaccs["assay.plasmids.image",3], split=",")
-    for(i in 1:length(plasmid.image))
+    for(i in 1:length(unlist(plasmid.image)))
       {
-        cat("\n")
-        
+
         cat("\n")
         cat("#","Plasmid Overview","\n")
         cat("![](",paste(datapath, plasmid.image[[1]][i], sep="/"), ")" )
@@ -267,10 +266,9 @@ if(miaccs["assay.plasmids.image",3] != "none" && !is.na(miaccs["assay.plasmids.i
 if(miaccs["cell.setup.image",3] != "none"&& !is.na(miaccs["cell.setup.image",3]))
   {
     screen.image = strsplit(miaccs["cell.setup.image",3], split=",")
-    for(i in 1:length(screen.image))
+    for(i in 1:length(unlist(screen.image)))
       {
-        cat("\n")
-        
+
         cat("\n")
         cat("#","Experimental Setup","\n")
         cat("![](",paste(datapath, screen.image[[1]][i], sep="/"),")" )
@@ -324,19 +322,19 @@ __A brief look into the data passed on to the analysis scripts:__
 
 __`r d.CONTROL1`__  
 __`r fileCONTROL1`__
-`r kable(CONTROL1[sample.sgrna,])`
+`r knitr::kable(CONTROL1[sample.sgrna,])`
 
 __`r d.CONTROL2`__  
 __`r fileCONTROL2`__
-`r kable(CONTROL2[sample.sgrna,])`
+`r knitr::kable(CONTROL2[sample.sgrna,])`
 
 __`r d.TREAT1`__  
 __`r fileTREAT1`__
-`r kable(TREAT1[sample.sgrna,])`
+`r knitr::kable(TREAT1[sample.sgrna,])`
 
 __`r d.TREAT2`__  
 __`r fileTREAT2`__
-`r kable(TREAT2[sample.sgrna,])`
+`r knitr::kable(TREAT2[sample.sgrna,])`
 
 
 ```{r geneidentifier, echo=FALSE, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE, results='hide'}
@@ -408,10 +406,10 @@ combined.stats = cbind.data.frame(U1.stats[,1:2], U2.stats[,2], T1.stats[,2], T2
 colnames(combined.stats) = c("Readcount", d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
 
 # output to report
-kable(combined.stats)
+knitr::kable(combined.stats)
 
 # output to file
-write.xlsx(combined.stats, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Combined Stats", row.names=FALSE)
+xlsx::write.xlsx(combined.stats, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Combined Stats", row.names=FALSE)
 ```
 
 
@@ -432,10 +430,10 @@ T2.unmapped = unmapped.genes(data=TREAT2, namecolumn=namecolumn, fullmatchcolumn
 T2.unmapped = T2.unmapped[order(T2.unmapped$sgRNA, decreasing=TRUE),]
 
 # output to file
-write.xlsx(U1.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL1, row.names=FALSE)
-write.xlsx(U2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL2, append=TRUE, row.names=FALSE)
-write.xlsx(T1.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT1, append=TRUE, row.names=FALSE)
-write.xlsx(T2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT2, append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(U1.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL1, row.names=FALSE)
+xlsx::write.xlsx(U2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL2, append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(T1.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT1, append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(T2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT2, append=TRUE, row.names=FALSE)
 
 ```
 
@@ -492,10 +490,10 @@ colnames(combined.stats.min) = c("Gene",d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREA
 combined.stats.max = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.max"],U2.allstats[,"readcount.max"],T1.allstats[,"readcount.max"],T2.allstats[,"readcount.max"])
 colnames(combined.stats.max) = c("Gene",d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
 
-write.xlsx(combined.stats.mean, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Mean Read Count", append=TRUE ,row.names=FALSE)
-write.xlsx(combined.stats.median, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Median Read Count", append=TRUE, row.names=FALSE)
-write.xlsx(combined.stats.min, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Minimum Read Count", append=TRUE, row.names=FALSE)
-write.xlsx(combined.stats.max, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Maximum Read Count", append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(combined.stats.mean, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Mean Read Count", append=TRUE ,row.names=FALSE)
+xlsx::write.xlsx(combined.stats.median, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Median Read Count", append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(combined.stats.min, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Minimum Read Count", append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(combined.stats.max, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Maximum Read Count", append=TRUE, row.names=FALSE)
 
 ```
 
@@ -514,23 +512,22 @@ However, the major population should be more or less normally distributed.
 
 par(mfrow=c(1,1))
 
-plot.read.distribution(CONTROL1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
+carpools.read.distribution(CONTROL1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-plot.read.distribution(CONTROL1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
+carpools.read.distribution(CONTROL1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
 
-plot.read.distribution(CONTROL2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
+carpools.read.distribution(CONTROL2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-plot.read.distribution(CONTROL2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
+carpools.read.distribution(CONTROL2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
 # add new page
 
+carpools.read.distribution(TREAT1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-plot.read.distribution(TREAT1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
+carpools.read.distribution(TREAT1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
 
-plot.read.distribution(TREAT1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
+carpools.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-plot.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
-
-plot.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
+carpools.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
 
 ```
 
@@ -545,7 +542,7 @@ If a non-targeting control has been set in the MIACCS file, this control is high
 ```{r QC-readdepth, echo=FALSE, sanitize=TRUE}
 #, fig.width=10, fig.height=20
 #par(mfrow=c(4,1))
-plot.read.depth(datasets = list(CONTROL1,CONTROL2,TREAT1,TREAT2), namecolumn=namecolumn ,fullmatchcolumn=fullmatchcolumn, dataset.names=list(d.CONTROL1,d.CONTROL2,d.TREAT1,d.TREAT2), extractpattern=g.extractpattern, xlab="Genes", ylab="Read Count per sgRNA",statistics=plot.statistic, labelgenes = NULL, controls.target = controls.target, controls.nontarget=controls.nontarget)
+carpools.read.depth(datasets = list(CONTROL1,CONTROL2,TREAT1,TREAT2), namecolumn=namecolumn ,fullmatchcolumn=fullmatchcolumn, dataset.names=list(d.CONTROL1,d.CONTROL2,d.TREAT1,d.TREAT2), extractpattern=g.extractpattern, xlab="Genes", ylab="Read Count per sgRNA",statistics=plot.statistic, labelgenes = NULL, controls.target = controls.target, controls.nontarget=controls.nontarget)
 
 par(mfrow=c(1,1))
 ```
@@ -561,13 +558,13 @@ Moreover, genes with a low percentage of present sgRNAs will also show a reduced
 #, fig.width=10, fig.height=10
 par(mfrow=c(2,2))
 
-control1.readspergene = plot.reads.genedesigns(CONTROL1, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.CONTROL1, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+control1.readspergene = carpools.reads.genedesigns(CONTROL1, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.CONTROL1, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
 
-control2.readspergene = plot.reads.genedesigns(CONTROL2, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.CONTROL2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+control2.readspergene = carpools.reads.genedesigns(CONTROL2, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.CONTROL2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
 
-treat1.readspergene = plot.reads.genedesigns(TREAT1, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT1, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+treat1.readspergene = carpools.reads.genedesigns(TREAT1, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT1, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
 
-treat2.readspergene = plot.reads.genedesigns(TREAT2, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+treat2.readspergene = carpools.reads.genedesigns(TREAT2, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
 
 par(mfrow=c(1,1))
 ```
@@ -599,7 +596,7 @@ if(!is.null(controls.nontarget))
   {
     cat("Non-targeting control: ", controls.nontarget ,"\n")  
     cat("\n")
-    plot.read.count.vs(dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.nontarget, labelcolor="blue", center=FALSE, aggregated=FALSE)
+    carpools.read.count.vs(dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.nontarget, labelcolor="blue", center=FALSE, aggregated=FALSE)
   } else {
     cat("No non-targeting control has been set in the MIACCS file.")
   }
@@ -628,7 +625,7 @@ if(!is.null(controls.target))
   {
     cat("Positive Control: ", as.character(controls.target) ,"\n")  
     cat("\n")
-    plot.read.count.vs(dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.target, labelcolor="red", center=FALSE, aggregated=TRUE)
+    carpools.read.count.vs(dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.target, labelcolor="red", center=FALSE, aggregated=TRUE)
   } else {
     cat("No positive control has been set in the MIACCS file.")
   }
@@ -690,7 +687,7 @@ if(is.null(controls.nontarget))
   }
 data.wilcox = stat.wilcox(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, normalize=normalize, norm.fun=norm.function, sorting=FALSE, controls=controls.nontarget, control.picks=control.picks)
 
-write.xlsx(data.wilcox, file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="Wilcox")
+xlsx::write.xlsx(data.wilcox, file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="Wilcox")
 
 ```
 
@@ -700,7 +697,7 @@ For all genes present in the data, the -log10 corrected p-values are plotted to 
 Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
 
 ```{r HT-wilcox-pval-distribution, echo=FALSE}
-plot.waterfall.pval(type="wilcox", dataset=data.wilcox, pval=sig.pval.wilcox, log=TRUE)
+carpools.waterfall.pval(type="wilcox", dataset=data.wilcox, pval=sig.pval.wilcox, log=TRUE)
 ```
 
 ### Enriched
@@ -712,7 +709,7 @@ data.wilcox.plot.enriched = data.wilcox[data.wilcox$foldchange > 1,]
 data.wilcox.plot.enriched = data.wilcox.plot.enriched[order(data.wilcox.plot.enriched$p.value, na.last=TRUE),]
 if(nrow(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < sig.pval.wilcox,]) > 0)
   {
- kable(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < sig.pval.wilcox,])
+ knitr::kable(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < sig.pval.wilcox,])
   } else { cat("No genes showed significant enrichment with a p-value lower than", sig.pval.wilcox)}
 
 
@@ -720,7 +717,7 @@ if(nrow(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < sig.pval.w
 
 According to the value set, the __top `r number.hits.plot.enriched` % enriched genes__ were:  
 
-`r kable(data.wilcox.plot.enriched[1:number.enriched.counter,])`
+`r knitr::kable(data.wilcox.plot.enriched[1:number.enriched.counter,])`
 
 
 
@@ -733,14 +730,14 @@ data.wilcox.plot.depleted = data.wilcox[data.wilcox$foldchange < 1,]
 data.wilcox.plot.depleted = data.wilcox.plot.depleted[order(data.wilcox.plot.depleted$p.value, na.last=TRUE),]
 if(nrow(data.wilcox.plot.depleted[data.wilcox.plot.depleted$p.value < sig.pval.wilcox,]) > 0)
   {
- kable(data.wilcox.plot.depleted[data.wilcox.plot.depleted$p.value < sig.pval.wilcox,])
+ knitr::kable(data.wilcox.plot.depleted[data.wilcox.plot.depleted$p.value < sig.pval.wilcox,])
   } else { cat("No genes showed significant depletion with a p-value lower than", sig.pval.wilcox)}
 
 ```
 
 According to the value set, the __top `r number.hits.plot.depleted` % depleted genes__ were:  
 
-`r kable(data.wilcox.plot.depleted[1:number.depleted.counter,])`
+`r knitr::kable(data.wilcox.plot.depleted[1:number.depleted.counter,])`
 
 
 
@@ -752,7 +749,7 @@ All analysis data can be found in the __`r paste(analysis.name, "HIT-CALLING.xls
 # DESeq2
 data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, extractpattern=g.extractpattern, sorting=FALSE, filename.deseq = paste(analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), fitType="mean")
 
-write.xlsx(as.data.frame(data.deseq$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="DESeq2", append=TRUE)
+xlsx::write.xlsx(as.data.frame(data.deseq$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="DESeq2", append=TRUE)
 
 ```
 
@@ -762,7 +759,7 @@ For all genes present in the data, the -log10 corrected p-values are plotted to 
 Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
 
 ```{r HT-deseq-pval-distribution, echo=FALSE}
-plot.waterfall.pval(type="deseq2", dataset=data.deseq, pval=sig.pval.wilcox, log=TRUE)
+carpools.waterfall.pval(type="deseq2", dataset=data.deseq, pval=sig.pval.wilcox, log=TRUE)
 ```
 
 
@@ -775,13 +772,13 @@ data.deseq.plot.enriched = as.data.frame(data.deseq[[1]][data.deseq[[1]]$log2Fol
 data.deseq.plot.enriched = data.deseq.plot.enriched[order(data.deseq.plot.enriched$padj, na.last=TRUE),]
 if(nrow(data.deseq.plot.enriched[data.deseq.plot.enriched$padj < sig.pval.deseq,c(2,3,6,8)]) > 0)
   {
- kable(data.deseq.plot.enriched[data.deseq.plot.enriched$padj < sig.pval.deseq,c(2,3,6,8)])
+ knitr::kable(data.deseq.plot.enriched[data.deseq.plot.enriched$padj < sig.pval.deseq,c(2,3,6,8)])
   } else { cat("No genes showed significant enrichment with a p-value lower than", sig.pval.deseq)}
 ```
 
 According to the value set, the __top `r number.hits.plot.enriched` % enriched genes__ were:  
 
-`r kable(data.deseq.plot.enriched[1:number.enriched.counter,c(2,3,6,8)])`
+`r knitr::kable(data.deseq.plot.enriched[1:number.enriched.counter,c(2,3,6,8)])`
 
 
 
@@ -794,7 +791,7 @@ data.deseq.plot.depleted = data.deseq[[1]][data.deseq[[1]]$log2FoldChange < 0,]
 data.deseq.plot.depleted = data.deseq.plot.depleted[order(data.deseq.plot.depleted$padj, na.last=TRUE),]
 if(nrow(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < sig.pval.deseq,c(2,3,6,8)]) > 0)
   {
- kable(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < sig.pval.deseq,c(2,3,6,8)])
+ knitr::kable(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < sig.pval.deseq,c(2,3,6,8)])
   } else { cat("No genes showed significant depletion with a p-value lower than", sig.pval.deseq)}
 
 
@@ -802,7 +799,7 @@ if(nrow(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < sig.pval.deseq,
 
 According to the value set, the __top `r number.hits.plot.depleted` % depleted genes__ were:  
 
-`r kable(data.deseq.plot.depleted[1:number.depleted.counter,c(2,3,6,8)])`
+`r knitr::kable(data.deseq.plot.depleted[1:number.depleted.counter,c(2,3,6,8)])`
 
 
 
@@ -815,7 +812,7 @@ All analysis data for MAGeCK can be found in the __`r paste(analysis.name, "HIT-
 # MAGeCK
 data.mageck = stat.mageck(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.fun="median", extractpattern=g.extractpattern, mageckfolder=NULL, sort.criteria="neg", adjust.method="fdr", filename = paste(analysis.name, "-ANALYSIS-MAGeCK-RAW", sep=""), fdr.pval=sig.pval.mageck)
 
-write.xlsx(as.data.frame(data.mageck$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="MAGeCK", append=TRUE)
+xlsx::write.xlsx(as.data.frame(data.mageck$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="MAGeCK", append=TRUE)
 # get number of sig gene
 mageck.cutoff = nrow(data.mageck[[1]][data.mageck[[1]]$pos < sig.pval.mageck,]) + nrow(data.mageck[[1]][data.mageck[[1]]$neg < sig.pval.mageck,])
 ```
@@ -826,7 +823,7 @@ For all genes present in the data, the -log10 corrected p-values are plotted to 
 Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
 
 ```{r HT-mageck-pval-distribution, echo=FALSE}
-plot.waterfall.pval(type="mageck", dataset=data.mageck, pval=sig.pval.wilcox, log=TRUE)
+carpools.waterfall.pval(type="mageck", dataset=data.mageck, pval=sig.pval.wilcox, log=TRUE)
 ```
 
 
@@ -839,7 +836,7 @@ data.mageck.plot.enriched = data.mageck[[1]][data.mageck[[1]]$pos < sig.pval.mag
 data.mageck.plot.enriched = data.mageck.plot.enriched[order(data.mageck.plot.enriched$rank.pos, na.last=TRUE),]
 if(nrow(data.mageck.plot.enriched) > 0)
   {
- kable(data.mageck.plot.enriched[,c(2,3,4,5,6,7)])
+ knitr::kable(data.mageck.plot.enriched[,c(2,3,4,5,6,7)])
   } else { cat("No genes showed significant enrichment with a p-value lower than", sig.pval.mageck)}
 
 data.mageck.plot.enriched = data.mageck[[1]][order(data.mageck[[1]]$rank.pos, na.last=TRUE),]
@@ -847,7 +844,7 @@ data.mageck.plot.enriched = data.mageck[[1]][order(data.mageck[[1]]$rank.pos, na
 
 According to the value set, the __top `r number.hits.plot.enriched` % enriched genes__ were:  
 
-`r kable(data.mageck.plot.enriched[1:number.enriched.counter,c(2,3,4,5,6,7)])`
+`r knitr::kable(data.mageck.plot.enriched[1:number.enriched.counter,c(2,3,4,5,6,7)])`
 
 
 
@@ -860,7 +857,7 @@ data.mageck.plot.depleted = data.mageck[[1]][data.mageck[[1]]$neg < sig.pval.mag
 data.mageck.plot.depleted = data.mageck.plot.depleted[order(data.mageck.plot.depleted$rank.neg, na.last=TRUE),]
 if(nrow(data.mageck.plot.depleted) > 0)
   {
-  kable(data.mageck.plot.depleted[,c(2,3,4,5,6,7)])
+  knitr::kable(data.mageck.plot.depleted[,c(2,3,4,5,6,7)])
   } else { cat("No genes showed significant depletion with a p-value lower than", sig.pval.mageck)}
 
 data.mageck.plot.depleted = data.mageck[[1]][order(data.mageck[[1]]$rank.neg, na.last=TRUE),]
@@ -868,7 +865,7 @@ data.mageck.plot.depleted = data.mageck[[1]][order(data.mageck[[1]]$rank.neg, na
 
 According to the value set, the __top `r number.hits.plot.depleted` % depleted genes__ were:  
 
-`r kable(data.mageck.plot.depleted[1:number.depleted.counter,c(2,3,4,5,6,7)])`
+`r knitr::kable(data.mageck.plot.depleted[1:number.depleted.counter,c(2,3,4,5,6,7)])`
 
 
 
@@ -888,7 +885,7 @@ Genes that showed no significant effect are presented in grey or black color.
 
 ```{r HT-overview-hits, echo=FALSE, sanitize=TRUE}
 
-plot.hit.overview(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, title="Hit Overview", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=NULL, plot.genes="overlapping")
+carpools.hit.overview(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=NULL, plot.genes="overlapping")
 
 ```
 
@@ -925,7 +922,7 @@ overlap.depleted.dataset = data.frame(
 if(nrow(overlap.enriched.dataset) > 0)
   {
     cat("The following genes showed enrichment in all three analysis methods.", "\n")
-    kable(overlap.enriched.dataset)
+    knitr::kable(overlap.enriched.dataset)
     cutoff.override.enriched = cutoff.override
   
   } else {
@@ -958,8 +955,10 @@ Within the __top enriched hits__, the overlap of enriched hits per analysis meth
 ```{r HT-compare-enriched-overlap, echo=FALSE,sanitize=TRUE}
 venn.enriched = compare.analysis(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="enriched", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.enriched.counter, output="venn")
 
-venn.diagram.crispr(venn.enriched, fill=c("lightgreen","lightblue2","lightgray"), na="remove")
+require(VennDiagram)
+grid::grid.draw(VennDiagram::venn.diagram(venn.enriched, file=NULL, fill=c("lightgreen","lightblue2","lightgray"), na="remove", cex=2,lty=2, cat.cex=2))
 ```
+
 
 
 ## Overlaps in Depletion Analysis
@@ -968,7 +967,7 @@ venn.diagram.crispr(venn.enriched, fill=c("lightgreen","lightblue2","lightgray")
 if(nrow(overlap.depleted.dataset) > 0)
   {
     cat("The following genes showed depletion in all three analysis methods.", "\n")
-    kable(overlap.depleted.dataset)
+    knitr::kable(overlap.depleted.dataset)
     cutoff.override.depleted=cutoff.override
     
   } else {
@@ -1001,7 +1000,8 @@ Within the __top depleted hits__, the overlap of depleted hits per analysis meth
 ```{r HT-compare-depleted-overlap, echo=FALSE,sanitize=TRUE}
 venn.depleted = compare.analysis(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="depleted", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.depleted.counter, output="venn")
 
-venn.diagram.crispr(venn.depleted, fill=c("lightgreen","lightblue2","lightgray"), na="remove")
+require(VennDiagram)
+grid::grid.draw(VennDiagram::venn.diagram(venn.depleted, file=NULL, fill=c("lightgreen","lightblue2","lightgray"), na="remove", cex=2,lty=2, cat.cex=2))
 ```
 
 
@@ -1013,7 +1013,7 @@ All overlapping genes which showed enrichment are highlighted in __orange__ colo
 ```{r HT-compare-overlap-enriched-scatter, echo=FALSE, sanitize=TRUE,fig.width=8,fig.height=8}
 # make Hit Scatter with all HITS enriched in a 4x4 square
 
-plot.read.count.vs(dataset=list(CONTROL1.g, CONTROL2.g,TREAT1.g, TREAT2.g), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), pairs=FALSE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=overlap.enriched, labelcolor="orange", center=FALSE, aggregated=TRUE)
+carpools.read.count.vs(dataset=list(CONTROL1.g, CONTROL2.g,TREAT1.g, TREAT2.g), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), pairs=FALSE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=overlap.enriched, labelcolor="orange", center=FALSE, aggregated=TRUE)
 ```
 
 ## Depleted Overlapping Hit Candidates
@@ -1022,7 +1022,7 @@ All overlapping genes which showed depletion are highlighted in __orange__ color
 
 ```{r HT-compare-overlap-depleted-scatter, echo=FALSE, sanitize=TRUE,fig.width=8,fig.height=8}
 
-plot.read.count.vs(dataset=list(CONTROL1.g, CONTROL2.g,TREAT1.g, TREAT2.g), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), pairs=FALSE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=overlap.depleted, labelcolor="orange", center=FALSE, aggregated=TRUE)
+carpools.read.count.vs(dataset=list(CONTROL1.g, CONTROL2.g,TREAT1.g, TREAT2.g), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), pairs=FALSE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=overlap.depleted, labelcolor="orange", center=FALSE, aggregated=TRUE)
 ```
 
 
@@ -1047,12 +1047,12 @@ if(identical(a.annotate.hits,TRUE))
 # create final table with all genes + hit analysis results
 final.tab = final.table(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=CONTROL1.g, namecolumn=namecolumn, type="genes")
 
-write.xlsx(final.tab, paste(datapath, paste(analysis.name, "FINAL.xls", sep="_"), sep="/"), sheetName="Genelist", 
+xlsx::write.xlsx(final.tab, paste(datapath, paste(analysis.name, "FINAL.xls", sep="_"), sep="/"), sheetName="Genelist", 
   col.names=TRUE, row.names=FALSE, append=FALSE, showNA=TRUE)
 
 #final.tab.sgRNA = final.table(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=CONTROL1.g, namecolumn=namecolumn, type="all")
 
-#write.xlsx(final.tab, paste(datapath, paste(analysis.name, "FINAL.xls", sep="_"), sep="/"), sheetName="All", 
+#xlsx::write.xlsx(final.tab, paste(datapath, paste(analysis.name, "FINAL.xls", sep="_"), sep="/"), sheetName="All", 
   #col.names=TRUE, row.names=FALSE, append=TRUE, showNA=TRUE)
 ```
 
@@ -1118,9 +1118,6 @@ for(i in overlap.enriched)
     cat("__Wilcox p-value:__", sig.pval.candidate[[1]],"\n \n")
     cat("__DESeq2 p-value:__", sig.pval.candidate[[2]],"\n \n")
     cat("__MAGeCK p-value:__", sig.pval.candidate[[3]],"\n \n")
-    
-    cat("\n")
-    
     cat("\n")  
       }
     else
@@ -1133,41 +1130,38 @@ for(i in overlap.enriched)
       }
   
     # Scatterplot PAIRS GENES
-    plothitsscatter.enriched = plot.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=TRUE, type="enriched", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched,  pch=16)
+    plothitsscatter.enriched = carpools.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=TRUE, type="enriched", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched,  pch=16)
     
     cat("\n")
-    #
     #cat("\n")
     
     # Scatterplot PAIRS sgRNA
-    plothitsscatter.enriched = plot.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=FALSE, type="enriched", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched,  pch=16)
+    plothitsscatter.enriched = carpools.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=FALSE, type="enriched", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched,  pch=16)
     
     cat("\n")
-    
     cat("\n")
     
-    sgrnas.en = plot.hit.sgrna(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, put.names=TRUE, type="enriched", labelgenes=i, plot.type=NULL, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=number.hits.plot.enriched, controls.target=controls.target, controls.nontarget=controls.nontarget)
+    sgrnas.en = carpools.hit.sgrna(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, put.names=TRUE, type="enriched", labelgenes=i, plot.type=NULL, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=number.hits.plot.enriched, controls.target=controls.target, controls.nontarget=controls.nontarget)
     
     par(mfrow=c(1,1))
 
     cat("\n")
-    
     cat("\n")
     
     # sgRNA table
     if(count==0)
       {
-      write.xlsx(overlap.enriched, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("enriched", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName="List of Genes", row.names=FALSE, col.names=FALSE)
+      xlsx::write.xlsx(overlap.enriched, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("enriched", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName="List of Genes", row.names=FALSE, col.names=FALSE)
       }
     
-  sgrnas.en.table = plot.sgrna.table(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, type="enriched", labelgenes=i, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched, sgrna.file = libFILE, write=FALSE)
+  sgrnas.en.table = carpools.sgrna.table(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, type="enriched", labelgenes=i, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched, sgrna.file = libFILE, write=FALSE)
 
-  write.xlsx(sgrnas.en.table, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("enriched", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName=as.character(i), append=TRUE, row.names=FALSE)
+  xlsx::write.xlsx(sgrnas.en.table, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("enriched", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName=as.character(i), append=TRUE, row.names=FALSE)
         
   
-print(kable(sgrnas.en.table))
+print(knitr::kable(sgrnas.en.table))
   cat("\n")
-  
+
 
 count = count + 1
 }
@@ -1184,7 +1178,7 @@ count=0
 for(i in overlap.depleted)
   {
     cat("\n")
-    
+
     cat("\n")
     cat("###", i,"\n")
     
@@ -1207,7 +1201,7 @@ for(i in overlap.depleted)
     cat("__MAGeCK p-value:__", sig.pval.candidate[[3]],"\n \n")
     
     cat("\n")
-    
+
     cat("\n")  
       }
     else
@@ -1220,36 +1214,35 @@ for(i in overlap.depleted)
       }
 
   # Scatterplot PAIRS GENES
-  plothitsscatter.depleted = plot.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=TRUE, type="depleted", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched,  pch=16)
+  plothitsscatter.depleted = carpools.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=TRUE, type="depleted", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched,  pch=16)
     cat("\n")
-    #
     #cat("\n")
     # Scatterplot PAIRS sgRNA
-    plothitsscatter.depleted = plot.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=FALSE, type="depleted", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched,  pch=16)
+    plothitsscatter.depleted = carpools.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=FALSE, type="depleted", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched,  pch=16)
     cat("\n")
     
     cat("\n")
     # SgRNA foldchange, Z-Ratio, Vioplot
   
     # SgRNA foldchange, Z-Ratio, Vioplot
-    sgrnas.dep = plot.hit.sgrna(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, put.names=TRUE, type="depleted", labelgenes=i, plot.type=NULL, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=number.hits.plot.enriched, controls.target=controls.target, controls.nontarget=controls.nontarget)
+    sgrnas.dep = carpools.hit.sgrna(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, put.names=TRUE, type="depleted", labelgenes=i, plot.type=NULL, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override, cutoff.hits=number.hits.plot.enriched, controls.target=controls.target, controls.nontarget=controls.nontarget)
   
   par(mfrow=c(1,1))
   
     cat("\n")
-    
+
     cat("\n")
     # sgRNA table
  if(count==0)
       {
-      write.xlsx(overlap.depleted, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("depleted", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName="List of Genes", row.names=FALSE, col.names=FALSE)
+      xlsx::write.xlsx(overlap.depleted, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("depleted", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName="List of Genes", row.names=FALSE, col.names=FALSE)
       }
  
-  sgrnas.dep.table = plot.sgrna.table(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, type="depleted", labelgenes=i, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched, sgrna.file = libFILE, write=FALSE)
+  sgrnas.dep.table = carpools.sgrna.table(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.function=norm.function, extractpattern=g.extractpattern, type="depleted", labelgenes=i, cutoff.deseq = sig.pval.deseq, cutoff.wilcox=sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched, sgrna.file = libFILE, write=FALSE)
  
-   write.xlsx(sgrnas.dep.table, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("depleted", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName=as.character(i), append=TRUE, row.names=FALSE )
+   xlsx::write.xlsx(sgrnas.dep.table, file=paste(datapath, paste(analysis.name, paste("HITS-sgRNA", paste("depleted", "xls", sep="."), sep="-"), sep="_"), sep="/"), sheetName=as.character(i), append=TRUE, row.names=FALSE )
 
-print(kable(sgrnas.dep.table))
+print(knitr::kable(sgrnas.dep.table))
 
 cat("\n")
 
@@ -1274,8 +1267,8 @@ Moreover, the __`r number.hits.plot.enriched` % top enriched hits__ sorted accor
 ```{r HT-comparetable-enriched, echo=FALSE, sanitize=TRUE}
 data.analysis.enriched = compare.analysis(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="enriched", cutoff.override = TRUE, cutoff.hits=number.enriched.counter, output="list", sort.by=c("mageck","fdr","rank"))
 
-write.xlsx(data.analysis.enriched, file=paste(datapath, paste(analysis.name, "COMPARE-HITS.xls", sep="_"), sep="/"), sheetName="Enriched")
-kable(data.analysis.enriched[,c(2:7)])
+xlsx::write.xlsx(data.analysis.enriched, file=paste(datapath, paste(analysis.name, "COMPARE-HITS.xls", sep="_"), sep="/"), sheetName="Enriched")
+knitr::kable(data.analysis.enriched[,c(2:7)])
 ```
 
 
@@ -1303,9 +1296,9 @@ Moreover, the __`r number.hits.plot.depleted` % top depleted hits__ sorted accor
 ```{r HT-comparetable-depleted, echo=FALSE, sanitize=TRUE}
 data.analysis.depleted = compare.analysis(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="depleted", cutoff.override=TRUE, cutoff.hits=number.depleted.counter, output="list", sort.by=c("mageck","fdr","rank"))
 
-write.xlsx(data.analysis.depleted, file=paste(datapath, paste(analysis.name, "COMPARE-HITS.xls", sep="_"), sep="/"), sheetName="Depleted", append=TRUE)
+xlsx::write.xlsx(data.analysis.depleted, file=paste(datapath, paste(analysis.name, "COMPARE-HITS.xls", sep="_"), sep="/"), sheetName="Depleted", append=TRUE)
 
-kable(data.analysis.depleted[,c(2:7)])
+knitr::kable(data.analysis.depleted[,c(2:7)])
 ```
 
 
@@ -1336,7 +1329,7 @@ Moreover, the number of significant sgRNAs is presented for MAGeCK as well.
 
 ```{r HT-visualization-wilcox, echo=FALSE, sanitize=TRUE}
 #, fig.height=10, fig.width=15
-wilcox.result = plot.hitident(data.wilcox, type="wilcox", title=paste(analysis.name, "wilcox", sep=" "), xlab="Genes", ylab="log10(p-value)", print.names=TRUE, pch=16,  xlim=NULL, ylim=c(2,20), offsetplot=1.2, plot.p=sig.pval.wilcox, separate=TRUE)
+wilcox.result = carpools.hitident(data.wilcox, type="wilcox", title=paste(analysis.name, "wilcox", sep=" "), print.names=TRUE, offsetplot=1.2, plot.p=sig.pval.wilcox, separate=TRUE)
 
 ```
 
@@ -1346,7 +1339,7 @@ wilcox.result = plot.hitident(data.wilcox, type="wilcox", title=paste(analysis.n
 
 ```{r HT-visualization-deseq, echo=FALSE, sanitize=TRUE}
 #, fig.height=10, fig.width=15
-deseq.result = plot.hitident(data.deseq, type="deseq2", title=paste(analysis.name, "DESeq2", sep=" "), xlab="Genes", ylab="log10(p-value)", print.names=TRUE, pch=16,  xlim=NULL, ylim=c(2,20), plot.p=sig.pval.deseq, separate=TRUE, offsetplot=1.2, sgRNA.top=sgRNAs.top.deseq)
+deseq.result = carpools.hitident(data.deseq, type="deseq2", title=paste(analysis.name, "DESeq2", sep=" "), print.names=TRUE, plot.p=sig.pval.deseq, separate=TRUE, offsetplot=1.2, sgRNA.top=sgRNAs.top.deseq)
 
 
 ```
@@ -1358,7 +1351,7 @@ deseq.result = plot.hitident(data.deseq, type="deseq2", title=paste(analysis.nam
 ```{r HT-visualization-mageck, echo=FALSE, sanitize=TRUE}
 #, fig.height=10, fig.width=15
 
-mageck.result = plot.hitident(data.mageck, type="mageck", title=paste(analysis.name, "MAGeCK", sep=" "), xlab="", ylab="-log10(FDR)", pch=16, inches=0.1, print.names=TRUE, xlim=NULL, ylim=NULL, separate=TRUE, onedirection=FALSE, plot.p=sig.pval.mageck, offsetplot=1.2, sgRNA.top=sgRNAs.top.mageck)
+mageck.result = carpools.hitident(data.mageck, type="mageck", title=paste(analysis.name, "MAGeCK", sep=" "), inches=0.1, print.names=TRUE, separate=TRUE, plot.p=sig.pval.mageck, offsetplot=1.2, sgRNA.top=sgRNAs.top.mageck)
 
 ```
 
@@ -1390,16 +1383,16 @@ if(identical(a.annotate.hits, TRUE))
     cat("__Filters:__", " ", a.annotate,"\n","\n")
     
     cat("The annotated list of all hit candidates is stored in", "\n","\n")
-    cat("_", datapath,"_", "\n", "\n")
-    cat("__", paste(analysis.name, "ANNOTATION.xls", sep="_"),"__", "\n")
+    cat("*", datapath,"*", "\n", "\n")
+    cat("**", paste(analysis.name, "ANNOTATION.xls", sep="_"),"**", "\n")
   
     annotate.enriched.all = get.gene.info(as.data.frame(overlap.enriched), namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = a.annotate, return.val = "info", controls=TRUE)  
   
-  write.xlsx(annotate.enriched.all, file=paste(datapath, paste(analysis.name, "ANNOTATION.xls", sep="_"), sep="/"), sheetName="Enriched")
+  xlsx::write.xlsx(annotate.enriched.all, file=paste(datapath, paste(analysis.name, "ANNOTATION.xls", sep="_"), sep="/"), sheetName="Enriched")
 
   annotate.depleted.all = get.gene.info(as.data.frame(overlap.depleted), namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = a.annotate, return.val = "info", controls=TRUE)
 
-  write.xlsx(annotate.depleted.all, file=paste(datapath, paste(analysis.name, "ANNOTATION.xls", sep="_"), sep="/"), sheetName="Depleted", append=TRUE)
+  xlsx::write.xlsx(annotate.depleted.all, file=paste(datapath, paste(analysis.name, "ANNOTATION.xls", sep="_"), sep="/"), sheetName="Depleted", append=TRUE)
   
   } else
   {

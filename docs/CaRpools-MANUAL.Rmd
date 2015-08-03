@@ -94,7 +94,7 @@ Moreover, this package can be used to identify screening hits using either
  * Wilcox-based hit calling `stat.wilcox`
  * MAGeCK `stat.mageck`
  
-and hit calling / data analysis can be compared between all the methods with `compare.analysis` or `plot.hit.overview`.
+and hit calling / data analysis can be compared between all the methods with `compare.analysis` or `carpools.hit.overview`.
 Finally evaluated data analysis can be visualized in different ways with `carpools.hitident` for all methods listed above.
 
 ## sgRNA Information
@@ -649,13 +649,59 @@ Whether CRISPR-extract.pl is used to extract the 20 nt target sequence from the 
 PERL regular Expression to extract 20 nt target sequence from NGS reads. Please see *extract pattern* in this manual for more information.  
 *Default* Regular Expression (character)  
 
+**maschinepattern**  
+Maschine ID of your Sequencing maschine. Used ot identify the read id.  
+
+**createindex**  
+Do you want caRpools to generate a bowtie2 index? Only necessary if `mapping=TRUE`.
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**bowtie2file**  
+Filename of bowtie2 index file, without extension. Is the same as reference file, if `createindex=TRUE`.  
+
+**referencefile**  
+Filename of the library reference FASTA file, without extension. Is the same as bowtie2 file, if `createindex=TRUE`.  
+
+**mapping**  
+Indicates whether FASTQ files need to be mapped against `referencefile`/`bowtie2file`. FALSE by default.  
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**reversecomplement**  
+Is the NGS sequence in reverse complement order?  
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**threads**  
+How many threads can bowtie2 use for mapping? Only used if `mapping=TRUE`. Usually cores of CPU.  
+*Default* 2  
+*Values* any integer  
+
+**bowtieparams**  
+If you want to pass additional parameters to bowtie2.  
+
+**sensitivity**  
+You can djust the sensitivity of bowtie2 using this parameter. By default, bowtie2 is used in a very-sensitive-local setting. More information about different sensitivy parameters can be found at the [bowtie2 options](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#options).  
+*Default* "very-sensitive-local"  
+*Other options: very-fast, fast, sensitive, very-fast-local, fast-local, sensitive-local*  
+
+**match**  
+After bowtie2 mapping, the aligment is converted into read count files *filename_extracted-design.txt* and *filename_extracted-genes.txt*.  
+You can indiciate how well the alignment must be in order to be used for generating the read count for each sgRNA.  
+By default, this is set to *perfect*, which only employs a mapped read if the full 20 nt from the sequencing match perfectly to the sgRNA found in your library reference. The following options can be used:  
+
+* __perfect__ - Read is used of all 20 nt from the sequencing are matching the target sequence given in the library reference
+* __high__ - Read is used if at least 18 nt (starting from the PAM) are matching the target sequence in the reference
+* __seed__ - Read is used if at least 14 nt (starting from the PAM) are a perfect match against the target sequence in the reference  
+
 ### Aggregating sgRNA read-count to Gene read-count
 
 CaRpools allows you to aggregate sgRNA read-counts to gene read-counts using `aggregatetogenes()`.  
 
 ```{r aggregate1, echo=TRUE, eval=FALSE}
 CONTROL1.g=aggregatetogenes(data.frame = CONTROL1, agg.function=sum,
-                            extractpattern = expression("^(.+?)(_.+)"))
+        extractpattern = expression("^(.+?)(_.+)"),type = "aggregate")
 ```
 
 #### aggregatetogenes()
@@ -1264,6 +1310,17 @@ Label of Y-Axis
 *Default* "Y-Axis"  
 *Values* "Label of Y-Axis" (character)  
 
+**agg.function**  
+The function to aggregate sgRNA read-count.
+*Default* sum  
+*Values* any mathematical function (function)
+
+**extractpattern**  
+PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+*Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
+*Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
+
 **col**  
 The color of the plotted data. Can be any R color or RGB object. See ?rgb() for further information.  
 *Default* rgb(0, 0, 0, alpha = 0.65)  
@@ -1465,6 +1522,7 @@ carpools.read.count.vs(dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g),
 ### Visualize sgRNA Phenotype
 
 CaRpools also allows you to visualize the phenotypic effects of sgRNA belonging to the same gene via `carpools.raw.genes`.    
+This includes plotting of sgRNA foldchanges, z-score, z-ratios or read-counts. Moreover, `type="vioplot"` will present fold change data in comparison to the whole dataset and controls.
 
 ```{r plot.raw.genes, echo=TRUE, eval=FALSE}
 carpools.raw.genes(untreated.list = list(CONTROL1, CONTROL2),
@@ -1543,6 +1601,11 @@ Highlights the non-targeting control in blue color.
 This leads to output sorted by foldchange or z-ratio instead of names.  
 *Default* TRUE  
 *Values* TRUE, FALSE  
+
+**genes**  
+For which gene shall sgRNA effects being plotted?  
+*Default* NULL  
+*Values* Gene identifier  
 
 ##### Example of sgRNA Phenotype for CASP8
 
@@ -1678,9 +1741,9 @@ Please give the gene identifier of the non-targeting control. If you do not have
 *Default* NULL  
 *Values* NULL or gene identifier (character)  
 
-**random.picks**  
+**control.picks**  
 If no non-targeting controls are present or set, wilcox will pick a randum number of sgRNAs from the data set as the alternative population. This is only used if `controls=NULL`.  
-*Default* 150  
+*Default* 300  
 *Values* numeric  
 
 
@@ -2156,6 +2219,11 @@ If `type="3dplot"`, this indicates the type of data plotted on each axis of the 
 *Default* c("pval","fdr", "pval")  which uses the p-value of wilcox, the fdr or MAGeCK and p-value of DESeq2.  
 *Values* c("pval","fdr", "pval"), or ANY combination according to `plot.method`  
 
+**pch**  
+The type of point used in the plot. See `?par()`.  
+*Default* 16  
+*Values* Any number describing the point, e.g. 16 (numeric)  
+
 \newpage
 
 ## Creating Final Hit Candidate Table
@@ -2217,6 +2285,11 @@ e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifi
 The mathematical function to normalize data if `normalize=TRUE`. By default, the median is used.  
 *Default* median  
 *Values* Any mathematical function of R (function)  
+
+**type**  
+Output generated.  
+*Default* "genes"  
+*Values* "genes"
 
 
 ### Create List of Overlapping Hit Candidates
@@ -2280,6 +2353,418 @@ Defines what kind of data is returned, by default only overlapping genes or MAGe
 *Default* "overlapping"  
 *Values* "overlapping" 
 
+**type**  
+Defines whether all genes are plotted or only those being enriched or depleted.  
+*Default* "all"  
+*Values* "all", "enriched", "depleted"  
+
+### Read-Count Scatter Plots for Candidate Genes
+
+As described before, scatter plots can be generated for all datasets. `carpools.hit.scatter` serves as a wrapper for `carpools.read.count.vs` and allows faster plotting for individual candidate genes or all overlapping candidate genes. It generated a pairs plot with the representation of all provided samples and highlights the candidate gene.  
+
+```{r hit-scatter, echo=TRUE, eval=TRUE}
+plothitsscatter.enriched = carpools.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=1, fullmatchcolumn=2, title="Title", labelgenes="CASP8", labelcolor="orange", extractpattern=expression("^(.+?)(_.+)"), normalize=TRUE, norm.function=median, offsetplot=1.2, center=FALSE, aggregated=FALSE, type="enriched", cutoff.deseq = 0.001, cutoff.wilcox = 0.05, cutoff.mageck = 0.05, cutoff.override=FALSE, cutoff.hits=NULL,  pch=16)
+```
+
+#### carpools.hit.scatter()
+
+**Usage**  
+`carpools.hit.scatter = function(wilcox=NULL, deseq=NULL, mageck=NULL, dataset, dataset.names = NULL, namecolumn=1, fullmatchcolumn=2, title="Read Count", xlab="Readcount Dataset1", ylab="Readcount Dataset2", labelgenes=NULL, labelcolor="orange", extractpattern=expression("^(.+?)_.+"), plotline=TRUE, normalize=TRUE, norm.function=median, offsetplot=1.2, center=FALSE, aggregated=FALSE, type="enriched", cutoff.deseq = 0.001, cutoff.wilcox = 0.05, cutoff.mageck = 0.05, cutoff.override=FALSE, cutoff.hits=NULL, plot.genes="overlapping", pch=16, col = rgb(0, 0, 0, alpha = 0.65))`
+
+**wilcox**  
+Data output from `stat.wilcox`.  
+*Default* NULL  
+*Values* Data output from `stat.wilcox`.  
+
+**deseq**  
+Data output from `stat.deseq`.  
+*Default* NULL  
+*Values* Data output from `stat.deseq`.  
+
+**mageck**  
+Data output from `stat.mageck`.  
+*Default* NULL  
+*Values* Data output from `stat.mageck`.  
+
+**cutoff.deseq**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**cutoff.wilcox**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**cutoff.mageck**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**dataset**
+A list of data frames of read-count data as created by load.file().  
+*Default* none  
+*Values* A list of data frames  
+
+**namecolumn**  
+In which column are the sgRNA identifiers?  
+*Default* 1  
+*Values* column number (numeric)  
+
+**fullmatchcolumn**  
+In which column are the read counts?  
+*Default* 2  
+*Values* column number (numeric)  
+
+**dataset.names**  
+A list of names that must be according to the list of data sets given in *dataset*.  
+*Default* NULL  
+*Value* NULL or list of data names (list)  
+
+**norm.function**  
+The mathematical function to normalize data. By default, the median is used.  
+*Default* median  
+*Values* Any mathematical function of R (function)  
+
+**extractpattern**  
+PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+*Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
+*Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
+
+**cutoff.override**  
+Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene of `cutoff.hits` is used instead.  
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**cutoff.hits**  
+The percentatge of top genes being used if `cutoff.override=TRUE`.  
+*Default** NULL  
+*Values* numeric  
+
+**plot.genes**  
+Defines what kind of data is used. By default, overlapping genes are highlighted in red color.  
+*Default* "overlapping"  
+*Values* "overlapping"  
+
+**type**  
+Defines whether all genes are plotted or only those being enriched or depleted.  
+*Default* "all"  
+*Values* "all", "enriched", "depleted"  
+
+
+**labelgenes**  
+For which gene shall the sgRNA effects being plotted? This expects a gene identifier or a vector of gene identifiers.  
+*Default* NULL  
+*Values* A gene identifier or vector of gene identifiers (character)  
+
+**xlab**  
+Label of X-Axis, only if `pairs=FALSE`   
+*Default* "X-Axis"  
+*Values* "Label of X-Axis" (character)  
+
+**ylab**  
+Label of Y-Axism only if `pairs=FALSE`  
+*Default* "Y-Axis"  
+*Values* "Label of Y-Axis" (character)  
+
+**pch**  
+The type of point used in the plot. See `?par()`.  
+*Default* 16  
+*Values* Any number describing the point, e.g. 16 (numeric)  
+
+**col**  
+The color of the plotted data. Can be any R color or RGB object. See ?rgb() for further information.  
+*Default* rgb(0, 0, 0, alpha = 0.65)  
+*Values* Any R color name or RGB color object (character OR color object)  
+
+**plotline**  
+You can draw additional lines indicating a fold change of 0, 2, 4.  
+*Default* TRUE  
+*Values** TRUE, FALSE (boolean)  
+
+**normalize**  
+Whether you would like to normalize read-counts first. Recommended if not done already.  
+*Default* TRUE  
+*Values* TRUE, FALSE (boolean)  
+
+**offsetplot**  
+Offetplot is used to stretch the x- and y-axis for nicer graphs. This will extend plotting area by offsetplot.  
+*Default* 1.2 (Plotting area is streched to 1.2 times)  
+*Values* any number (numeric)  
+
+**center**  
+If you like you can center your data within the plot.  
+*Default* FALSE  
+*Values* TRUE, FALSE (boolean)  
+
+**aggregated**  
+If you want to highlight genes, set this to true if you provide already aggregated gene read count instead of sgRNA read counts.  
+*Default* FALSE  
+*Values* TRUE, FALSE (boolean)  
+
+### sgRNA Effect Plots
+
+Since there is more than just one single sgRNA targeting your gene of interest, you can user caRpools to plot different sgRNA phenotype effects, e.g. the fold change or z-ratio, as desribed before in `carpools.raw.genes`.  
+A set of plots can be generated with `carpools.hit.sgrna`, which serves as a wrapper for `carpools.raw.genes`.  
+By default, a foldchange plot as well as a violine plot are generated.
+
+```{r carpools.hit.sgrna, echo=TRUE, eval=TRUE}
+sgrnas.en = carpools.hit.sgrna(wilcox=data.wilcox, deseq=data.deseq,
+    mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2),
+    dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=1,
+    fullmatchcolumn=2, norm.function=median, extractpattern=expression("^(.+?)(_.+)"),
+    put.names=TRUE, type="enriched", labelgenes="CASP8", plot.type=NULL, 
+    cutoff.deseq = 0.001, cutoff.wilcox=0.05, cutoff.mageck = 0.05,
+    cutoff.override=FALSE, cutoff.hits=NULL, controls.target="CASP8", controls.nontarget="random")
+```
+
+
+#### carpools.hit.sgrna()
+
+**Usage**  
+`carpools.hit.sgrna(wilcox=NULL, deseq=NULL, mageck=NULL, dataset=NULL, dataset.names = NULL, namecolumn=1, fullmatchcolumn=2, norm.function=median, extractpattern=expression("^(.+?)_.+"), put.names=TRUE, type="enriched", labelgenes=NULL, cutoff.deseq = 0.05, cutoff.wilcox = 0.05, cutoff.mageck = 0.05, cutoff.override=FALSE, plot.genes="overlapping", cutoff.hits=NULL, plot.type=NULL, controls.target=NULL, controls.nontarget=NULL)`  
+
+**wilcox**  
+Data output from `stat.wilcox`.  
+*Default* NULL  
+*Values* Data output from `stat.wilcox`.  
+
+**deseq**  
+Data output from `stat.deseq`.  
+*Default* NULL  
+*Values* Data output from `stat.deseq`.  
+
+**mageck**  
+Data output from `stat.mageck`.  
+*Default* NULL  
+*Values* Data output from `stat.mageck`.  
+
+**cutoff.deseq**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**cutoff.wilcox**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**cutoff.mageck**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**dataset**
+A list of data frames of read-count data as created by load.file().  
+*Default* none  
+*Values* A list of data frames  
+
+**namecolumn**  
+In which column are the sgRNA identifiers?  
+*Default* 1  
+*Values* column number (numeric)  
+
+**fullmatchcolumn**  
+In which column are the read counts?  
+*Default* 2  
+*Values* column number (numeric)  
+
+**dataset.names**  
+A list of names that must be according to the list of data sets given in *dataset*.  
+*Default* NULL  
+*Value* NULL or list of data names (list)  
+
+**norm.function**  
+The mathematical function to normalize data. By default, the median is used.  
+*Default* median  
+*Values* Any mathematical function of R (function)  
+
+**extractpattern**  
+PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+*Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
+*Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
+
+**cutoff.override**  
+Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene of `cutoff.hits` is used instead.  
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**cutoff.hits**  
+The percentatge of top genes being used if `cutoff.override=TRUE`.  
+*Default** NULL  
+*Values* numeric  
+
+**plot.genes**  
+Defines what kind of data is used. By default, overlapping genes are highlighted in red color.  
+*Default* "overlapping"  
+*Values* "overlapping"  
+
+**type**  
+Defines whether all genes are plotted or only those being enriched or depleted.  
+*Default* "all"  
+*Values* "all", "enriched", "depleted"  
+
+
+**labelgenes**  
+For which gene shall the sgRNA effects being plotted? This expects a gene identifier or a vector of gene identifiers.  
+*Default* NULL  
+*Values* A gene identifier or vector of gene identifiers (character)  
+
+**controls.target**  
+If `type="controls"`, this is the gene identifier of the positive control.  
+*Default* NULL  
+*Value* Gene Identifier (character)  
+
+**controls.nontarget**  
+If `type="controls"`, this is the gene identifier of the non-targeting control.  
+*Default* "random"  
+*Value* Gene Identifier (character)  
+
+**put.names**  
+Do you want the sgRNA identifiers to be plotted?  
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**plot.type**  
+WHich kind of plot is to be drawn? If NULL, foldchange and violine plots are generated.  
+*Default* NULL  
+*Values* NULL, "foldchange", "z-score", "z-ratio", "vioplot"    
+
+
+### sgRNA Effect Table
+
+Since there is more than just one single sgRNA targeting your gene of interest, you can user caRpools to plot different sgRNA phenotype effects, e.g. the fold change or z-ratio, as desribed before in `carpools.raw.genes`.  
+In addition to that, caRpools also generated a tabular view which includes the log2 fold change as well as the target sequence, so that the user can directly pick the target sequence of the sgRNA he or shew wants.  
+
+**This function, `carpools.sgrna.table` is best combined with `carpools.raw.genes` to give a fast overview of the sgRNA performance.**  
+
+```{r sgrna.table, echo=TRUE, eval=TRUE}
+sgrnas.en.table = carpools.sgrna.table(wilcox=data.wilcox, deseq=data.deseq,
+    mageck=data.mageck, dataset=list(CONTROL1, CONTROL2, TREAT1, TREAT2),
+    dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), namecolumn=1,
+    fullmatchcolumn=2, norm.function=median, extractpattern=expression("^(.+?)(_.+)"),
+    type="enriched", labelgenes="CASP8", cutoff.deseq = 0.001, cutoff.wilcox=0.05,
+    cutoff.mageck = 0.05, cutoff.override=FALSE, cutoff.hits=NULL, sgrna.file = libFILE,
+    write=FALSE)
+```
+
+`Carpools.sgrna.table` return a data.frame, that can be visualized best with knitr `kable` function:  
+
+`r knitr::kable(sgrnas.en.table)`  
+
+#### carpools.sgrna.table()
+
+
+**Usage**  
+`carpools.sgrna.table (wilcox=NULL, deseq=NULL, mageck=NULL, dataset=NULL, dataset.names = NULL, namecolumn=1, fullmatchcolumn=2, norm.function=median, extractpattern=expression("^(.+?)_.+"), type="enriched", cutoff.deseq = 0.05, cutoff.wilcox = 0.05, cutoff.mageck = 0.05, cutoff.override=FALSE, plot.genes="overlapping", cutoff.hits=NULL, sgrna.file=NULL, labelgenes=NULL, write=FALSE, datapath=getwd(), analysis.name="Screen")`
+
+**wilcox**  
+Data output from `stat.wilcox`.  
+*Default* NULL  
+*Values* Data output from `stat.wilcox`.  
+
+**deseq**  
+Data output from `stat.deseq`.  
+*Default* NULL  
+*Values* Data output from `stat.deseq`.  
+
+**mageck**  
+Data output from `stat.mageck`.  
+*Default* NULL  
+*Values* Data output from `stat.mageck`.  
+
+**cutoff.deseq**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**cutoff.wilcox**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**cutoff.mageck**  
+P-Value threshold used to determine significance.  
+*Default* 0.001  
+*Values* numeric  
+
+**dataset**
+A list of data frames of read-count data as created by load.file().  
+*Default* none  
+*Values* A list of data frames  
+
+**namecolumn**  
+In which column are the sgRNA identifiers?  
+*Default* 1  
+*Values* column number (numeric)  
+
+**fullmatchcolumn**  
+In which column are the read counts?  
+*Default* 2  
+*Values* column number (numeric)  
+
+**dataset.names**  
+A list of names that must be according to the list of data sets given in *dataset*.  
+*Default* NULL  
+*Value* NULL or list of data names (list)  
+
+**norm.function**  
+The mathematical function to normalize data. By default, the median is used.  
+*Default* median  
+*Values* Any mathematical function of R (function)  
+
+**extractpattern**  
+PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+*Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
+*Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
+
+**cutoff.override**  
+Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene of `cutoff.hits` is used instead.  
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**cutoff.hits**  
+The percentatge of top genes being used if `cutoff.override=TRUE`.  
+*Default** NULL  
+*Values* numeric  
+
+**plot.genes**  
+Defines what kind of data is used. By default, overlapping genes are highlighted in red color.  
+*Default* "overlapping"  
+*Values* "overlapping"  
+
+**type**  
+Defines whether all genes are plotted or only those being enriched or depleted.  
+*Default* "all"  
+*Values* "all", "enriched", "depleted"  
+
+**sgRNA.file**  
+This is the library reference file loaded via `load.file` providing the sgRNA target sequence.  
+*Default* NULL  
+*Values* object from `load.file`  
+
+**labelgenes**  
+For which gene shal the sgRNA effects being generated? This expects a gene identifier or a fector of gene identifiers.  
+*Default* NULL  
+*Values* A gene identifier or vector of gene identifiers (character)  
+
+**write**  
+If you want to write directly to a file, this must be TRUE. Leave FALSE if you want the function to return a table.  
+*Default* FALSE  
+*Values* TRUE, FALSE  
+
+**datapath**  
+If `write=TRUE`, this is the directory the file is written.  
+*Default* getwd()  
+*Values* absolute path  
+
+**analysis.name**  
+The name of the file if `write=TRUE`  
+*Default* "Screen"  
+*Values* any file name (character)  
 
 
 

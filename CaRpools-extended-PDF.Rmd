@@ -190,7 +190,7 @@ if(controls.target == "NULL" || controls.target == "none")
   }
 
 # Non-Targeting Controls
-controls.nontarget = as.character(unlist(strsplit(sringi::stri_replace_all_fixed(miaccs["carpools.non-targeting",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
+controls.nontarget = as.character(unlist(strsplit(stringi::stri_replace_all_fixed(miaccs["carpools.non-targeting",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
 if(controls.nontarget == "NULL" || controls.nontarget == "none")
   {
   controls.nontarget = NULL

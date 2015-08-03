@@ -1,28 +1,30 @@
 ![](https://cdn.rawgit.com/boutroslab/caRpools/master/data/CaRpools.png)
 
-Welcome to CaRpools - The CRISPR-AnalyzeR for pooled screens
+Welcome to CaRpools - a software package for the analysis CRISPR/Cas9 pooled screens
 ==============
 
-CaRpools is a R package used to analyze pooled CRISPR/Cas screens in a **standardized**, **easy** and **reproducible** way.  
-It can be used to generate standardized PDF and HTML reports that include:
+CaRpools is a R package for the analysis of pooled CRISPR/Cas screens in a standardized and user-friendly manner. It generates standardized PDF and HTML reports that include:
 
-* In-depth Analysis of Screening Quality
-* Candidate Calling (Hit Calling) using different methods in a combined way
-* In-depth Analysis of sgRNA effects
-* XLS output for convenient storage and follow-up usage
-* Automatic annotation of your candidate genes, no need to manually look them up!
+* In-depth analysis of screening quality
+* Candidate hit calling using multiple, independent algorithms
+* In-depth analysis of sgRNA phenotypes
+* XLS output for  storage and follow-up analysis
+* Annotation of candidate genes using biomaRt
 
-CaRpools serves as an end-to-end analysis platform so that the user just needs to fill out MIACCS user file (Minimum Information About CRISPR/Cas Screens) and let CaRpools do the job, including NGS data extraction and mapping, if desired.
+CaRpools serves as an end-to-end analysis platform. Users  fill out a configuration file and caRpools runs a complete analysis workflow, including NGS data extraction and mapping,.
 
-You want to give it a try?  
-**Just download the VirtualBox Image for hazzle-free and easy usage of caRpools as described** [HERE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
+**Download the VirtualBox image of caRpools** [HERE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
 
-As an alternative you can also download CaRpools for installing it to your R environment as a zip file [HERE]()
+**Download R package** [HERE](https://github.com/boutroslab/caRpools/blob/master/package)
 
-**Please have a look at the following Manuals:**
+**Manuals:**
 
-* [CaRpools Virtual Box SHORT GUIDE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
-* [CaRpools Installation SHORT GUIDE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-INSTALLATION.Rmd)
-* [CaRpools Usage SHORT GUIDE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-Usage.Rmd)
-* [CaRpools MANUAL](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.Rmd)
+* [CaRpools Virtual Box - short guide](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
+* [CaRpools Installation - short guide](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-INSTALLATION.Rmd)
+* [CaRpools Usage - short guide](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-Usage.Rmd)
+* [CaRpools - full manual](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.Rmd)
+* [CaRpools - full manual PDF](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.pdf)
 
+**Reference:**
+
+Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zhan, T., Boutros, M. (2015). caRpools: A tool for exploratory data analysis and documentation of pooled CRISPR/Cas9 screens, manuscript in preparation

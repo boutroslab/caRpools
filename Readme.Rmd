@@ -23,6 +23,7 @@ CaRpools serves as an end-to-end analysis platform. Users  fill out a configurat
 * [CaRpools Installation - short guide](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-INSTALLATION.Rmd)
 * [CaRpools Usage - short guide](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-Usage.Rmd)
 * [CaRpools - full manual](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.Rmd)
+* [CaRpools - full manual PDF](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.pdf)
 
 **Reference:**
 

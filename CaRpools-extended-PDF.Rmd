@@ -86,7 +86,7 @@ referencefile = as.character(miaccs["carpools.lib.ref",3])
 
 ##  Analysis Name
 # This name will be used as file name for all tabular, PDF and HTML files.
-analysis.name = stri_replace_all_fixed(miaccs["assay.name",3], " ", "_")
+analysis.name = stringi::stri_replace_all_fixed(miaccs["assay.name",3], " ", "_")
 knitr::opts_chunk$set(fig.path=paste(datapath,"/",analysis.name, "/", sep=""))
 
 
@@ -156,7 +156,7 @@ g.identifier.new = as.character(miaccs["carpools.bm.identifier.new",3])
 ## Anootate final hit candidates?
 a.annotate.hits = as.logical(miaccs["carpools.annotate",3])
 
-a.annotate = unlist(strsplit(stri_replace_all_fixed(miaccs["carpools.bm.attributes",3]," ","", fixed=TRUE), ",", fixed=TRUE))
+a.annotate = unlist(strsplit(stringi::stri_replace_all_fixed(miaccs["carpools.bm.attributes",3]," ","", fixed=TRUE), ",", fixed=TRUE))
 
 
 ####  GENERAL
@@ -183,14 +183,14 @@ put.names = as.logical(miaccs["carpools.labelnames",3])
 
 #### DATA ANALYSIS
 # Targeting Controls
-controls.target = as.character(unlist(strsplit(stri_replace_all_fixed(miaccs["carpools.pos",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
+controls.target = as.character(unlist(strsplit(stringi::stri_replace_all_fixed(miaccs["carpools.pos",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
 if(controls.target == "NULL" || controls.target == "none")
   {
   controls.target = NULL
   }
 
 # Non-Targeting Controls
-controls.nontarget = as.character(unlist(strsplit(stri_replace_all_fixed(miaccs["carpools.non-targeting",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
+controls.nontarget = as.character(unlist(strsplit(sringi::stri_replace_all_fixed(miaccs["carpools.non-targeting",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
 if(controls.nontarget == "NULL" || controls.nontarget == "none")
   {
   controls.nontarget = NULL
@@ -366,16 +366,16 @@ if(identical(g.convert, TRUE))
 }
 
 # aggregate to genes for later plots
-CONTROL1.g=aggregate.to.genes(CONTROL1, agg.function=sum, extractpattern = g.extractpattern)
-CONTROL2.g=aggregate.to.genes(CONTROL2, agg.function=sum, extractpattern = g.extractpattern)
-TREAT1.g=aggregate.to.genes(TREAT1, agg.function=sum, extractpattern = g.extractpattern)
-TREAT2.g=aggregate.to.genes(TREAT2, agg.function=sum, extractpattern = g.extractpattern)
+CONTROL1.g=aggregatetogenes(CONTROL1, agg.function=sum, extractpattern = g.extractpattern)
+CONTROL2.g=aggregatetogenes(CONTROL2, agg.function=sum, extractpattern = g.extractpattern)
+TREAT1.g=aggregatetogenes(TREAT1, agg.function=sum, extractpattern = g.extractpattern)
+TREAT2.g=aggregatetogenes(TREAT2, agg.function=sum, extractpattern = g.extractpattern)
 
 # Add genes names to normal count file (if not present)
-CONTROL1=aggregate.to.genes(CONTROL1, extractpattern = g.extractpattern, type="annotate")
-CONTROL2=aggregate.to.genes(CONTROL2, extractpattern = g.extractpattern, type="annotate")
-TREAT1=aggregate.to.genes(TREAT1, extractpattern = g.extractpattern,type="annotate")
-TREAT2=aggregate.to.genes(TREAT2, extractpattern = g.extractpattern, type="annotate")
+CONTROL1=aggregatetogenes(CONTROL1, extractpattern = g.extractpattern, type="annotate")
+CONTROL2=aggregatetogenes(CONTROL2, extractpattern = g.extractpattern, type="annotate")
+TREAT1=aggregatetogenes(TREAT1, extractpattern = g.extractpattern,type="annotate")
+TREAT2=aggregatetogenes(TREAT2, extractpattern = g.extractpattern, type="annotate")
 
 # Calculate Percentage into gene rows
 number.enriched.counter = ceiling((nrow(CONTROL1.g)/100)*number.hits.plot.enriched)

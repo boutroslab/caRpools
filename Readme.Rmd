@@ -16,7 +16,7 @@ CaRpools serves as an end-to-end analysis platform. Users simply fill out a conf
 
 **Download the VirtualBox image of caRpools** [HERE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
 
-Alternatively, download the CaRpools package for local R installation [HERE](https://github.com/boutroslab/caRpools/blob/master/package)
+**Download R package** [HERE](https://github.com/boutroslab/caRpools/blob/master/package)
 
 **Manuals:**
 

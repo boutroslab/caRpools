@@ -26,4 +26,5 @@ CaRpools serves as an end-to-end analysis platform. Users simply fill out a conf
 * [CaRpools - full manual](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.Rmd)
 
 **Reference:**
+
 Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zhan, T. Boutros, M. (2015). caRpools: A tool for exploratory data analysis and documentation of pooled CRISPR/Cas9 screens, manuscript in preparation

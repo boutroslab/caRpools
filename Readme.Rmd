@@ -3,8 +3,7 @@
 Welcome to CaRpools - a software package for the analysis CRISPR/Cas9 pooled screens
 ==============
 
-CaRpools is a R package for the analysis of pooled CRISPR/Cas screens in a **standardized** and **user-friendly** manner.  
-It generates standardized PDF and HTML reports that include:
+CaRpools is a R package for the analysis of pooled CRISPR/Cas screens in a standardized and user-friendly manner. It generates standardized PDF and HTML reports that include:
 
 * In-depth analysis of screening quality
 * Candidate hit calling using multiple, independent algorithms
@@ -12,7 +11,7 @@ It generates standardized PDF and HTML reports that include:
 * XLS output for  storage and follow-up analysis
 * Annotation of candidate genes using biomaRt
 
-CaRpools serves as an end-to-end analysis platform. Users simply fill out a configuration file and caRpools run a complete analysis workflow, including NGS data extraction and mapping, if necessary.
+CaRpools serves as an end-to-end analysis platform. Users  fill out a configuration file and caRpools runs a complete analysis workflow, including NGS data extraction and mapping,.
 
 **Download the VirtualBox image of caRpools** [HERE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
 

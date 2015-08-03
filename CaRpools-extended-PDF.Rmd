@@ -13,7 +13,7 @@ output:
 
 ```{r loadlibs, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
 if("caRpools" %in% rownames(installed.packages()) == FALSE) {install.packages("caRpools")}
-  library(caRpools,warn.conflicts = FALSE, quietly = TRUE,verbose =FALSE)
+library(caRpools,warn.conflicts = FALSE, quietly = TRUE,verbose =FALSE)
 load.packages()
 ```
 

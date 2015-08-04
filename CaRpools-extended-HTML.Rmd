@@ -1,4 +1,4 @@
-Filename of bowtie2 index file, without extension. Is the same as reference file, if `createindex=TRUE`.  aggr---
+---
 title: "CaRpools Report - CRISPR Screen Analysis"
 output:
   html_document:
@@ -16,11 +16,8 @@ if("caRpools" %in% rownames(installed.packages()) == FALSE) {install.packages("c
 load.packages()
 ```
 
+![]{CaRpools.png)
 
-
-\begin{center}
-\includegraphics{CaRpools.png}
-\end{center}
 
 ```{r settings-setup, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
 

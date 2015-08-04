@@ -33,11 +33,10 @@ data(caRpools)
 
 # Introduction
 
-
-The **CaRpools** (**C**RISPR **A**nalyze**R** for **Pool**ed **S**creens) package allows users to analyse raw NGS readcount data from pooled CRISPR Screens in an end-to-end fashion and serves as a basis for creating customized reports for more advanced users.  
+The **CaRpools** (**C**RISPR **A**nalyze**R** for **Pool**ed **S**creens) package allows users to analyze raw NGS read count data from pooled CRISPR Screens in an end-to-end fashion and serves as a basis for creating customized reports for more advanced users.  
 These pooled screens must contain lentivirus-based libraries as they can be obtained via [Addgene](https://www.addgene.org/CRISPR/libraries/) e.g. .
 It provides functions to create different quality control plots, normalize the data, compare the data and perform hit identification via three different methods.  
-Furthermore it can be used to completely analyze the date in a stream-lined workflow with the provided analysis template.  
+Furthermore it can be used to completely analyze the date in a streamlined workflow with the provided analysis template.  
 
 ![](./pictures/workflow.png)
 

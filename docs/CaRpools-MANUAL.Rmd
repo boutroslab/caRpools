@@ -47,18 +47,18 @@ This includes:
 * Mapping against a reference library FASTA file using bowtie2 (optional)
 * Extract Mapping data and convert it into read count files (optional)
 * Generate quality control plot
-* Generate dataset statistics
+* Generate data set statistics
 * Perform hit analysis using three different methods
 * Visualize hit candidates
 * Compare hit analysis for most robust hit identification
 * Retrieve information about single sgRNAs for hit candidates
-* Generate standardized reports, which are fully customizable (for advanced users)
+* Generate standardized reports, which can be customized (for advanced users)
 
 \newpage
 
 ## Download caRpools
 
-CaRpools is avaible as an R package **caRpools** without the scripts and template files.  
+CaRpools is available as an R package **caRpools** without the scripts and template files.  
 The complete package with the PERL scripts and all template files can be obtained from [Github](https://github.com/boutroslab/carpools) (https://github.com/boutroslab/carpools) and our website [CRISPR-AnalyzeR.de](http://www.crispr-analyzer.de).  
 
 We recommend to download the template files and Scripts from Github and install caRpools in R using the package installer `install.packages("caRpools").
@@ -67,23 +67,23 @@ We recommend to download the template files and Scripts from Github and install 
 
 Available Quality Control plots include (for sgRNAs or summarized for genes):  
 
- * Readcount Distribution `carpools.read.distribution`
+ * Read-count Distribution `carpools.read.distribution`
  * Read Depth `carpools.read.depth`
  * sgRNAs present per Gene Target `carpools.reads.genedesigns`
- * Readcount Overview per sgRNA / Gene `carpools.read.ballmap`
- * Readcount comparison of different samples `carpools.read.count.vs`
- * Readcount / Foldchange of sgRNAs for single genes `carpools.raw.genes`
+ * Read-count Overview per sgRNA / Gene `carpools.read.ballmap`
+ * Read-count comparison of different samples `carpools.read.count.vs`
+ * Read-count / Fold-change of sgRNAs for single genes `carpools.raw.genes`
  
 ## Annotation
 
 Since several gene identifiers are used for generating CRISPR pooled KO libraries, e.g. EnsemblID,  
-loaded datasets can automatically be annotated with further gene annotation like official gene symbol or descriptions  
+loaded data-sets can automatically be annotated with further gene annotation like official gene symbol or descriptions  
 using the `biomaRt` interface.  
 More details can be found below in the section of `get.gene.info` or via `?get.gene.info` / `?biomaRt`.  
 
 ## Gene Read Count Data or Removing Gene Data
 
-Furthermore, sgRNA readcount data can be aggregated (summed up) to corresponding genes `aggregatetogenes` or gene data can be excluded for the analysis using `gene.remove`. 
+Furthermore, sgRNA read-count data can be aggregated (summed up) to corresponding genes `aggregatetogenes` or gene data can be excluded for the analysis using `gene.remove`. 
  
 ## Hit Analysis
 
@@ -103,10 +103,10 @@ These can be derived from `carpools.raw.genes` for any gene or `carpools.hit.sgr
 
 ## Report
 
-All this data can be used to automatically generate a standardized report using the provided R Markdown termplate file including all plots and tables for you data analysis.  
+All this data can be used to automatically generate a standardized report using the provided R Markdown template file including all plots and tables for you data analysis.  
 Two different templates are provides:
 
-* A standard report for generating short, brief data anlysis
+* A standard report for generating short, brief data analysis
 * An extended report with additional plots and tables
 
 The R Markdown templates provide the user with the ability to generate HTML output as well as PDF output (LATEX installation necessary) including high-quality plots.  
@@ -127,8 +127,8 @@ __Provided HTML templates:__
 
 ## Virtual Box Image
 
-We also included a VirtualBox Image that already includes all necessary software and package files.  
-You just need to install VirtualBox 5 from the [Website](https://www.virtualbox.org).  
+We also included a Virtual Box Image that already includes all necessary software and package files.  
+You just need to install Virtual Box 5 from the [Website](https://www.virtualbox.org).  
 
 You can download the caRpools virtual box image from our website [crispr-analyzer.de](http://www.crispr-analyzer.de) or [Github](https://github.com/boutroslab/carpools) (https://github.com/boutroslab/carpools).  
 
@@ -138,7 +138,7 @@ Please see the [VirtualBox tutorial](https://github.com/boutroslab/caRpools/blob
 
 ## Download caRpools
 
-CaRpools is avaible as an R package **caRpools** without the scripts and template files.  
+CaRpools is available as an R package **caRpools** without the scripts and template files.  
 The complete package with the PERL scripts and all template files can be obtained from [Github](https://github.com/boutroslab/carpools) (https://github.com/boutroslab/carpools) and our website.  
 
 We recommend to download the template files and Scripts from Github and install caRpools in R using the package installer `install.packages("caRpools").
@@ -151,7 +151,7 @@ CRISPR-Libraries with a size of more than 100 K (100 K sgRNAs) run best with at 
 ## Software Requirements
 
 CaRpools was tested on MacOSX Yosemite and Ubuntu 14.04 LTS.  
-However, it should work on any operating system that fulfills the software requirments.  
+However, it should work on any operating system that fulfills the software requirements.  
 
 The following software needs to be installed:
 
@@ -199,7 +199,7 @@ This means that if any proxy server is used, this has to be configured before us
 ## Installation Procedure
 
 Install all software listed above according to the installation information stated on the software website.  
-All neccesarry R packages can be installed automatically by `load.packages()`.
+All necessary R packages can be installed automatically by `load.packages()`.
 
 ## Dataset / Screening Requirements
 
@@ -237,7 +237,7 @@ General information about the FASTQ file format can be obtained in an easy-to-un
 ![](./pictures/fastq-format.png)
 
 __maschine.pattern__  
-The maschine pattern used for extracting the sequences is a regular expression to identify the read ID including your sequencing maschine.  
+The machine pattern used for extracting the sequences is a regular expression to identify the read ID including your sequencing machine.  
 in the case of the above sample, the PERL regular expression used must be __M01100__.
 
 ![](./pictures/fastq-format-example.png)
@@ -247,7 +247,7 @@ in the case of the above sample, the PERL regular expression used must be __M011
 CaRpools extracts the integrated DNA sequence of your target sequence as a DNA barcode.  
 In order to extract this sequence, a __PERL regular expression__ pattern is used to identify the desired nucleotide sequence, which is called __seq.pattern__.  
 
-As an example, part of a U6 promoter-driven sgRNA cassete is given as follows:  
+As an example, part of a U6 promoter-driven sgRNA cassette is given as follows:  
 
 ![](./pictures/extraction.png)
 
@@ -259,7 +259,7 @@ The parenthesis are necessary to extract the target sequence, for more informati
 
 ### Structure of FASTA Library Reference File
 
-The library reference file must be in FASTA format and include ALL sgRNAs present in the dataset with exactly the same naming.  
+The library reference file must be in FASTA format and include ALL sgRNAs present in the data-set with exactly the same naming.  
 e.g.
 
 ![](./pictures/library-fasta.png)
@@ -268,11 +268,11 @@ e.g.
 ### Read-Count Data Files
 
 CaRpools also takes read count files. If FASTQ files are provided and extracted/mapped with CaRpools, read count files will be created for each sample.  
-Data for each sample must be formated in a **tab-separated** way as follows:
+Data for each sample must be formatted in a **tab-separated** way as follows:
 
 ![](./pictures/readcount.png)
 
-As shown in the above file, __Gene1__ is the Gene identifier, **_3423** is a unique part for identification of this sgRNA for the given gene and *Gene1_3423* is the whole identifier which uniquely identifies this sgRNA within the dataset.  
+As shown in the above file, __Gene1__ is the Gene identifier, **_3423** is a unique part for identification of this sgRNA for the given gene and *Gene1_3423* is the whole identifier which uniquely identifies this sgRNA within the data-set.  
 
 The name of each complete sgRNA **must** contain the gene it refers to either as gene symbol or any other identifier which shares the same separator in addition to a part of identifier that is unique for each sgRNA for that gene.  
 The name can therefore be anything, as long as the *identifier is the same for each gene* and the *separator is the same for all data*.  
@@ -290,7 +290,7 @@ Files can be loaded via `load.file(filename, header, sep)` with the following ar
 
 * filename: the filename as character
 * header: TRUE / FALSE , whether a header is used (as it is for the above sample)
-* sep: the seperator, default is `\t` for tab-separated files.
+* sep: the separator, default is `\t` for tab-separated files.
 
 **Please see `?read.table` for a detailed description of the arguments.**
 
@@ -299,10 +299,10 @@ Files can be loaded via `load.file(filename, header, sep)` with the following ar
 __Please note: the MAIN FOLDER must be the R working directory!__  
 Data and Script paths can be adjusted in the MIACCS file.
 
-The following files are neccessary to use CaRpools for report generation:  
+The following files are necessary to use CaRpools for report generation:  
 
 **MIACCS.xls**  
-Minimum Information About CRISPR/Cas Screens.  This file needs to be filled out to provide all necessary informations about the screen.  
+Minimum Information About CRISPR/Cas Screens.  This file needs to be filled out to provide all necessary information about the screen.  
 
 **R Markdown Template files**  
 Either CaRpools-extended-PDF.rmd, CaRpools-PDF.rmd or CaRpools-extended-HTML.rmd or CaRpools-HTML.rmd. Is the template for report generation.  
@@ -325,7 +325,7 @@ The following files are necessary to use _single_ CaRpools functions:
 **Data Files**  
 Either raw read count files or FASTQ files (that need to be extracted and mapped using CaRpools)  
 
-Please note that CaRpools always starts with loading data files. For raw-readcount files, use `load.file`. For FASTQ files, please see the sections below.
+Please note that CaRpools always starts with loading data files. For raw-read-count files, use `load.file`. For FASTQ files, please see the sections below.
 
 \newpage
 
@@ -357,7 +357,7 @@ __CaRpools folder structure for Report Generation using FASTQ files AFTER REPORT
 # Using CaRpools with Provided R Markdown Templates
 
 By default, CaRpools is meant to be used to generate standardized reports of CRISPR/Cas9 pooled screenings using the provided R markdown templates.  
-However, these templates can also serve as a basic frame for advanced users to modifiy them and create customized reports to their needs.  
+However, these templates can also serve as a basic frame for advanced users to modify them and create customized reports to their needs.  
 
 In the following sections, the use of CaRpools with the provided template files is explained in more detail. Please see the above instructions of how to install all necessary tools, packages and components for CaRpools.  
 
@@ -393,7 +393,7 @@ The following parameters are found within the MIACCS.xls file:
 
 ### Using FASTQ Files
 
-Instead of providing already mapped read count files, caRpools provides the functionality to use the generated RAW FASTQ files as they are supplied by the sequencing maschine, e.g. Illumina MiSeq/NextSeq/HiSeq systems.  
+Instead of providing already mapped read count files, caRpools provides the functionality to use the generated RAW FASTQ files as they are supplied by the sequencing machine, e.g. Illumina MiSeq/NextSeq/HiSeq systems.  
 If desired, caRpools can extract your 20 nt target sequence (without filtering for quality) from these files and map it against your library reference using bowtie2.
 In this case, you need to provide the following files that must be within the datapath set in the MIACCS file:  
 
@@ -412,16 +412,16 @@ caRpools will then generate the following files during the extraction and mappin
 **filename_extracted-designs.txt** Read Count files for each sgRNA  
 **filename_extracted-genes.txt** Read Count files SUMMED up for each gene (not used during analysis)  
 
-The following parameters must be set in the MIACCS.cls file under **Data Extraction and Bowtie2 Mapping/Alignment** to extract file from FASTQ data:  
+The following parameters must be set in the MIACCS.xls file under **Data Extraction and Bowtie2 Mapping/Alignment** to extract file from FASTQ data:  
 
 **Do you want to extract the sgRNA target sequence from FASTQ?** *TRUE or FALSE*  
 This indicates whether you would like to extract the 20 nt target sequence from the provided FASTQ file (TRUE). 
 
 **Regular expression to extract target sequence from FASTQ file** *PERL regular expression pattern*  
-This must be a PERL regular expression pattern that is used to identofy the 20 nt target sequence. By default, this is *ACC(.{20})GT{2,4}AGAGC* and can be used for the GeckoV2 library or other libraries that are based on U6-driven sgRNA expression  . Can be ANY PERL expression pattern. The only importance is, that the part which identifies the 20 nt target sequence is in parenthesis only.  
+This must be a PERL regular expression pattern that is used to identify the 20 nt target sequence. By default, this is *ACC(.{20})GT{2,4}AGAGC* and can be used for the GeckoV2 library or other libraries that are based on U6-driven sgRNA expression  . Can be ANY PERL expression pattern. The only importance is, that the part which identifies the 20 nt target sequence is in parenthesis only.  
 
 **Regular Expression to extract maschine ID from Reads**  
-This must be the unique sequencing maschine ID/serial number as indicated in the FASTQ files.  
+This must be the unique sequencing machine ID/serial number as indicated in the FASTQ files.  
 
 **Is the data within the FASTQ file in Reverse Complement?** *TRUE or FALSE*  
 Did you sequence your data in reverse complement order? By default, this is set to FALSE.  
@@ -430,21 +430,21 @@ Did you sequence your data in reverse complement order? By default, this is set 
 If set to TRUE, bowtie2 will be called to map the extracted or not-extracted FASTQ files to your bowtie2 reference library index. For further information about bowtie2 mapping, please see the [Bowtie2 Manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml).  
 
 **Do you want to create the Bowtie2 index files?** *TRUE or FALSE*  
-If set to TRUE, bowtie2 indeces will be created for your library-reference.fasta file. If you do not have created this indeces before, set this to TRUE so that they are created before the mapping to your library reference is performed. More information about bowtie2 index files can be found [here](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#the-bowtie2-build-indexer).  
+If set to TRUE, bowtie2 indexes will be created for your library-reference.fasta file. If you do not have created this indexes before, set this to TRUE so that they are created before the mapping to your library reference is performed. More information about bowtie2 index files can be found [here](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#the-bowtie2-build-indexer).  
 
 **How many threads shall bowtie2 use?** *integer*  
-In the case bowtie2 mapping is set to TRUE, please give the number of cores or threads to use. For most dual-core CPUs, the default value 4 is fine. More information about threading can be found [here](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#performance-tuning).  
+In the case bowtie2 mapping is set to TRUE, please give the number of cores or threads to use. For most dual-core CPU, the default value 4 is fine. More information about threading can be found [here](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#performance-tuning).  
 
 **Bowtie2 Sensitivity?** *default: very-sensitive-local*  
 *Other options: very-fast, fast, sensitive, very-fast-local, fast-local, sensitive-local*  
-You can djust the sensitivity of bowtie2 using this parameter. By default, bowtie2 is used in a very-sensitive-local setting. More information about different sensitivy parameters can be found at the [bowtie2 options](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#options).  
+You can adjust the sensitivity of bowtie2 using this parameter. By default, bowtie2 is used in a very-sensitive-local setting. More information about different sensitivity parameters can be found at the [bowtie2 options](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#options).  
 
 **Additional Bowtie2 parameters?**  
 You can pass additional parameters to bowtie2 as they are indicated in the [bowtie2 manual](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml). Please leave empty if not used.  
 
 **Alignment Quality**  
-After bowtie2 mapping, the aligment is converted into read count files *filename_extracted-design.txt* and *filename_extracted-genes.txt*.  
-You can indiciate how well the alignment must be in order to be used for generating the read count for each sgRNA.  
+After bowtie2 mapping, the alignment is converted into read count files *filename_extracted-design.txt* and *filename_extracted-genes.txt*.  
+You can indicate how well the alignment must be in order to be used for generating the read count for each sgRNA.  
 By default, this is set to *perfect*, which only employs a mapped read if the full 20 nt from the sequencing match perfectly to the sgRNA found in your library reference. The following options can be used:  
 
 * __perfect__ - Read is used of all 20 nt from the sequencing are matching the target sequence given in the library reference
@@ -473,7 +473,7 @@ An example of a MIACCS file for read-count files is shown below.
 ### Data Analysis Options
 
 CaRpools is not only meant as a tool for standardized and fully reproducible data analysis of CRISPR-Cas screens, but also fosters exploratory data analysis.  
-Therefore caRpools offers the user different options for data analsysis as illustrated below. All options can be set within the MIACCS file or directly passed on to the individual functions of caRpools (advanced users).  
+Therefore caRpools offers the user different options for data analysis as illustrated below. All options can be set within the MIACCS file or directly passed on to the individual functions of caRpools (advanced users).  
 
 ![](./pictures/miaccs-analysis.png)
 
@@ -483,7 +483,7 @@ You can start caRpools Report Generation after you did the following steps:
 
 * Installed all required software and R packages (use _check.caRpools(files=FALSE)_ to verify)
 * Put every file in the correct folder (MIACCS, data files, script files, Rmd templates)
-* Put everythin in the R working directory or set the working directory to the folder of your files
+* Put everything in the R working directory or set the working directory to the folder of your files
 * Filled out the MIACCS file with all information, e.g. correct filenames, reference, data analysis options
 
 You can check for all requirements by calling `check.caRpools`.
@@ -564,7 +564,7 @@ Is the first line just a header?
 *Values* TRUE, FALSE (boolean)  
 
 **sep**  
-Seperator of data, usually tab-separated.  
+Separator of data, usually tab-separated.  
 *Default* "\t" for TAB-separated data  
 *Values* Any separator  
 
@@ -574,7 +574,7 @@ Are character files within any quote etc?
 *Values* Any character  
 
 **type**  
-Indicates which files are being loaded. Three filetypes are possible. Either NULL for tab-separated files, fastalib for library reference files or xlsx for loading the MIACCS file.  
+Indicates which files are being loaded. Three file-types are possible. Either NULL for tab-separated files, fastalib for library reference files or xlsx for loading the MIACCS file.  
 *Default* NULL
 *Values* NULL, "fastalib", "xlsx"  
 
@@ -649,7 +649,7 @@ PERL regular Expression to extract 20 nt target sequence from NGS reads. Please 
 *Default* Regular Expression (character)  
 
 **maschinepattern**  
-Maschine ID of your Sequencing maschine. Used ot identify the read id.  
+Machine ID of your Sequencing machine. Used to identify the read id.  
 
 **createindex**  
 Do you want caRpools to generate a bowtie2 index? Only necessary if `mapping=TRUE`.
@@ -681,13 +681,13 @@ How many threads can bowtie2 use for mapping? Only used if `mapping=TRUE`. Usual
 If you want to pass additional parameters to bowtie2.  
 
 **sensitivity**  
-You can djust the sensitivity of bowtie2 using this parameter. By default, bowtie2 is used in a very-sensitive-local setting. More information about different sensitivy parameters can be found at the [bowtie2 options](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#options).  
+You can adjust the sensitivity of bowtie2 using this parameter. By default, bowtie2 is used in a very-sensitive-local setting. More information about different sensitivity parameters can be found at the [bowtie2 options](http://bowtie-bio.sourceforge.net/bowtie2/manual.shtml#options).  
 *Default* "very-sensitive-local"  
 *Other options: very-fast, fast, sensitive, very-fast-local, fast-local, sensitive-local*  
 
 **match**  
-After bowtie2 mapping, the aligment is converted into read count files *filename_extracted-design.txt* and *filename_extracted-genes.txt*.  
-You can indiciate how well the alignment must be in order to be used for generating the read count for each sgRNA.  
+After bowtie2 mapping, the alignment is converted into read count files *filename_extracted-design.txt* and *filename_extracted-genes.txt*.  
+You can indicate how well the alignment must be in order to be used for generating the read count for each sgRNA.  
 By default, this is set to *perfect*, which only employs a mapped read if the full 20 nt from the sequencing match perfectly to the sgRNA found in your library reference. The following options can be used:  
 
 * __perfect__ - Read is used of all 20 nt from the sequencing are matching the target sequence given in the library reference
@@ -725,7 +725,7 @@ In which column are the read counts?
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -755,11 +755,11 @@ knitr::kable(CONTROL1.g.annotate[1:10,])
 
 ### Convert Gene Identifier or Annotate Gene Information
 
-It is also possible to either enrich the screening dataset file with additional information provided by the biomaRt interface.  
-For example, gene identifiers can be changed from EnsemblIDs to official gene symbols are Gene Ontology terms can be added to the dataset.  
+It is also possible to either enrich the screening data-set file with additional information provided by the biomaRt interface.  
+For example, gene identifiers can be changed from EnsemblIDs to official gene symbols are Gene Ontology terms can be added to the data-set.  
 This can be done using `get.gene.info`, which serves as a wrapper for the **biomaRt** package with its load of options and possibilities (more information see `?biomaRt`).  
 
-You can convert any gene identifier which is included in your sgRNA identifer to e.g. EnsemblID or HGNC Gene Symbol using caRpools.  
+You can convert any gene identifier which is included in your sgRNA identifier to e.g. EnsemblID or HGNC Gene Symbol using caRpools.  
 **Please note that Internet Access is required for biomaRt.**  
 For further information about biomaRt conversion, please see the [biomaRt Manual](www.bioconductor.org/packages/release/bioc/vignettes/biomaRt/inst/doc/biomaRt.pdf).  
 
@@ -795,7 +795,7 @@ In which column are the sgRNA identifiers?
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -805,9 +805,9 @@ BiomaRt database to be used. See `?listMarts()` or biomaRt documentation.
 *Values* Any biomaRt database (character)  
 
 **dataset**  
-The biomaRt dataset to be used. For *homo sapiens*, *hsapiens_gene_ensembl* is recommended. See `?listDatasets` or biomaRt documentation.  
+The biomaRt data-set to be used. For *homo sapiens*, *hsapiens_gene_ensembl* is recommended. See `?listDatasets` or biomaRt documentation.  
 *Default* "hsapiens_gene_ensembl"  
-*Values* Any biomaRt dataset (character)  
+*Values* Any biomaRt data-set (character)  
 
 **filters**  
 The input filter information to retrieve biomaRt annotation, usually is the type of gene identifier used in the read-count files, e.g. "ensemble_gene_id". see `?listFilters`  
@@ -820,7 +820,7 @@ The output attribute to retrieve from biomaRt, usually the annotations that need
 *Values* Any biomaRt attribute (character)  
 
 **return.val**  
-The type of object that is returned. For whole dataset, e.g. conversion of gene identifiers, use "dataset".  
+The type of object that is returned. For whole data-set, e.g. conversion of gene identifiers, use "dataset".  
 *Default* "dataset"  
 *Values* "dataset" (will give back the same data frame, but with exchanged gene identifiers), "info" (will return a data frame with all attributes fetched for genes, is used to annotate gene with additional information)  
 
@@ -855,12 +855,12 @@ knitr::kable(CONTROL1.replaced.info[1:10,])
 
 There are several different functions available to determine the quality of your data:  
 
-  * General Dataset Statistics
+  * General Data-set Statistics
   * Specific Statistics of Included Controls
-  * Readcount Distribution `plot.read.distribution`
+  * Read-count Distribution `plot.read.distribution`
   * Read Depth `plot.read.depth`
   * sgRNAs present per Gene Target `plot.reads.genedesigns`
-  * Readcount comparison of different samples `plot.read.count.vs`
+  * Read-count comparison of different samples `plot.read.count.vs`
   * Information about the phenotype of sgRNAs `plot.raw.genes`
  
 ### Dataset Statistics
@@ -880,7 +880,7 @@ combined.stats = cbind.data.frame(U1.stats[,1:2], U2.stats[,2], T1.stats[,2], T2
 colnames(combined.stats) = c("Readcount", d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
 ```
 
-General statistics for a given dataset can be obtained by `stats.data`.  
+General statistics for a given data-set can be obtained by `stats.data`.  
 For further information about the possibilities, see `?stats.data`.  
 
 A typical table would look like this (shorted):  
@@ -931,7 +931,7 @@ In which column are the read counts?
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -951,16 +951,16 @@ If `type="controls"`, this is the gene identifier of the non-targeting control.
 *Value* Gene Identifier (character)  
 
 **type**  
-Which type os statistic will be generated.  
+Which type of statistic will be generated.  
 *Default* "stats"  
 *Values* "stats" will generate short statistics like median and mean for the data set, 
 "mapping" will generate an overview of how many reads are present,
-"datatset" is used to generate in-depth statistics for each gene of a dataset,
+"dataset" is used to generate in-depth statistics for each gene of a data-set,
 "controls" is used for in-depth statistics of the controls.  
 
 ##### Example of Mapping Statistic
 
-If `readcount.unmapped.total` is provided, which is the number of raw read counts for a given dataset before mapping back to a reference, the percentage of mapped data can be obtained.
+If `readcount.unmapped.total` is provided, which is the number of raw read counts for a given data-set before mapping back to a reference, the percentage of mapped data can be obtained.
 
 ```{r unmapped-readcount, echo=TRUE, eval=TRUE}
 knitr::kable(stats.data(dataset=CONTROL1, namecolumn = 1, fullmatchcolumn = 2,
@@ -969,7 +969,7 @@ knitr::kable(stats.data(dataset=CONTROL1, namecolumn = 1, fullmatchcolumn = 2,
 
 ##### Example of Dataset Statistics
 
-In addition to mapping information, whole dataset statistics can be plotted.
+In addition to mapping information, whole data-set statistics can be plotted.
 
 ```{r dataset-readcount, echo=TRUE, eval=TRUE}
 knitr::kable(stats.data(dataset=CONTROL1, namecolumn = 1, fullmatchcolumn = 2,
@@ -977,7 +977,7 @@ knitr::kable(stats.data(dataset=CONTROL1, namecolumn = 1, fullmatchcolumn = 2,
   type="stats"))
 ```
 
-Furthermore, detailed lists can be created for each dataset.
+Furthermore, detailed lists can be created for each data-set.
 
 ```{r list-readcount, echo=TRUE, eval=TRUE}
 knitr::kable(stats.data(dataset=CONTROL1, namecolumn = 1, fullmatchcolumn = 2,
@@ -997,7 +997,7 @@ U1.unmapped = unmapped.genes(data=CONTROL1, namecolumn=1, fullmatchcolumn=2, gen
 xlsx::write.xlsx(U1.unmapped, file="DROPOUT.xls", sheetName=d.CONTROL1, row.names=FALSE)
 ```
 
-The outout is sorted by Gene identifiers:  
+The output is sorted by Gene identifiers:  
 `r knitr::kable(U1.unmapped[1:10,])`  
 
 If you want to know WHICH sgRNAs dropped out for a given gene, please consider using `genes` as an optional argument with the gene identifier of interest:  
@@ -1036,7 +1036,7 @@ If you want to know how many sgRNAs are not present for a single gene, set `gene
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1044,7 +1044,7 @@ e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifi
 
 ### Read-Count Distribution
 
-A distribution for NGS data readcount can be created by `carpools.read.distribution` to visualize how the data set is distributed.  
+A distribution for NGS data read-count can be created by `carpools.read.distribution` to visualize how the data set is distributed.  
 This allows to check for data skewness and to estimate the overall assay quality.  
 For further details see `?carpools.read.distribution`.  
 
@@ -1076,7 +1076,7 @@ In which column are the read counts?
 *Values* column number (numeric)  
 
 **breaks**  
-Histogramm breaks see `?hist`. By default, will be calculated according to the dataset length.  
+Histogram breaks see `?hist`. By default, will be calculated according to the data-set length.  
 *Default* NULL
 *Values* (numeric)  
 
@@ -1096,7 +1096,7 @@ Label of Y-Axis
 *Values* "Label of Y-Axis" (character)  
 
 **statistics**  
-Whether basic stattistics will be shown in the plot.  
+Whether basic statistics will be shown in the plot.  
 *Default* TRUE  
 *Values* TRUE, FALSE (boolean)  
 
@@ -1107,7 +1107,7 @@ The color of the plotted data. Can be any R color or RGB object. See ?rgb() for 
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1152,7 +1152,7 @@ carpools.read.distribution(CONTROL1, fullmatchcolumn=2,breaks=200,
 
 You can also visualize the read depth of genes per sgRNA in order to check for sufficient sequencing depth using `carpools.read.depth`.  
 For further details see `?carpools.read.depth`.  
-You can either plot single dat samples or all four data samples at once.  
+You can either plot single data samples or all four data samples at once.  
 
 ```{r QC-readdepth, echo=TRUE, eval=FALSE, sanitize=TRUE}
 # Plot for a singe sample
@@ -1195,7 +1195,7 @@ A list of names that must be according to the list of data sets given in *datase
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1215,18 +1215,18 @@ Label of Y-Axis
 *Values* "Label of Y-Axis" (character)  
 
 **statistics**  
-Whether basic stattistics will be shown in the plot.  
+Whether basic statistics will be shown in the plot.  
 *Default* TRUE  
 *Values* TRUE, FALSE (boolean)  
 
 **labelgenes**  
-You can highlight certain genes within the plot. This expects a gene identifier or a fector of gene identifiers.  
+You can highlight certain genes within the plot. This expects a gene identifier or a vector of gene identifiers.  
 *Default* NULL  
 *Values* A gene identifier or vector of gene identifiers (character)  
 
 **labelcolor**  
 Color to highlight genes stated in `labelgenes`.  
-*Default* "organge"  
+*Default* "orange"  
 *Values* Any R color or RGB color object.  
 
 **controls.target**  
@@ -1282,7 +1282,7 @@ control1.readspergene = carpools.reads.genedesigns(CONTROL1, namecolumn=1, fullm
 **dataset**
 A data frame of read-count data as created by load.file().  
 *Default* none  
-*Values* Adata frame  
+*Values* a data frame  
 
 **namecolumn**  
 In which column are the sgRNA identifiers?  
@@ -1316,7 +1316,7 @@ The function to aggregate sgRNA read-count.
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1333,7 +1333,7 @@ control1.readspergene = carpools.reads.genedesigns(CONTROL1, namecolumn=1, fullm
 
 ### Plotting Read-Counts
 
-CaRpools also allows you to compare the readcount for different samples using `carpools.read.count.vs`.  
+CaRpools also allows you to compare the read-count for different samples using `carpools.read.count.vs`.  
 By this, you can easily compare the screen and replicate performance as well as highlighting your non-targeting or positive controls. Moreover, you can highlight any gene as well.  
 For details regarding all arguments and option see `?carpools.read.count.vs`.  
 
@@ -1386,7 +1386,7 @@ Label of X-Axis, only if `pairs=FALSE`
 *Values* "Label of X-Axis" (character)  
 
 **ylab**  
-Label of Y-Axism only if `pairs=FALSE`  
+Label of Y-Axis only if `pairs=FALSE`  
 *Default* "Y-Axis"  
 *Values* "Label of Y-Axis" (character)  
 
@@ -1411,18 +1411,18 @@ The color of the plotted data. Can be any R color or RGB object. See ?rgb() for 
 *Values* Any R color name or RGB color object (character OR color object)  
 
 **labelgenes**  
-You can highlight certain genes within the plot. This expects a gene identifier or a fector of gene identifiers.  
+You can highlight certain genes within the plot. This expects a gene identifier or a vector of gene identifiers.  
 *Default* NULL  
 *Values* A gene identifier or vector of gene identifiers (character)  
 
 **labelcolor**  
 Color to highlight genes stated in `labelgenes`.  
-*Default* "organge"  
+*Default* "orange"  
 *Values* Any R color or RGB color object.  
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1443,7 +1443,7 @@ The mathematical function to normalize data if `normalize=TRUE`. By default, the
 
 **offsetplot**  
 Offetplot is used to stretch the x- and y-axis for nicer graphs. This will extend plotting area by offsetplot.  
-*Default* 1.2 (Plotting area is streched to 1.2 times)  
+*Default* 1.2 (Plotting area is stretched to 1.2 times)  
 *Values* any number (numeric)  
 
 **center**  
@@ -1462,12 +1462,12 @@ In the case of plotting all four data sets at once, you can use a pairs plot for
 *Values* TRUE, FALSE (boolean)  
 
 **type**  
-This indicates whether you would like to color all highlighted genes in either red ("enriched") or blue ("depleted") color according to the standrds in caRpools for plotting enriched or depleted genes after analysis.  
+This indicates whether you would like to color all highlighted genes in either red ("enriched") or blue ("depleted") color according to the standards in caRpools for plotting enriched or depleted genes after analysis.  
 *Default* NULL  
 *Values* NULL, "enriched", "depleted"  
 
 **identify**  
-You can ask R to let you identify genes by clikcing on the dots in the graph. This only works if `pairs=FALSE`.  
+You can ask R to let you identify genes by clicking on the dots in the graph. This only works if `pairs=FALSE`.  
 *Default* FALSE  
 *Values* TRUE, FALSE (boolean)  
 
@@ -1521,7 +1521,7 @@ carpools.read.count.vs(dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g),
 ### Visualize sgRNA Phenotype
 
 CaRpools also allows you to visualize the phenotypic effects of sgRNA belonging to the same gene via `carpools.raw.genes`.    
-This includes plotting of sgRNA foldchanges, z-score, z-ratios or read-counts. Moreover, `type="vioplot"` will present fold change data in comparison to the whole dataset and controls.
+This includes plotting of sgRNA fold-changes, z-score, z-ratios or read-counts. Moreover, `type="vioplot"` will present fold change data in comparison to the whole data-set and controls.
 
 ```{r plot.raw.genes, echo=TRUE, eval=FALSE}
 carpools.raw.genes(untreated.list = list(CONTROL1, CONTROL2),
@@ -1562,7 +1562,7 @@ The mathematical function to normalize data if `normalize=TRUE`. By default, the
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1597,7 +1597,7 @@ Highlights the non-targeting control in blue color.
 *Value* Gene Identifier (character)  
 
 **sort**  
-This leads to output sorted by foldchange or z-ratio instead of names.  
+This leads to output sorted by fold-change or z-ratio instead of names.  
 *Default* TRUE  
 *Values* TRUE, FALSE  
 
@@ -1639,7 +1639,7 @@ p4 = carpools.raw.genes(untreated.list = list(CONTROL1, CONTROL2),
 ## Hit Calling / Candidate Analysis
 
 
-Hit analsysis is performed using three different methods:  
+Hit analysis is performed using three different methods:  
 
 * Wilcox
 * DESeq2
@@ -1649,20 +1649,20 @@ For each analysis method, separate plots will be created and analysis files will
 
 __Wilcox__
 
-Within this approach, the read counts of all sgRNAs in one dataset are first normalized by the function set in the MIACCS file. By default, normalization is done by read count division with the dataset median.  
+Within this approach, the read counts of all sgRNAs in one data-set are first normalized by the function set in the MIACCS file. By default, normalization is done by read count division with the data-set median.  
 Then, the fold change of each population of sgRNAs for a gene is tested against the population of either the non-targeting controls or randomly picked sgRNAs, as defined by the random picks option within the MIACCS file, using a two-sided Mann-Whitney-U test. P-values are corrected for multiple testing using FDR.  
 
 __DESeq2__
 
 For the DESeq2 analysis implementation, the read counts of all sgRNAs for a given gene are first summed up to increase the available read count.  
-Then, DESeq2 analysis is perfomed, which includes the estimation of size-factors, the variance stabilization using a parametric fit and a Wald-Test for differnece in log2 fold changes between the untreated and treated data.  
+Then, DESeq2 analysis is performed, which includes the estimation of size-factors, the variance stabilization using a parametric fit and a Wald-Test for difference in log2 fold changes between the untreated and treated data.  
 More information about this can be found in _Love et al._  
 [Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2](http://www.ncbi.nlm.nih.gov/pubmed/25516281)  
 _Genome Biology_ 2014  
 
 __MAGeCK__
 
-MAGeCK analysis uses a rank-based model to test for a change in abundance of sgRNAs after median normalization of the dataset.  
+MAGeCK analysis uses a rank-based model to test for a change in abundance of sgRNAs after median normalization of the data-set.  
 Further information can be found at the [MAGeCK Homepage](http://sourceforge.net/projects/mageck/).
 
 ***
@@ -1681,7 +1681,7 @@ All output from `stat.wilcox`, `stat.DEseq` and `stat.mageck` can be used for fu
 
 ### Candidate Calling with Wilcox
 
-Wilcox compare the group of sgRNAs for a given gene to either the non-targeting control population or the population of randomly picked sgRNAs from the dataset.  
+Wilcox compare the group of sgRNAs for a given gene to either the non-targeting control population or the population of randomly picked sgRNAs from the data-set.  
 
 ```{r HT-method-wilcox, echo=TRUE, eval=TRUE}
 data.wilcox = stat.wilcox(untreated.list = list(CONTROL1, CONTROL2),
@@ -1690,7 +1690,7 @@ data.wilcox = stat.wilcox(untreated.list = list(CONTROL1, CONTROL2),
   control.picks=NULL)
 ```
 
-The generated data includes log2 foldchange as well as a FDR corrected p-value for each gene:  
+The generated data includes log2 fold-change as well as a FDR corrected p-value for each gene:  
 
 `r knitr::kable(data.wilcox[1:10,])`
 
@@ -1731,7 +1731,7 @@ The mathematical function to normalize data if `normalize=TRUE`. By default, the
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1741,7 +1741,7 @@ Please give the gene identifier of the non-targeting control. If you do not have
 *Values* NULL or gene identifier (character)  
 
 **control.picks**  
-If no non-targeting controls are present or set, wilcox will pick a randum number of sgRNAs from the data set as the alternative population. This is only used if `controls=NULL`.  
+If no non-targeting controls are present or set, wilcox will pick a random number of sgRNAs from the data set as the alternative population. This is only used if `controls=NULL`.  
 *Default* 300  
 *Values* numeric  
 
@@ -1749,7 +1749,7 @@ If no non-targeting controls are present or set, wilcox will pick a randum numbe
 ### Candidate Calling with DESeq2
 
 DESeq2 can also be used to check for enriched or depleted candidates within the screen.  
-Hit calling using the DESeq2 methods can be perfomed by passing on the data in replicates as a list to `stat.DESeq`.  
+Hit calling using the DESeq2 methods can be performed by passing on the data in replicates as a list to `stat.DESeq`.  
 Normalization and Variance estimation is performed by DESeq2 automatically, for detailed information please see `?DESeq2`.
 
 ```{r HT-method-DESeq2, echo=TRUE, eval=TRUE, message=FALSE, warning=FALSE}
@@ -1763,7 +1763,7 @@ data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2),
 
 The output of `stat.DESeq` is a list with two data frames. One data frame containing the sgRNA calculations (`data.deseq$sgRNA`) and one list (`data.deseq$genes`) with gene calculations.  
 
-This output includes log2 foldchanges as well as corrected p-values (padj) for all genes:  
+This output includes log2 fold-changes as well as corrected p-values (padj) for all genes:  
 
 `r knitr::kable(data.deseq$genes[1:10,])`  
 
@@ -1799,7 +1799,7 @@ The function to aggregate sgRNA read-count.
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1872,7 +1872,7 @@ In which column are the read counts?
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -1937,7 +1937,7 @@ Only for plotting p-value calculate by MAGeCK. Indicates whether enriched ("pos"
 *Values* "pos", "neg"  
 
 **log**  
--log10 of the p-valiues is plotted if set to TRUE.  
+-log10 of the p-values is plotted if set to TRUE.  
 *Default* TRUE  
 *Values* TRRUE, FALSE (boolean)  
 
@@ -2017,7 +2017,7 @@ wilcox.result = carpools.hitident(data.wilcox, type="wilcox", title="Wilcox", in
 
 ### Visualization of Candidate Genes
 
-Candidate genes from all methods can be plotted in an overview to identify overlapping signficant candidate genes using `carpools.hit.overview`.  
+Candidate genes from all methods can be plotted in an overview to identify overlapping significant candidate genes using `carpools.hit.overview`.  
 
 ```{r HT-overview-hits, echo=TRUE, eval=TRUE, sanitize=TRUE}
 carpools.hit.overview(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck,
@@ -2066,7 +2066,7 @@ Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene
 *Values* TRUE, FALSE  
 
 **cutoff.hits**  
-The percentatge of top genes being used if `cutoff.override=TRUE`.  
+The percentage of top genes being used if `cutoff.override=TRUE`.  
 *Default** NULL  
 *Values* numeric  
 
@@ -2095,7 +2095,7 @@ plot.new()
 grid::grid.draw(VennDiagram::venn.diagram(venn.enriched, file=NULL, fill=c("lightgreen","lightblue2","lightgray"), na="remove", cex=2,lty=2, cat.cex=2))
 ```
 
-This diagram shows you, that DESeq2 found 41 significantly enriched genes, out of which 4 where identified voth by Wilcox and MAGeCK. Moreover, all found candidates by MAGeCK and Wilcox are the same and included within the DESEq2 ones.  
+This diagram shows you, that DESeq2 found 41 significantly enriched genes, out of which 4 where identified both by Wilcox and MAGeCK. Moreover, all found candidates by MAGeCK and Wilcox are the same and included within the DESEq2 ones.  
 
 \newpage
 
@@ -2103,7 +2103,7 @@ This diagram shows you, that DESeq2 found 41 significantly enriched genes, out o
 
 Although the candidate lists of each analysis method can be saved separately, caRpools offer a comparative approach, which creates tables that include the information from all analysis methods at once for a faster overview.  
 
-This is done using the function `compare.analysis`, which offers not only ouptu for Venn Diagrams, but also for tables.  
+This is done using the function `compare.analysis`, which offers not only output for Venn Diagrams, but also for tables.  
 
 #### Tabular Output with all information
 
@@ -2194,7 +2194,7 @@ Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene
 *Values* TRUE, FALSE  
 
 **cutoff.hits**  
-The percentatge of top genes being used if `cutoff.override=TRUE`.  
+The percentage of top genes being used if `cutoff.override=TRUE`.  
 *Default** NULL  
 *Values* numeric  
 
@@ -2276,7 +2276,7 @@ In which column are the sgRNA identifiers?
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -2343,7 +2343,7 @@ Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene
 *Values* TRUE, FALSE  
 
 **cutoff.hits**  
-The percentatge of top genes being used if `cutoff.override=TRUE`.  
+The percentage of top genes being used if `cutoff.override=TRUE`.  
 *Default** NULL  
 *Values* numeric  
 
@@ -2359,7 +2359,7 @@ Defines whether all genes are plotted or only those being enriched or depleted.
 
 ### Read-Count Scatter Plots for Candidate Genes
 
-As described before, scatter plots can be generated for all datasets. `carpools.hit.scatter` serves as a wrapper for `carpools.read.count.vs` and allows faster plotting for individual candidate genes or all overlapping candidate genes. It generated a pairs plot with the representation of all provided samples and highlights the candidate gene.  
+As described before, scatter plots can be generated for all data-sets. `carpools.hit.scatter` serves as a wrapper for `carpools.read.count.vs` and allows faster plotting for individual candidate genes or all overlapping candidate genes. It generated a pairs plot with the representation of all provided samples and highlights the candidate gene.  
 
 ```{r hit-scatter, echo=TRUE, eval=TRUE}
 plothitsscatter.enriched = carpools.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=1, fullmatchcolumn=2, title="Title", labelgenes="CASP8", labelcolor="orange", extractpattern=expression("^(.+?)(_.+)"), normalize=TRUE, norm.function=median, offsetplot=1.2, center=FALSE, aggregated=FALSE, type="enriched", cutoff.deseq = 0.001, cutoff.wilcox = 0.05, cutoff.mageck = 0.05, cutoff.override=FALSE, cutoff.hits=NULL,  pch=16)
@@ -2427,7 +2427,7 @@ The mathematical function to normalize data. By default, the median is used.
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -2437,7 +2437,7 @@ Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene
 *Values* TRUE, FALSE  
 
 **cutoff.hits**  
-The percentatge of top genes being used if `cutoff.override=TRUE`.  
+The percentage of top genes being used if `cutoff.override=TRUE`.  
 *Default** NULL  
 *Values* numeric  
 
@@ -2463,7 +2463,7 @@ Label of X-Axis, only if `pairs=FALSE`
 *Values* "Label of X-Axis" (character)  
 
 **ylab**  
-Label of Y-Axism only if `pairs=FALSE`  
+Label of Y-Axis only if `pairs=FALSE`  
 *Default* "Y-Axis"  
 *Values* "Label of Y-Axis" (character)  
 
@@ -2489,7 +2489,7 @@ Whether you would like to normalize read-counts first. Recommended if not done a
 
 **offsetplot**  
 Offetplot is used to stretch the x- and y-axis for nicer graphs. This will extend plotting area by offsetplot.  
-*Default* 1.2 (Plotting area is streched to 1.2 times)  
+*Default* 1.2 (Plotting area is stretched to 1.2 times)  
 *Values* any number (numeric)  
 
 **center**  
@@ -2504,9 +2504,9 @@ If you want to highlight genes, set this to true if you provide already aggregat
 
 ### sgRNA Effect Plots
 
-Since there is more than just one single sgRNA targeting your gene of interest, you can user caRpools to plot different sgRNA phenotype effects, e.g. the fold change or z-ratio, as desribed before in `carpools.raw.genes`.  
+Since there is more than just one single sgRNA targeting your gene of interest, you can user caRpools to plot different sgRNA phenotype effects, e.g. the fold change or z-ratio, as described before in `carpools.raw.genes`.  
 A set of plots can be generated with `carpools.hit.sgrna`, which serves as a wrapper for `carpools.raw.genes`.  
-By default, a foldchange plot as well as a violine plot are generated.
+By default, a fold-change plot as well as a violine plot are generated.
 
 ```{r carpools.hit.sgrna, echo=TRUE, eval=TRUE}
 sgrnas.en = carpools.hit.sgrna(wilcox=data.wilcox, deseq=data.deseq,
@@ -2581,7 +2581,7 @@ The mathematical function to normalize data. By default, the median is used.
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -2591,7 +2591,7 @@ Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene
 *Values* TRUE, FALSE  
 
 **cutoff.hits**  
-The percentatge of top genes being used if `cutoff.override=TRUE`.  
+The percentage of top genes being used if `cutoff.override=TRUE`.  
 *Default** NULL  
 *Values* numeric  
 
@@ -2627,14 +2627,14 @@ Do you want the sgRNA identifiers to be plotted?
 *Values* TRUE, FALSE  
 
 **plot.type**  
-WHich kind of plot is to be drawn? If NULL, foldchange and violine plots are generated.  
+Which kind of plot is to be drawn? If NULL, fold-change and violine plots are generated.  
 *Default* NULL  
 *Values* NULL, "foldchange", "z-score", "z-ratio", "vioplot"    
 
 
 ### sgRNA Effect Table
 
-Since there is more than just one single sgRNA targeting your gene of interest, you can user caRpools to plot different sgRNA phenotype effects, e.g. the fold change or z-ratio, as desribed before in `carpools.raw.genes`.  
+Since there is more than just one single sgRNA targeting your gene of interest, you can user caRpools to plot different sgRNA phenotype effects, e.g. the fold change or z-ratio, as described before in `carpools.raw.genes`.  
 In addition to that, caRpools also generated a tabular view which includes the log2 fold change as well as the target sequence, so that the user can directly pick the target sequence of the sgRNA he or shew wants.  
 
 **This function, `carpools.sgrna.table` is best combined with `carpools.raw.genes` to give a fast overview of the sgRNA performance.**  
@@ -2716,7 +2716,7 @@ The mathematical function to normalize data. By default, the median is used.
 
 **extractpattern**  
 PERL regular expression that is used to retrieve the gene identifier from the overall sgRNA identifier.  
-e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier beloning to this sgRNA identifier. **Please see: Read-Count Data Files**  
+e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifier belonging to this sgRNA identifier. **Please see: Read-Count Data Files**  
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
@@ -2726,7 +2726,7 @@ Shall the p-value threshold be ignored? If this is TRUE, the top percentage gene
 *Values* TRUE, FALSE  
 
 **cutoff.hits**  
-The percentatge of top genes being used if `cutoff.override=TRUE`.  
+The percentage of top genes being used if `cutoff.override=TRUE`.  
 *Default** NULL  
 *Values* numeric  
 
@@ -2746,7 +2746,7 @@ This is the library reference file loaded via `load.file` providing the sgRNA ta
 *Values* object from `load.file`  
 
 **labelgenes**  
-For which gene shal the sgRNA effects being generated? This expects a gene identifier or a fector of gene identifiers.  
+For which gene shall the sgRNA effects being generated? This expects a gene identifier or a vector of gene identifiers.  
 *Default* NULL  
 *Values* A gene identifier or vector of gene identifiers (character)  
 
@@ -2771,4 +2771,4 @@ The name of the file if `write=TRUE`
 # Further Information
 
 Please have a look at [our website](http://www.crispr-analyzer.de) where you can find manuals, pre-defined reports, all scripts mentioned in this manual and a bug-tracker.  
-If you like to use or modify any of the code of caRpools, please fork or clone the github repository. If you find any bug or if you have a clever idea that you would like to have it included in caRpools, feel free to code  or dropt us a comment.  
+If you like to use or modify any of the code of caRpools, please fork or clone the github repository. If you find any bug or if you have a clever idea that you would like to have it included in caRpools, feel free to code  or drop us a comment.  

@@ -91,6 +91,12 @@ All packages and software tools need be installed correctly as shown before.
 4. You can use `CarPools(type="check")` to check for the correct folder structure and data file presence as it is indicated in the MIACCS.xls file.
 5. You can check for your R working directory by `getwd()` and set it to any directory you want by `setwd("/PATH")`.
 
+## Important information for MAC users
+
+If you use Rstudio on MAC, please make sure you start Rstudio with the following command from the terminal:
+
+> open -a rstudio
+
 ## Check Setup
 
 You can verify that the MIACCS.xls file as well as the used template file and all necessary scripts are found by calling `check.caRpools()`.  

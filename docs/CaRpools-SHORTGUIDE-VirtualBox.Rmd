@@ -8,7 +8,7 @@ In this tutorial we will show you how to install and configure the caRpools virt
  
 * First install the latest VirtualBox version 5 from [here](https://www.virtualbox.org)
 
-* Now download the official caRpools virtual appliance from [here](http://www.dkfz.de/signaling/caRpools/caRpools-64bit-Appliance.zip) (1.6 GB)  
+* Now download the official __caRpools virtual appliance__ from [here](http://www.dkfz.de/signaling/caRpools/caRpools-64bit-Appliance.zip) (1.9 GB)  
 
 ![download](./pictures/download.png)
 

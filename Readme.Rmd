@@ -1,9 +1,9 @@
 ![](https://cdn.rawgit.com/boutroslab/caRpools/master/data/CaRpools.png)
 
-Welcome to CaRpools - a software package for the analysis CRISPR/Cas9 pooled screens
+caRpools - a software package for the analysis CRISPR/Cas9 pooled screens
 ==============
 
-CaRpools is a R package for the analysis of pooled CRISPR/Cas screens in a standardized and user-friendly manner. It generates standardized PDF and HTML reports that include:
+CaRpools is an R package forexploratory data analysis of pooled CRISPR/Cas9 screens. It aims to provide a user-friendly pipeline for end-to-end analysis of screening data. As an output, it generates standardized PDF and HTML reports that include:
 
 * In-depth analysis of screening quality
 * Candidate hit calling using multiple, independent algorithms
@@ -11,7 +11,7 @@ CaRpools is a R package for the analysis of pooled CRISPR/Cas screens in a stand
 * XLS output for  storage and follow-up analysis
 * Annotation of candidate genes using biomaRt
 
-CaRpools serves as an end-to-end analysis platform. Users  fill out a configuration file and caRpools runs a complete analysis workflow, including NGS data extraction and mapping,.
+Users fill out a configuration file and caRpools runs a complete analysis workflow, including NGS data extraction and mapping.
 
 **Download the VirtualBox image of caRpools** [HERE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
 
@@ -25,6 +25,10 @@ CaRpools serves as an end-to-end analysis platform. Users  fill out a configurat
 * [CaRpools - full manual](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.Rmd)
 * [CaRpools - full manual PDF](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.pdf)
 
+**Contact:**
+Jan Winter (jan.winter@dkfz.de)
+Web http://www.dkfz-heidelberg.de/en/signaling
+
 **Reference:**
 
-Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zhan, T., Boutros, M. (2015). caRpools: A tool for exploratory data analysis and documentation of pooled CRISPR/Cas9 screens, manuscript in preparation
+Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zhan, T., Boutros, M. (2015). caRpools: A tool for exploratory data analysis and documentation of pooled CRISPR/Cas9 screens, _manuscript in preparation_

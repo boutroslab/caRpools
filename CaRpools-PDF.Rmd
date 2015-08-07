@@ -24,7 +24,7 @@ load.packages()
 \end{center}
 
 ```{r settings-setup, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
-options(RCurlOptions=list(proxy="www-int2.inet.dkfz-heidelberg.de:80", http.version=1))
+#options(RCurlOptions=list(proxy="YOURproxyHERE", http.version=1))
 
 ### Load PARAMETER FILE
 # This name can be changed to your needs
@@ -281,8 +281,6 @@ if(miaccs["cell.setup.image",3] != "none"&& !is.na(miaccs["cell.setup.image",3])
 \newpage
 
 # Load Data
-
-## Load Files
 
 ```{r datainput, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE, results='hide'}
 # Do we need to map the data?

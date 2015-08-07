@@ -76,11 +76,11 @@ print "Extracting fastq data . . .\n";
 	}
 	
 	if ($ARGV[3] eq "default")
-	{ $maschinepattern = "@M01100.+";
+	{ $maschinepattern = qr/.{1}M01100(.+)/;
 	}
 	else
 	{
-		$maschinepattern = "@".qr/$ARGV[3]/ ;
+		$maschinepattern = qr/.{1}$ARGV[3](.+)/;
 	}
 
 print "Pattern used:".$pattern."\n";

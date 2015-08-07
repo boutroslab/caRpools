@@ -127,7 +127,7 @@ bowtieparams = as.character(miaccs["carpools.bt2.additional",3])
 if(is.na(bowtieparams) || bowtieparams == "NA" || bowtieparams == "none" || is.null(bowtieparams))
   {bowtieparams = ""}
 # Sensitivity string for bowtie2 alignment, e.g. --very-sensitive-local, --local, --very-sensitive -> have a look in the bowtie2 manual!
-sensitivity = as.character(miaccs["carpools.bt2.additional",3])
+sensitivity = as.character(miaccs["carpools.bt2.sens",3])
 # How good must the alignment of the 20 nt CRISPR Oligo must be in order to be considered as present in the data?
 match = as.character(miaccs["carpools.align.quality",3])
 

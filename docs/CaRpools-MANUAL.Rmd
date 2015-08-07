@@ -162,7 +162,7 @@ The following software needs to be installed:
   + pdflatex
   + xelatex
 * R 3.2.0 or higher [Website](https://www.r-project.org/)
-* Pandoc 1.15.0.6 [Website](http://www.http://pandoc.org/)
+* Pandoc 1.15.0.6 [Website](http://www.pandoc.org/)
 * R-Studio [Website](http://www.rstudio.com) (GUI)
 
 The following **R packages** need be installed (can be done via `load.packages()`):

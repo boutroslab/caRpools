@@ -678,7 +678,7 @@ data.wilcox.plot.enriched = data.wilcox.plot.enriched[order(data.wilcox.plot.enr
 if(nrow(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < sig.pval.wilcox,]) > 0)
   {
  knitr::kable(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < sig.pval.wilcox,])
-  } else { cat("No genes showed significant enrichment with a p-value lower than", sig.pval.wilcox)}
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", sig.pval.wilcox, "**")}
 
 
 ```
@@ -699,7 +699,7 @@ data.wilcox.plot.depleted = data.wilcox.plot.depleted[order(data.wilcox.plot.dep
 if(nrow(data.wilcox.plot.depleted[data.wilcox.plot.depleted$p.value < sig.pval.wilcox,]) > 0)
   {
  knitr::kable(data.wilcox.plot.depleted[data.wilcox.plot.depleted$p.value < sig.pval.wilcox,])
-  } else { cat("No genes showed significant depletion with a p-value lower than", sig.pval.wilcox)}
+  } else { cat("**No genes showed significant depletion with a p-value lower than", sig.pval.wilcox, "**")}
 
 ```
 
@@ -741,7 +741,7 @@ data.deseq.plot.enriched = data.deseq.plot.enriched[order(data.deseq.plot.enrich
 if(nrow(data.deseq.plot.enriched[data.deseq.plot.enriched$padj < sig.pval.deseq,c(2,3,6,8)]) > 0)
   {
  knitr::kable(data.deseq.plot.enriched[data.deseq.plot.enriched$padj < sig.pval.deseq,c(2,3,6,8)])
-  } else { cat("No genes showed significant enrichment with a p-value lower than", sig.pval.deseq)}
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", sig.pval.deseq, "**")}
 ```
 
 According to the value set, the __top `r number.hits.plot.enriched` % enriched genes__ were:  
@@ -760,7 +760,7 @@ data.deseq.plot.depleted = data.deseq.plot.depleted[order(data.deseq.plot.deplet
 if(nrow(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < sig.pval.deseq,c(2,3,6,8)]) > 0)
   {
  knitr::kable(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < sig.pval.deseq,c(2,3,6,8)])
-  } else { cat("No genes showed significant depletion with a p-value lower than", sig.pval.deseq)}
+  } else { cat("**No genes showed significant depletion with a p-value lower than", sig.pval.deseq, "**")}
 
 
 ```
@@ -805,7 +805,7 @@ data.mageck.plot.enriched = data.mageck.plot.enriched[order(data.mageck.plot.enr
 if(nrow(data.mageck.plot.enriched) > 0)
   {
  knitr::kable(data.mageck.plot.enriched[,c(2,3,4,5,6,7)])
-  } else { cat("No genes showed significant enrichment with a p-value lower than", sig.pval.mageck)}
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", sig.pval.mageck, "**")}
 
 data.mageck.plot.enriched = data.mageck[[1]][order(data.mageck[[1]]$rank.pos, na.last=TRUE),]
 ```
@@ -826,7 +826,7 @@ data.mageck.plot.depleted = data.mageck.plot.depleted[order(data.mageck.plot.dep
 if(nrow(data.mageck.plot.depleted) > 0)
   {
   knitr::kable(data.mageck.plot.depleted[,c(2,3,4,5,6,7)])
-  } else { cat("No genes showed significant depletion with a p-value lower than", sig.pval.mageck)}
+  } else { cat("**No genes showed significant depletion with a p-value lower than", sig.pval.mageck, "**")}
 
 data.mageck.plot.depleted = data.mageck[[1]][order(data.mageck[[1]]$rank.neg, na.last=TRUE),]
 ```

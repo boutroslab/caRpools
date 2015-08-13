@@ -13,11 +13,17 @@ CaRpools is an R package forexploratory data analysis of pooled CRISPR/Cas9 scre
 
 Users fill out a configuration file and caRpools runs a complete analysis workflow, including NGS data extraction and mapping.
 
-**Download the VirtualBox image of caRpools** [HERE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
+### Download the VirtualBox appliance of caRpools
+The VirtualBox appliance can be downloaded from [HERE](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
 
-**Download R package** [HERE](https://github.com/boutroslab/caRpools/blob/master/package)
+It provides you a ready-to-use virtual appliance, so that you do not need to install any additional R packages or tools.
 
-**Manuals:**
+### Download R package
+You can download the R package either
+* within **R** via `install.packages("caRpools")`
+* or as a **.tgz** file directly from [HERE](https://github.com/boutroslab/caRpools/blob/master/package)
+
+### Manuals
 
 * [CaRpools Virtual Box - short guide](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-VirtualBox.Rmd)
 * [CaRpools Installation - short guide](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-INSTALLATION.Rmd)
@@ -25,10 +31,24 @@ Users fill out a configuration file and caRpools runs a complete analysis workfl
 * [CaRpools - full manual](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.Rmd)
 * [CaRpools - full manual PDF](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.pdf)
 
-**Contact:**
+#### Contact
 Jan Winter (jan.winter@dkfz.de)
 Web http://www.dkfz-heidelberg.de/en/signaling
 
-**Reference:**
+#### Reference
 
 Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zhan, T., Boutros, M. (2015). caRpools: A tool for exploratory data analysis and documentation of pooled CRISPR/Cas9 screens, _manuscript in preparation_
+
+
+# Changelog
+
+### 0.82.2
+* made biomaRt annotation faster (get.gene.info)
+* added additional sgRNA dropout information in Rmd templates
+* made compare.analysis faster
+* removed unnecessary code
+
+### 0.82
+* fixed naming issues in perl files CRISPR-mapping.pl and CRISPR-extract.pl
+* fixed rare naming glitch in biomaRt annotation
+* streamlined code

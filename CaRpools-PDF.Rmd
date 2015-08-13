@@ -413,6 +413,20 @@ xlsx::write.xlsx(U2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT
 xlsx::write.xlsx(T1.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT1, append=TRUE, row.names=FALSE)
 xlsx::write.xlsx(T2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT2, append=TRUE, row.names=FALSE)
 
+# Output single sgRNAs of each gene
+U1.unmapped.singles = unmapped.genes(data=CONTROL1, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=U1.unmapped[,"name"], extractpattern=g.extractpattern)
+U1.unmapped.singles = U1.unmapped.singles[order(U1.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(U1.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.CONTROL1,"sgRNA"), row.names=FALSE, append=TRUE)
+U2.unmapped.singles = unmapped.genes(data=CONTROL2, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=U2.unmapped[,"name"], extractpattern=g.extractpattern)
+U2.unmapped.singles = U2.unmapped.singles[order(U2.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(U2.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.CONTROL2,"sgRNA"), row.names=FALSE, append=TRUE)
+T1.unmapped.singles = unmapped.genes(data=TREAT1, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=T1.unmapped[,"name"], extractpattern=g.extractpattern)
+T1.unmapped.singles = T1.unmapped.singles[order(T1.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(T1.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.TREAT1,"sgRNA"), row.names=FALSE, append=TRUE)
+T2.unmapped.singles = unmapped.genes(data=TREAT2, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=T2.unmapped[,"name"], extractpattern=g.extractpattern)
+T2.unmapped.singles = T2.unmapped.singles[order(T2.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(T2.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.TREAT2,"sgRNA"), row.names=FALSE, append=TRUE)
+
 ```
 
 ## Missing sgRNAs in Datasets

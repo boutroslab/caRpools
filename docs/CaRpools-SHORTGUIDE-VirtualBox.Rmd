@@ -32,7 +32,7 @@ MD5 Hash of caRpools-64bit-Appliance.zip: 40ef681fabc1ca6c7bf5548094836bb2
 
 ![start](./pictures/start-button.png)
 
-* after the virtual machine has loaded login the system using username: crispr, password: crispr. 
+* after the virtual machine has loaded login the system using **username: crispr**, **password: cas**. 
 ![login](./pictures/login.png)
 
 * Finished!  The system will automatically load RStudio where you can start to work on caRpools

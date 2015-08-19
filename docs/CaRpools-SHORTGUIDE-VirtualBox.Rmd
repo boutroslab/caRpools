@@ -5,37 +5,41 @@ output:
 # Installing caRpools Virtual Appliance Image
 
 In this tutorial we will show you how to install and configure the caRpools virtual appliance into the open-source virtualization software VirtualBox. CaRpools is delivered using the ovf format which can also be used by other virtualization products such as Parallels or VMWare.
- 
-* First install the latest VirtualBox version 5 from [here](https://www.virtualbox.org)
 
-* Now download the official __caRpools virtual appliance__ from [here](http://www.dkfz.de/signaling/caRpools/caRpools-64bit-Appliance.zip) (1.9 GB)  
+**Please note:** We advise you to use **VirtualBox Version 5.0.0.r101573**
+ 
+* First install VirtualBox version _5.0.0.r101573_ from [here](https://www.virtualbox.org/wiki/Download_Old_Builds_5_0)
+
+* Now download the official __caRpools virtual appliance__ from [here](http://www.dkfz.de/signaling/caRpools/caRpools-64bit-Appliance.zip) (1.8 GB)  
 
 ![download](./pictures/download.png)
 
 * extract the downloaded file caRpools-64bit-Appliance.zip (by double-clicking on the icon)
 
 ```bash
-MD5 Hash of caRpools-64bit-Appliance.zip: 40ef681fabc1ca6c7bf5548094836bb2  		
+MD5 Hash of caRpools-64bit-Appliance.zip: 30b48e7256e574e408a6a6a3a06718a8
+MD5 Hash of caRpools-64bit-Appliance.ova: dc73864869bd462a3a964b7085be2da7
 ```
 ![extract](./pictures/extract.png)
 
-* The extracted file will be called caRpools-64bit-Appliance.ova, double-click on it to start the import into VirtualBox
-* Next you will be asked to configure your virtual machine. Leave everything standard other than the RAM. Here you should provide a number which should be roughly 50% to 75% of your systems available RAM. So if you have 8GB RAM I would go for 4GB to a maximum of 6GB of RAM. The more RAM the better but if it is too much your host system can get really slow and unresponsive. Also tick the "Reinitalize the MAC address of all network cards here". When finished click on "Import".
+* The extracted file will be called _caRpools-64bit-Appliance.ova_, double-click on it to start the import into VirtualBox
+* Next you will be asked to configure your virtual machine. __Leave everything standard other than the RAM.__ Here you should provide a number which should be roughly 50% to 75% of your systems available RAM. So if you have 8GB RAM I would go for 4GB to a maximum of 6GB of RAM. The more RAM the better but if it is too much your host system can get really slow and unresponsive. Also tick the "Reinitalize the MAC address of all network cards here". When finished click on "Import".
 
 ![config](./pictures/configure-appliance.png)
 
-* The actual import will take some time, please be patient.
+* The actual import will take some time, so please be patient.
 
 ![import](./pictures/import-progress.png)
 
-* when it has finished select the virtual machine in the main menu and click on the Start button
+* When the import is finished, select the virtual machine in the main menu and click on the Start button
 
 ![start](./pictures/start-button.png)
 
 * after the virtual machine has loaded login the system using **username: crispr**, **password: cas**. 
+* 
 ![login](./pictures/login.png)
 
-* Finished!  The system will automatically load RStudio where you can start to work on caRpools
+* There you are! The system will automatically load RStudio where you can start to work with caRpools
 
 ### Make a test run
 Having started RStudio it should automatically load the CaRpools-testpackage project. If this is not the case, please double-click on the icon called **start-CaRpools-project** on your desktop.
@@ -52,7 +56,10 @@ use.caRpools()
 ![rstudiorun](./pictures/rstudio.png)
 
 Depending on your host computer and amount of RAM you declared for this virtual machine the analysis will take some time, so please be patient.
-The final result will be a PDF file called CaRpools-extended-PDF.pdf in the folder desktop/CarPools-testpackage.
+
+The final result will be a PDF file called CaRpools-extended-PDF.pdf in the folder desktop/CarPools-testpackage as well as additional excel files and a subfolder with the generated images.
+
+![folderstructure](./pictures/folder-structure-FINAL.png)
 
 ## Applying your own Data
 

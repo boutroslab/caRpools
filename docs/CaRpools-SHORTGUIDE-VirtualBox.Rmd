@@ -67,7 +67,7 @@ You can of course use your own data, the caRpools testpackage is just meant as a
 Just follow these steps:  
 
 * Copy your data files (see CaRpools-MANUAL.pdf for further information) to the __data__ folder
-* Copy the MIACCS.xls to your computer and edit the file as described in the CaRpools Manual or the __CaRPools-UserGuide-MIACCS.pdf__
+* Copy the MIACCS.xls to your computer and edit the file as described in the CaRpools Manual or the __[CaRpools-SHORTGUIDE-Usage](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-SHORTGUIDE-Usage.Rmd)__
 * After editing the MIACCS file with all necessary information, please make sure both filenames and folder paths are correct
 * For the standard extended PDF report start CaRpools with `use.caRpools()`
 * In case you want the other reports, `use.caRpools(file="TEMPLATE.Rmd")` with the other provided templates, that are _CaRpools-extended-HTML.Rmd_ (extended HTML version), _CaRpools-PDF.Rmd_ or _CaRpools-HTML.Rmd_ (both standard versions)

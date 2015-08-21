@@ -17,8 +17,7 @@ In this tutorial we will show you how to install and configure the caRpools virt
 * extract the downloaded file caRpools-64bit-Appliance.zip (by double-clicking on the icon)
 
 ```bash
-MD5 Hash of caRpools-64bit-Appliance.zip: 30b48e7256e574e408a6a6a3a06718a8
-MD5 Hash of caRpools-64bit-Appliance.ova: dc73864869bd462a3a964b7085be2da7
+MD5 Hash of caRpools-64bit-Appliance.zip: 7cd584124a742f0ecb2828e2b9159bef
 ```
 ![extract](./pictures/extract.png)
 

@@ -147,7 +147,7 @@ print "Reading Bowtie2 aligment to the reference library\n";
 		
 		if($ARGV[2] eq "perfect")
 		{
-			$matchpattern = qr/M{20}$/ ;
+			$matchpattern = qr/M{20,21}$/ ;
 		}
 		elsif($ARGV[2] eq "high")
 		{

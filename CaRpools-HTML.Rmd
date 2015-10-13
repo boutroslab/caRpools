@@ -16,14 +16,10 @@ library(caRpools,warn.conflicts = FALSE, quietly = TRUE,verbose =FALSE)
 load.packages()
 ```
 
-
-
-\begin{center}
-\includegraphics{CaRpools.png}
-\end{center}
+![]{CaRpools.png)
 
 ```{r settings-setup, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
-#options(RCurlOptions=list(proxy="YOURproxyHERE", http.version=1))
+options(RCurlOptions=list(proxy="www-int2.inet.dkfz-heidelberg.de:80", http.version=1))
 
 ### Load PARAMETER FILE
 # This name can be changed to your needs
@@ -116,8 +112,7 @@ mapping = as.logical(miaccs["carpools.mapping",3])
 ## Mapping extracted data
 # Create a bowtie2 index file? TRUE if NO bowtie2 index file has been generated for the reference library fasta file, so that a new one is created
 createindex = as.logical(miaccs["carpools.bt2.index",3])
-# name of bowtie2 index file without any extension (no .bt2 etc)
-bowtie2file = referencefile
+
 
 # How many threads shall be used for bowtie2 usage?
 threads = as.integer(miaccs["carpools.bt2.threads",3])
@@ -181,14 +176,14 @@ put.names = as.logical(miaccs["carpools.labelnames",3])
 #### DATA ANALYSIS
 # Targeting Controls
 controls.target = as.character(unlist(strsplit(stringi::stri_replace_all_fixed(miaccs["carpools.pos",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
-if(controls.target == "NULL" || controls.target == "none")
+if(is.na(controls.target) || controls.target == "NULL" || controls.target == "none")
   {
   controls.target = NULL
   }
 
 # Non-Targeting Controls
 controls.nontarget = as.character(unlist(strsplit(stringi::stri_replace_all_fixed(miaccs["carpools.non-targeting",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
-if(controls.nontarget == "NULL" || controls.nontarget == "none")
+if(is.na(controls.nontarget) || controls.nontarget == "NULL" || controls.nontarget == "none" || controls.nontarget == "")
   {
   controls.nontarget = NULL
   }
@@ -251,7 +246,7 @@ __Description__
 if(miaccs["assay.plasmids.image",3] != "none" && !is.na(miaccs["assay.plasmids.image",3]))
   {
     plasmid.image = strsplit(miaccs["assay.plasmids.image",3], split=",")
-    for(i in 1:length(plasmid.image))
+    for(i in 1:length(unlist(plasmid.image)))
       {
         cat("\n")
         cat("\n")
@@ -264,7 +259,7 @@ if(miaccs["assay.plasmids.image",3] != "none" && !is.na(miaccs["assay.plasmids.i
 if(miaccs["cell.setup.image",3] != "none"&& !is.na(miaccs["cell.setup.image",3]))
   {
     screen.image = strsplit(miaccs["cell.setup.image",3], split=",")
-    for(i in 1:length(screen.image))
+    for(i in 1:length(unlist(screen.image)))
       {
         cat("\n")
         cat("\n")
@@ -279,27 +274,25 @@ if(miaccs["cell.setup.image",3] != "none"&& !is.na(miaccs["cell.setup.image",3])
 
 # Load Data
 
-
 ```{r datainput, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE, results='hide'}
 # Do we need to map the data?
 if(identical(mapping, TRUE))
   {
     # Extract Data?
-   fileCONTROL1 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL1, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileCONTROL1 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL1, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
-   fileCONTROL2 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL2, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileCONTROL2 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL2, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
-   fileTREAT1 = data.extract(scriptpath, datapath, fastqfile=fileTREAT1, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileTREAT1 = data.extract(scriptpath, datapath, fastqfile=fileTREAT1, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
-   fileTREAT2 = data.extract(scriptpath, datapath, fastqfile=fileTREAT2, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
-        
+   fileTREAT2 = data.extract(scriptpath, datapath, fastqfile=fileTREAT2, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+
   
-    
   # Data will be mapped, so we start mapping and then get back the data!
     CONTROL1 = load.file(paste(datapath, fileCONTROL1, sep="/"))
     CONTROL2 = load.file(paste(datapath, fileCONTROL2, sep="/"))
     TREAT1 = load.file(paste(datapath, fileTREAT1, sep="/"))
-    TREAT2 = load.file(paste(datapath, fileTREAT2, sep="/"))
+    TREAT2 = load.file(paste(datapath, fileTREAT2, sep="/"))    
     libFILE = load.file(paste(datapath, paste(referencefile,".fasta",sep=""), sep="/"),header = FALSE, type="fastalib")
  } else {
     # Extracted and mapped read count data is present, so ONLY load files already there using the filename fileCONTROL etc.
@@ -513,7 +506,7 @@ carpools.read.distribution(TREAT1, fullmatchcolumn=fullmatchcolumn,breaks=200, t
 carpools.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 ```
 
-\pagebreak
+
 
 ## Read Depth
 
@@ -529,7 +522,7 @@ carpools.read.depth(datasets = list(CONTROL1,CONTROL2,TREAT1,TREAT2), namecolumn
 par(mfrow=c(1,1))
 ```
 
-\pagebreak
+
 
 ## Designs per Gene
 These plots provide an overview of the representation of sgRNAs per gene within your data.  
@@ -1275,7 +1268,7 @@ if(identical(a.annotate.hits, TRUE))
     
     cat("The annotated list of all hit candidates is stored in", "\n","\n")
     cat("_", datapath,"_", "\n", "\n")
-    cat("__", paste(analysis.name, "ANNOTATION.xls", sep="_"),"__", "\n")
+    cat("**", paste(analysis.name, "ANNOTATION.xls", sep="_"),"**", "\n")
   
     annotate.enriched.all = get.gene.info(as.data.frame(overlap.enriched), namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = a.annotate, return.val = "info", controls=TRUE)  
   
@@ -1333,9 +1326,7 @@ Reverse Complement Sequence | `r reversecomplement`
 Pattern of Data Extraction  | `r seq.pattern`
 Maschine Identifier FASTq  | `r maschine.pattern`
 Create Bowtie2 Index? | `r createindex`
-Bowtie2 Index File  | `r bowtie2file`
 Reference .fasta File | `r referencefile`
 Bt2 Threads | `r threads`
 Bt2 Sensitivity | `r sensitivity`
 sgRNA Oligo Match | `r match`
-

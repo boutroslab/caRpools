@@ -12,7 +12,7 @@ output:
 
 ```{r loadlibs, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
 if("caRpools" %in% rownames(installed.packages()) == FALSE) {install.packages("caRpools")}
-  library(caRpools,warn.conflicts = FALSE, quietly = TRUE,verbose =FALSE)
+library(caRpools,warn.conflicts = FALSE, quietly = TRUE,verbose =FALSE)
 load.packages()
 ```
 
@@ -23,6 +23,8 @@ load.packages()
 
 #OPTIONAL PROXY
 #options(RCurlOptions=list(proxy="YOURproxyHERE", http.version=1))
+
+options(RCurlOptions=list(proxy="www-int2.inet.dkfz-heidelberg.de:80", http.version=1))
 
 ### Load PARAMETER FILE
 # This name can be changed to your needs
@@ -115,8 +117,7 @@ mapping = as.logical(miaccs["carpools.mapping",3])
 ## Mapping extracted data
 # Create a bowtie2 index file? TRUE if NO bowtie2 index file has been generated for the reference library fasta file, so that a new one is created
 createindex = as.logical(miaccs["carpools.bt2.index",3])
-# name of bowtie2 index file without any extension (no .bt2 etc)
-bowtie2file = referencefile
+
 
 # How many threads shall be used for bowtie2 usage?
 threads = as.integer(miaccs["carpools.bt2.threads",3])
@@ -180,14 +181,14 @@ put.names = as.logical(miaccs["carpools.labelnames",3])
 #### DATA ANALYSIS
 # Targeting Controls
 controls.target = as.character(unlist(strsplit(stringi::stri_replace_all_fixed(miaccs["carpools.pos",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
-if(controls.target == "NULL" || controls.target == "none")
+if(is.na(controls.target) || controls.target == "NULL" || controls.target == "none")
   {
   controls.target = NULL
   }
 
 # Non-Targeting Controls
 controls.nontarget = as.character(unlist(strsplit(stringi::stri_replace_all_fixed(miaccs["carpools.non-targeting",3]," ", "", fixed=TRUE), ",", fixed=TRUE)))
-if(controls.nontarget == "NULL" || controls.nontarget == "none")
+if(is.na(controls.nontarget) || controls.nontarget == "NULL" || controls.nontarget == "none" || controls.nontarget == "")
   {
   controls.nontarget = NULL
   }
@@ -283,16 +284,15 @@ if(miaccs["cell.setup.image",3] != "none"&& !is.na(miaccs["cell.setup.image",3])
 if(identical(mapping, TRUE))
   {
     # Extract Data?
-   fileCONTROL1 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL1, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileCONTROL1 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL1, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
-   fileCONTROL2 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL2, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileCONTROL2 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL2, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
-   fileTREAT1 = data.extract(scriptpath, datapath, fastqfile=fileTREAT1, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileTREAT1 = data.extract(scriptpath, datapath, fastqfile=fileTREAT1, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
-   fileTREAT2 = data.extract(scriptpath, datapath, fastqfile=fileTREAT2, extract, seq.pattern, maschine.pattern, createindex, bowtie2file, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileTREAT2 = data.extract(scriptpath, datapath, fastqfile=fileTREAT2, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
   
-    
   # Data will be mapped, so we start mapping and then get back the data!
     CONTROL1 = load.file(paste(datapath, fileCONTROL1, sep="/"))
     CONTROL2 = load.file(paste(datapath, fileCONTROL2, sep="/"))
@@ -394,8 +394,8 @@ The following read count statistics were calculated for the single datasets.
 # General
 U1.stats = stats.data(dataset=CONTROL1, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
 U2.stats = stats.data(dataset=CONTROL2, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
-T1.stats =stats.data(dataset=TREAT1, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
-T2.stats =stats.data(dataset=TREAT2, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
+T1.stats = stats.data(dataset=TREAT1, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
+T2.stats = stats.data(dataset=TREAT2, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
 
 combined.stats = cbind.data.frame(U1.stats[,1:2], U2.stats[,2], T1.stats[,2], T2.stats[,2])
 colnames(combined.stats) = c("Readcount", d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
@@ -540,7 +540,6 @@ carpools.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, t
 
 ```
 
-\pagebreak
 
 ## Read Depth
 
@@ -556,7 +555,7 @@ carpools.read.depth(datasets = list(CONTROL1,CONTROL2,TREAT1,TREAT2), namecolumn
 par(mfrow=c(1,1))
 ```
 
-\pagebreak
+
 
 ## Designs per Gene
 These plots provide an overview of the representation of sgRNAs per gene within your data.  
@@ -664,7 +663,7 @@ MAGeCK | `r sig.pval.mageck`
 __Wilcox__
 
 Within this approach, the read counts of all sgRNAs in one dataset are first normalized by the function set in the MIACCS file. By default, normalization is done by read count division with the dataset median.  
-Then, the fold change of each population of sgRNAs for a gene is tested against the population of either the non-targeting controls or randomly picked sgRNAs, as defined by the random picks option within the MIACCS file, using a two-sided Mann-Whitney test.  
+Then, the fold change of each population of sgRNAs for a gene is tested against the population of either the non-targeting controls or randomly picked sgRNAs, as defined by the random picks option within the MIACCS file, using a two-sided Mann-Whitney test with FDR correction.  
 
 __DESeq2__
 
@@ -756,7 +755,7 @@ All analysis data can be found in the __`r paste(analysis.name, "HIT-CALLING.xls
 
 ```{r HT-method-DESeq2, echo=FALSE, message=FALSE,warning=FALSE}
 # DESeq2
-data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, extractpattern=g.extractpattern, sorting=FALSE, filename.deseq = paste(analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), fitType="mean")
+data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, extractpattern=g.extractpattern, sorting=FALSE, filename.deseq = paste(analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), sgRNA.pval = sig.pval.deseq, fitType="mean")
 
 xlsx::write.xlsx(as.data.frame(data.deseq$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="DESeq2", append=TRUE)
 
@@ -961,7 +960,7 @@ if(nrow(overlap.enriched.dataset) > 0)
 
 Within the __top enriched hits__, the overlap of enriched hits per analysis method is displayed as follows:  
 
-```{r HT-compare-enriched-overlap, echo=FALSE,sanitize=TRUE}
+```{r HT-compare-enriched-overlap, echo=FALSE,sanitize=TRUE, message=FALSE,warning=FALSE}
 venn.enriched = compare.analysis(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="enriched", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.enriched, cutoff.hits=number.enriched.counter, output="venn")
 
 require(VennDiagram)
@@ -1006,7 +1005,7 @@ if(nrow(overlap.depleted.dataset) > 0)
 
 Within the __top depleted hits__, the overlap of depleted hits per analysis method is displayed as follows:  
 
-```{r HT-compare-depleted-overlap, echo=FALSE,sanitize=TRUE}
+```{r HT-compare-depleted-overlap, echo=FALSE,sanitize=TRUE, message=FALSE,warning=FALSE}
 venn.depleted = compare.analysis(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="depleted", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.depleted.counter, output="venn")
 
 require(VennDiagram)
@@ -1171,7 +1170,6 @@ for(i in overlap.enriched)
 print(knitr::kable(sgrnas.en.table))
   cat("\n")
 
-
 count = count + 1
 }
 
@@ -1187,7 +1185,6 @@ count=0
 for(i in overlap.depleted)
   {
     cat("\n")
-
     cat("\n")
     cat("###", i,"\n")
     
@@ -1210,7 +1207,6 @@ for(i in overlap.depleted)
     cat("__MAGeCK p-value:__", sig.pval.candidate[[3]],"\n \n")
     
     cat("\n")
-
     cat("\n")  
       }
     else
@@ -1229,7 +1225,6 @@ for(i in overlap.depleted)
     # Scatterplot PAIRS sgRNA
     plothitsscatter.depleted = carpools.hit.scatter(wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, labelgenes=i, labelcolor=plot.labelcolor, extractpattern=g.extractpattern, normalize=normalize, norm.function=median, offsetplot=offsetplot, center=FALSE, aggregated=FALSE, type="depleted", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched,  pch=16)
     cat("\n")
-    
     cat("\n")
     # SgRNA foldchange, Z-Ratio, Vioplot
   
@@ -1239,7 +1234,6 @@ for(i in overlap.depleted)
   par(mfrow=c(1,1))
   
     cat("\n")
-
     cat("\n")
     # sgRNA table
  if(count==0)
@@ -1392,7 +1386,7 @@ if(identical(a.annotate.hits, TRUE))
     cat("__Filters:__", " ", a.annotate,"\n","\n")
     
     cat("The annotated list of all hit candidates is stored in", "\n","\n")
-    cat("*", datapath,"*", "\n", "\n")
+    cat("_", datapath,"_", "\n", "\n")
     cat("**", paste(analysis.name, "ANNOTATION.xls", sep="_"),"**", "\n")
   
     annotate.enriched.all = get.gene.info(as.data.frame(overlap.enriched), namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = a.annotate, return.val = "info", controls=TRUE)  
@@ -1451,9 +1445,7 @@ Reverse Complement Sequence | `r reversecomplement`
 Pattern of Data Extraction  | `r seq.pattern`
 Maschine Identifier FASTq  | `r maschine.pattern`
 Create Bowtie2 Index? | `r createindex`
-Bowtie2 Index File  | `r bowtie2file`
 Reference .fasta File | `r referencefile`
 Bt2 Threads | `r threads`
 Bt2 Sensitivity | `r sensitivity`
 sgRNA Oligo Match | `r match`
-

@@ -24,8 +24,6 @@ load.packages()
 \end{center}
 
 ```{r settings-setup, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
-
-#OPTIONAL PROXY
 #options(RCurlOptions=list(proxy="YOURproxyHERE", http.version=1))
 
 
@@ -77,10 +75,18 @@ fileCONTROL1 = as.character(miaccs["carpools.untreated1",3])
 d.CONTROL1 = as.character(miaccs["carpools.untreated1.desc",3])
 fileCONTROL2 = as.character(miaccs["carpools.untreated2",3])
 d.CONTROL2 = as.character(miaccs["carpools.untreated2.desc",3])
+fileCONTROL3 = as.character(miaccs["carpools.untreated3",3])
+d.CONTROL3 = as.character(miaccs["carpools.untreated3.desc",3])
+fileCONTROL4 = as.character(miaccs["carpools.untreated4",3])
+d.CONTROL4 = as.character(miaccs["carpools.untreated4.desc",3])
 fileTREAT1 = as.character(miaccs["carpools.treated1",3])
 d.TREAT1 = as.character(miaccs["carpools.treated1.desc",3])
 fileTREAT2 = as.character(miaccs["carpools.treated2",3])
 d.TREAT2 = as.character(miaccs["carpools.treated2.desc",3])
+fileTREAT3 = as.character(miaccs["carpools.treated3",3])
+d.TREAT3 = as.character(miaccs["carpools.treated3.desc",3])
+fileTREAT4 = as.character(miaccs["carpools.treated4",3])
+d.TREAT4 = as.character(miaccs["carpools.treated4.desc",3])
 
 # name of reference library .fasta file WITHOUT extension .fasta
 referencefile = as.character(miaccs["carpools.lib.ref",3])
@@ -292,50 +298,44 @@ if(identical(mapping, TRUE))
    fileCONTROL1 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL1, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
    fileCONTROL2 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL2, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   
+    fileCONTROL3 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL3, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   fileCONTROL4 = data.extract(scriptpath, datapath, fastqfile=fileCONTROL4, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
    fileTREAT1 = data.extract(scriptpath, datapath, fastqfile=fileTREAT1, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
    fileTREAT2 = data.extract(scriptpath, datapath, fastqfile=fileTREAT2, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+
+   fileTREAT3 = data.extract(scriptpath, datapath, fastqfile=fileTREAT3, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
+   
+   fileTREAT4 = data.extract(scriptpath, datapath, fastqfile=fileTREAT4, extract, seq.pattern, maschine.pattern, createindex, referencefile, mapping, reversecomplement, threads, bowtieparams, sensitivity, match)
         
   
     
   # Data will be mapped, so we start mapping and then get back the data!
     CONTROL1 = load.file(paste(datapath, fileCONTROL1, sep="/"))
     CONTROL2 = load.file(paste(datapath, fileCONTROL2, sep="/"))
+    CONTROL3 = load.file(paste(datapath, fileCONTROL3, sep="/"))
+    CONTROL4 = load.file(paste(datapath, fileCONTROL4, sep="/"))
     TREAT1 = load.file(paste(datapath, fileTREAT1, sep="/"))
     TREAT2 = load.file(paste(datapath, fileTREAT2, sep="/"))
+    TREAT3 = load.file(paste(datapath, fileTREAT3, sep="/"))
+    TREAT4 = load.file(paste(datapath, fileTREAT4, sep="/"))
     libFILE = load.file(paste(datapath, paste(referencefile,".fasta",sep=""), sep="/"),header = FALSE, type="fastalib")
  } else {
     # Extracted and mapped read count data is present, so ONLY load files already there using the filename fileCONTROL etc.
     CONTROL1 = load.file(paste(datapath, fileCONTROL1, sep="/"))
     CONTROL2 = load.file(paste(datapath, fileCONTROL2, sep="/"))
+    CONTROL3 = load.file(paste(datapath, fileCONTROL3, sep="/"))
+    CONTROL4 = load.file(paste(datapath, fileCONTROL4, sep="/"))
     TREAT1 = load.file(paste(datapath, fileTREAT1, sep="/"))
     TREAT2 = load.file(paste(datapath, fileTREAT2, sep="/"))
+    TREAT3 = load.file(paste(datapath, fileTREAT3, sep="/"))
+    TREAT4 = load.file(paste(datapath, fileTREAT4, sep="/"))
     libFILE = load.file(paste(datapath, paste(referencefile,".fasta",sep=""), sep="/"),header = FALSE, type="fastalib")
 }
 
 ```
-
-__A brief look into the data passed on to the analysis scripts:__  
-
-`r # make randoms for brief stats table`
-`r sample.sgrna = sample(1:nrow(CONTROL1),10)`
-
-__`r d.CONTROL1`__  
-__`r fileCONTROL1`__
-`r knitr::kable(CONTROL1[sample.sgrna,])`
-
-__`r d.CONTROL2`__  
-__`r fileCONTROL2`__
-`r knitr::kable(CONTROL2[sample.sgrna,])`
-
-__`r d.TREAT1`__  
-__`r fileTREAT1`__
-`r knitr::kable(TREAT1[sample.sgrna,])`
-
-__`r d.TREAT2`__  
-__`r fileTREAT2`__
-`r knitr::kable(TREAT2[sample.sgrna,])`
 
 
 ```{r geneidentifier, echo=FALSE, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE, results='hide'}
@@ -350,10 +350,18 @@ if(identical(g.convert, TRUE))
     CONTROL1 = get.gene.info(CONTROL1, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
     
     CONTROL2 = get.gene.info(CONTROL2, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
+  
+    CONTROL3 = get.gene.info(CONTROL3, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
+    
+    CONTROL4 = get.gene.info(CONTROL4, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
     
     TREAT1 = get.gene.info(TREAT1, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
     
     TREAT2 = get.gene.info(TREAT2, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
+    
+    TREAT3 = get.gene.info(TREAT3, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
+    
+    TREAT4 = get.gene.info(TREAT4, namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset")
     
     # convert control list
      controls.target = get.gene.info(as.data.frame(controls.target), namecolumn=namecolumn, extractpattern=g.extractpattern, database=a.database, dataset=a.dataset, filters=g.identifier, attributes = c(g.identifier.new), return.val = "dataset", controls=TRUE)
@@ -366,14 +374,22 @@ if(identical(g.convert, TRUE))
 # aggregate to genes for later plots
 CONTROL1.g=aggregatetogenes(CONTROL1, agg.function=sum, extractpattern = g.extractpattern)
 CONTROL2.g=aggregatetogenes(CONTROL2, agg.function=sum, extractpattern = g.extractpattern)
+CONTROL3.g=aggregatetogenes(CONTROL3, agg.function=sum, extractpattern = g.extractpattern)
+CONTROL4.g=aggregatetogenes(CONTROL4, agg.function=sum, extractpattern = g.extractpattern)
 TREAT1.g=aggregatetogenes(TREAT1, agg.function=sum, extractpattern = g.extractpattern)
 TREAT2.g=aggregatetogenes(TREAT2, agg.function=sum, extractpattern = g.extractpattern)
+TREAT3.g=aggregatetogenes(TREAT3, agg.function=sum, extractpattern = g.extractpattern)
+TREAT4.g=aggregatetogenes(TREAT4, agg.function=sum, extractpattern = g.extractpattern)
 
 # Add genes names to normal count file (if not present)
 CONTROL1=aggregatetogenes(CONTROL1, extractpattern = g.extractpattern, type="annotate")
 CONTROL2=aggregatetogenes(CONTROL2, extractpattern = g.extractpattern, type="annotate")
+CONTROL3=aggregatetogenes(CONTROL3, extractpattern = g.extractpattern, type="annotate")
+CONTROL4=aggregatetogenes(CONTROL4, extractpattern = g.extractpattern, type="annotate")
 TREAT1=aggregatetogenes(TREAT1, extractpattern = g.extractpattern,type="annotate")
 TREAT2=aggregatetogenes(TREAT2, extractpattern = g.extractpattern, type="annotate")
+TREAT3=aggregatetogenes(TREAT3, extractpattern = g.extractpattern, type="annotate")
+TREAT4=aggregatetogenes(TREAT4, extractpattern = g.extractpattern, type="annotate")
 
 # Calculate Percentage into gene rows
 number.enriched.counter = ceiling((nrow(CONTROL1.g)/100)*number.hits.plot.enriched)
@@ -400,11 +416,15 @@ The following read count statistics were calculated for the single datasets.
 # General
 U1.stats = stats.data(dataset=CONTROL1, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
 U2.stats = stats.data(dataset=CONTROL2, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
+U3.stats = stats.data(dataset=CONTROL3, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
+U4.stats = stats.data(dataset=CONTROL4, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
 T1.stats = stats.data(dataset=TREAT1, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
 T2.stats = stats.data(dataset=TREAT2, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
+T3.stats = stats.data(dataset=TREAT3, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
+T4.stats = stats.data(dataset=TREAT4, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="stats")
 
-combined.stats = cbind.data.frame(U1.stats[,1:2], U2.stats[,2], T1.stats[,2], T2.stats[,2])
-colnames(combined.stats) = c("Readcount", d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
+combined.stats = cbind.data.frame(U1.stats[,1:2], U2.stats[,2], U3.stats[,2], U4.stats[,2], T1.stats[,2], T2.stats[,2], T3.stats[,2], T4.stats[,2])
+colnames(combined.stats) = c("Readcount", d.CONTROL1, d.CONTROL2, d.CONTROL3, d.CONTROL4, d.TREAT1, d.TREAT2, d.TREAT3,d.TREAT4)
 
 # output to report
 knitr::kable(combined.stats)
@@ -424,17 +444,33 @@ U1.unmapped = U1.unmapped[order(U1.unmapped$sgRNA, decreasing=TRUE),]
 U2.unmapped = unmapped.genes(data=CONTROL2, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=NULL, extractpattern=g.extractpattern)
 U2.unmapped = U2.unmapped[order(U2.unmapped$sgRNA, decreasing=TRUE),]
 
+U3.unmapped = unmapped.genes(data=CONTROL3, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=NULL, extractpattern=g.extractpattern)
+U3.unmapped = U3.unmapped[order(U3.unmapped$sgRNA, decreasing=TRUE),]
+
+U4.unmapped = unmapped.genes(data=CONTROL4, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=NULL, extractpattern=g.extractpattern)
+U4.unmapped = U4.unmapped[order(U4.unmapped$sgRNA, decreasing=TRUE),]
+
 T1.unmapped = unmapped.genes(data=TREAT1, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=NULL, extractpattern=g.extractpattern)
 T1.unmapped = T1.unmapped[order(T1.unmapped$sgRNA, decreasing=TRUE),]
 
 T2.unmapped = unmapped.genes(data=TREAT2, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=NULL, extractpattern=g.extractpattern)
 T2.unmapped = T2.unmapped[order(T2.unmapped$sgRNA, decreasing=TRUE),]
 
+T3.unmapped = unmapped.genes(data=TREAT3, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=NULL, extractpattern=g.extractpattern)
+T3.unmapped = T3.unmapped[order(T3.unmapped$sgRNA, decreasing=TRUE),]
+
+T4.unmapped = unmapped.genes(data=TREAT4, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=NULL, extractpattern=g.extractpattern)
+T4.unmapped = T4.unmapped[order(T4.unmapped$sgRNA, decreasing=TRUE),]
+
 # output to file
 xlsx::write.xlsx(U1.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL1, row.names=FALSE)
 xlsx::write.xlsx(U2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL2, append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(U3.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL3, append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(U4.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.CONTROL4, append=TRUE, row.names=FALSE)
 xlsx::write.xlsx(T1.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT1, append=TRUE, row.names=FALSE)
 xlsx::write.xlsx(T2.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT2, append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(T3.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT3, append=TRUE, row.names=FALSE)
+xlsx::write.xlsx(T4.unmapped, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=d.TREAT4, append=TRUE, row.names=FALSE)
 
 # Output single sgRNAs of each gene
 U1.unmapped.singles = unmapped.genes(data=CONTROL1, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=U1.unmapped[,"name"], extractpattern=g.extractpattern)
@@ -443,12 +479,28 @@ xlsx::write.xlsx(U1.unmapped.singles, file=paste(datapath, paste(analysis.name, 
 U2.unmapped.singles = unmapped.genes(data=CONTROL2, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=U2.unmapped[,"name"], extractpattern=g.extractpattern)
 U2.unmapped.singles = U2.unmapped.singles[order(U2.unmapped.singles$sgRNA, decreasing=TRUE),]
 xlsx::write.xlsx(U2.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.CONTROL2,"sgRNA"), row.names=FALSE, append=TRUE)
+
+U3.unmapped.singles = unmapped.genes(data=CONTROL3, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=U3.unmapped[,"name"], extractpattern=g.extractpattern)
+U3.unmapped.singles = U3.unmapped.singles[order(U3.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(U3.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.CONTROL3,"sgRNA"), row.names=FALSE, append=TRUE)
+
+U4.unmapped.singles = unmapped.genes(data=CONTROL4, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=U4.unmapped[,"name"], extractpattern=g.extractpattern)
+U4.unmapped.singles = U4.unmapped.singles[order(U4.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(U4.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.CONTROL4,"sgRNA"), row.names=FALSE, append=TRUE)
+
 T1.unmapped.singles = unmapped.genes(data=TREAT1, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=T1.unmapped[,"name"], extractpattern=g.extractpattern)
 T1.unmapped.singles = T1.unmapped.singles[order(T1.unmapped.singles$sgRNA, decreasing=TRUE),]
 xlsx::write.xlsx(T1.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.TREAT1,"sgRNA"), row.names=FALSE, append=TRUE)
 T2.unmapped.singles = unmapped.genes(data=TREAT2, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=T2.unmapped[,"name"], extractpattern=g.extractpattern)
 T2.unmapped.singles = T2.unmapped.singles[order(T2.unmapped.singles$sgRNA, decreasing=TRUE),]
 xlsx::write.xlsx(T2.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.TREAT2,"sgRNA"), row.names=FALSE, append=TRUE)
+
+T3.unmapped.singles = unmapped.genes(data=TREAT3, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=T3.unmapped[,"name"], extractpattern=g.extractpattern)
+T3.unmapped.singles = T3.unmapped.singles[order(T3.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(T3.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.TREAT3,"sgRNA"), row.names=FALSE, append=TRUE)
+T4.unmapped.singles = unmapped.genes(data=TREAT4, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, genes=T4.unmapped[,"name"], extractpattern=g.extractpattern)
+T4.unmapped.singles = T4.unmapped.singles[order(T4.unmapped.singles$sgRNA, decreasing=TRUE),]
+xlsx::write.xlsx(T4.unmapped.singles, file=paste(datapath, paste(analysis.name, "DROPOUT.xls", sep="_"), sep="/"), sheetName=paste(d.TREAT4,"sgRNA"), row.names=FALSE, append=TRUE)
 
 ```
 
@@ -488,22 +540,30 @@ U1.allstats = stats.data(dataset=CONTROL1, namecolumn = namecolumn, fullmatchcol
 
 U2.allstats = stats.data(dataset=CONTROL2, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="dataset")
 
+U3.allstats = stats.data(dataset=CONTROL3, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="dataset")
+
+U4.allstats = stats.data(dataset=CONTROL4, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="dataset")
+
 T1.allstats = stats.data(dataset=TREAT1, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="dataset")
 
 T2.allstats = stats.data(dataset=TREAT2, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="dataset")
 
+T3.allstats = stats.data(dataset=TREAT3, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="dataset")
 
-combined.stats.mean = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.mean"],U2.allstats[,"readcount.mean"],T1.allstats[,"readcount.mean"],T2.allstats[,"readcount.mean"])
-colnames(combined.stats.mean) = c("Gene",d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
+T4.allstats = stats.data(dataset=TREAT4, namecolumn = namecolumn, fullmatchcolumn = fullmatchcolumn, extractpattern=g.extractpattern, type="dataset")
 
-combined.stats.median = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.median"],U2.allstats[,"readcount.median"],T1.allstats[,"readcount.median"],T2.allstats[,"readcount.median"])
-colnames(combined.stats.median) = c("Gene",d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
 
-combined.stats.min = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.min"],U2.allstats[,"readcount.min"],T1.allstats[,"readcount.min"],T2.allstats[,"readcount.min"])
-colnames(combined.stats.min) = c("Gene",d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
+combined.stats.mean = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.mean"],U2.allstats[,"readcount.mean"],U3.allstats[,"readcount.mean"],U4.allstats[,"readcount.mean"],T1.allstats[,"readcount.mean"],T2.allstats[,"readcount.mean"],T3.allstats[,"readcount.mean"],T4.allstats[,"readcount.mean"])
+colnames(combined.stats.mean) = c("Gene",d.CONTROL1, d.CONTROL2, d.CONTROL3, d.CONTROL4, d.TREAT1, d.TREAT2, d.TREAT3, d.TREAT4)
 
-combined.stats.max = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.max"],U2.allstats[,"readcount.max"],T1.allstats[,"readcount.max"],T2.allstats[,"readcount.max"])
-colnames(combined.stats.max) = c("Gene",d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2)
+combined.stats.median = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.median"],U2.allstats[,"readcount.median"],U3.allstats[,"readcount.median"],U4.allstats[,"readcount.median"],T1.allstats[,"readcount.median"],T2.allstats[,"readcount.median"],T3.allstats[,"readcount.median"],T4.allstats[,"readcount.median"])
+colnames(combined.stats.median) = c("Gene",d.CONTROL1, d.CONTROL2,d.CONTROL3,d.CONTROL4, d.TREAT1, d.TREAT2,d.TREAT3,d.TREAT4)
+
+combined.stats.min = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.min"],U2.allstats[,"readcount.min"],U3.allstats[,"readcount.min"],U4.allstats[,"readcount.min"],T1.allstats[,"readcount.min"],T2.allstats[,"readcount.min"],T3.allstats[,"readcount.min"],T4.allstats[,"readcount.min"])
+colnames(combined.stats.min) = c("Gene",d.CONTROL1, d.CONTROL2, d.CONTROL3,d.CONTROL4, d.TREAT1, d.TREAT2, d.TREAT3, d.TREAT3)
+
+combined.stats.max = cbind.data.frame(U1.allstats[,"Name"], U1.allstats[,"readcount.max"],U2.allstats[,"readcount.max"], U3.allstats[,"readcount.max"], U4.allstats[,"readcount.max"],T1.allstats[,"readcount.max"],T2.allstats[,"readcount.max"], T3.allstats[,"readcount.max"], T4.allstats[,"readcount.max"])
+colnames(combined.stats.max) = c("Gene",d.CONTROL1, d.CONTROL2, d.CONTROL3, d.CONTROL4, d.TREAT1, d.TREAT2, d.TREAT3, d.TREAT4)
 
 xlsx::write.xlsx(combined.stats.mean, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Mean Read Count", append=TRUE ,row.names=FALSE)
 xlsx::write.xlsx(combined.stats.median, file=paste(datapath, paste(analysis.name, "STATS.xls", sep="_"), sep="/"), sheetName="Median Read Count", append=TRUE, row.names=FALSE)
@@ -529,21 +589,27 @@ par(mfrow=c(1,1))
 
 carpools.read.distribution(CONTROL1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-carpools.read.distribution(CONTROL1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
-
 carpools.read.distribution(CONTROL2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-carpools.read.distribution(CONTROL2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
+# add new page
+cat("\\newpage", "\n")
+
+carpools.read.distribution(CONTROL3, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL3, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
+
+carpools.read.distribution(CONTROL4, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.CONTROL4, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
+
 # add new page
 cat("\\newpage", "\n")
 
 carpools.read.distribution(TREAT1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-carpools.read.distribution(TREAT1, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT1, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
-
 carpools.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
-carpools.read.distribution(TREAT2, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT2, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic, type="whisker") 
+cat("\\newpage", "\n")
+
+carpools.read.distribution(TREAT3, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT3, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
+
+carpools.read.distribution(TREAT4, fullmatchcolumn=fullmatchcolumn,breaks=200, title=d.TREAT4, xlab="log2 Readcount", ylab="# sgRNAs",statistics=plot.statistic) 
 
 ```
 
@@ -558,7 +624,7 @@ If a non-targeting control has been set in the MIACCS file, this control is high
 ```{r QC-readdepth, echo=FALSE, sanitize=TRUE}
 #, fig.width=10, fig.height=20
 #par(mfrow=c(4,1))
-carpools.read.depth(datasets = list(CONTROL1,CONTROL2,TREAT1,TREAT2), namecolumn=namecolumn ,fullmatchcolumn=fullmatchcolumn, dataset.names=list(d.CONTROL1,d.CONTROL2,d.TREAT1,d.TREAT2), extractpattern=g.extractpattern, xlab="Genes", ylab="Read Count per sgRNA",statistics=plot.statistic, labelgenes = NULL, controls.target = controls.target, controls.nontarget=controls.nontarget)
+carpools.read.depth(datasets = list(CONTROL1,CONTROL2, CONTROL3, CONTROL4 ,TREAT1,TREAT2, TREAT3, TREAT4), namecolumn=namecolumn ,fullmatchcolumn=fullmatchcolumn, dataset.names=list(d.CONTROL1,d.CONTROL2, d.CONTROL3, d.CONTROL4,d.TREAT1,d.TREAT2, d.TREAT3, d.TREAT4), extractpattern=g.extractpattern, xlab="Genes", ylab="Read Count per sgRNA",statistics=plot.statistic, labelgenes = NULL, controls.target = controls.target, controls.nontarget=controls.nontarget)
 
 par(mfrow=c(1,1))
 ```
@@ -578,9 +644,17 @@ control1.readspergene = carpools.reads.genedesigns(CONTROL1, fullmatchcolumn=ful
 
 control2.readspergene = carpools.reads.genedesigns(CONTROL2, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.CONTROL2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
 
+control3.readspergene = carpools.reads.genedesigns(CONTROL3, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.CONTROL2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+
+control4.readspergene = carpools.reads.genedesigns(CONTROL4, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.CONTROL2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+
 treat1.readspergene = carpools.reads.genedesigns(TREAT1, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT1, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
 
 treat2.readspergene = carpools.reads.genedesigns(TREAT2, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+
+treat3.readspergene = carpools.reads.genedesigns(TREAT3, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
+
+treat4.readspergene = carpools.reads.genedesigns(TREAT4, fullmatchcolumn=fullmatchcolumn, namecolumn=namecolumn, title=paste("% sgRNAs:", d.TREAT2, sep=" "), xlab="% of sgRNAs present", ylab="# of Genes")
 
 par(mfrow=c(1,1))
 ```
@@ -612,7 +686,7 @@ if(!is.null(controls.nontarget))
   {
     cat("Non-targeting control: ", controls.nontarget ,"\n")  
     cat("\n")
-    carpools.read.count.vs(dataset=list(TREAT1, TREAT2, CONTROL1, CONTROL2), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.nontarget, labelcolor="blue", center=FALSE, aggregated=FALSE)
+    carpools.read.count.vs(dataset=list(TREAT1, TREAT2, TREAT3, TREAT4, CONTROL1, CONTROL2, CONTROL3, CONTROL4), dataset.names = c(d.TREAT1, d.TREAT2, d.TREAT3, d.TREAT4, d.CONTROL1, d.CONTROL2, d.CONTROL3, d.CONTROL4), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.nontarget, labelcolor="blue", center=FALSE, aggregated=FALSE)
   } else {
     cat("No non-targeting control has been set in the MIACCS file.")
   }
@@ -641,7 +715,7 @@ if(!is.null(controls.target))
   {
     cat("Positive Control: ", as.character(controls.target) ,"\n")  
     cat("\n")
-    carpools.read.count.vs(dataset=list(TREAT1.g, TREAT2.g, CONTROL1.g, CONTROL2.g), dataset.names = c(d.TREAT1, d.TREAT2, d.CONTROL1, d.CONTROL2), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.target, labelcolor="red", center=FALSE, aggregated=TRUE)
+    carpools.read.count.vs(dataset=list(TREAT1.g, TREAT2.g, TREAT3.g, TREAT4.g, CONTROL1.g, CONTROL2.g, CONTROL3.g, CONTROL4.g), dataset.names = c(d.TREAT1, d.TREAT2, d.TREAT3, d.TREAT4, d.CONTROL1, d.CONTROL2, d.CONTROL3, d.CONTROL4), pairs=TRUE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=controls.target, labelcolor="red", center=FALSE, aggregated=TRUE)
   } else {
     cat("No positive control has been set in the MIACCS file.")
   }
@@ -701,7 +775,7 @@ if(is.null(controls.nontarget))
     cat(paste("**Since no non-targeting controls were set,", control.picks, "sgRNAs are picked from the datset as reference population.**", sep=" "))
     cat("\n")
   }
-data.wilcox = stat.wilcox(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, normalize=normalize, norm.fun=norm.function, sorting=FALSE, controls=controls.nontarget, control.picks=control.picks)
+data.wilcox = stat.wilcox(untreated.list = list(CONTROL1, CONTROL2, CONTROL3, CONTROL4), treated.list = list(TREAT1,TREAT2, TREAT3, TREAT4), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, normalize=normalize, norm.fun=norm.function, sorting=FALSE, controls=controls.nontarget, control.picks=control.picks)
 
 xlsx::write.xlsx(data.wilcox, file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="Wilcox")
 
@@ -763,7 +837,7 @@ All analysis data can be found in the __`r paste(analysis.name, "HIT-CALLING.xls
 
 ```{r HT-method-DESeq2, echo=FALSE, message=FALSE,warning=FALSE}
 # DESeq2
-data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, extractpattern=g.extractpattern, sorting=FALSE, filename.deseq = paste(analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), sgRNA.pval = sig.pval.deseq, fitType="mean")
+data.deseq = stat.DESeq(untreated.list = list(CONTROL1, CONTROL2, CONTROL3, CONTROL4), treated.list = list(TREAT1,TREAT2,TREAT3,TREAT4), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, extractpattern=g.extractpattern, sorting=FALSE, filename.deseq = paste(analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), sgRNA.pval = sig.pval.deseq, fitType="mean")
 
 xlsx::write.xlsx(as.data.frame(data.deseq$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="DESeq2", append=TRUE)
 
@@ -826,7 +900,7 @@ All analysis data for MAGeCK can be found in the __`r paste(analysis.name, "HIT-
 
 ```{r HT-method-MAGeCK, echo=FALSE}
 # MAGeCK
-data.mageck = stat.mageck(untreated.list = list(CONTROL1, CONTROL2), treated.list = list(TREAT1,TREAT2), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.fun="median", extractpattern=g.extractpattern, mageckfolder=NULL, sort.criteria="neg", adjust.method="fdr", filename = paste(analysis.name, "-ANALYSIS-MAGeCK-RAW", sep=""), fdr.pval=sig.pval.mageck)
+data.mageck = stat.mageck(untreated.list = list(CONTROL1, CONTROL2, CONTROL3, CONTROL4), treated.list = list(TREAT1,TREAT2, TREAT3,TREAT4), namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, norm.fun="median", extractpattern=g.extractpattern, mageckfolder=NULL, sort.criteria="neg", adjust.method="fdr", filename = paste(analysis.name, "-ANALYSIS-MAGeCK-RAW", sep=""), fdr.pval=sig.pval.mageck)
 
 xlsx::write.xlsx(as.data.frame(data.mageck$genes), file=paste(datapath, paste(analysis.name, "HIT-CALLING.xls", sep="_"), sep="/"), sheetName="MAGeCK", append=TRUE)
 # get number of sig gene
@@ -1019,28 +1093,6 @@ venn.depleted = compare.analysis(wilcox=data.wilcox, deseq=data.deseq, mageck=da
 require(VennDiagram)
 grid::grid.draw(VennDiagram::venn.diagram(venn.depleted, file=NULL, fill=c("lightgreen","lightblue2","lightgray"), na="remove", cex=2,lty=2, cat.cex=2))
 ```
-
-\newpage
-
-## Enriched Overlapping Hit Candidates
-
-All overlapping genes which showed enrichment are highlighted in __orange__ color in the following plots.
-
-```{r HT-compare-overlap-enriched-scatter, echo=FALSE, sanitize=TRUE,fig.width=8,fig.height=8}
-# make Hit Scatter with all HITS enriched in a 4x4 square
-
-carpools.read.count.vs(dataset=list(CONTROL1.g, CONTROL2.g,TREAT1.g, TREAT2.g), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), pairs=FALSE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=overlap.enriched, labelcolor="orange", center=FALSE, aggregated=TRUE)
-```
-
-## Depleted Overlapping Hit Candidates
-
-All overlapping genes which showed depletion are highlighted in __orange__ color in the following plots.
-
-```{r HT-compare-overlap-depleted-scatter, echo=FALSE, sanitize=TRUE,fig.width=8,fig.height=8}
-
-carpools.read.count.vs(dataset=list(CONTROL1.g, CONTROL2.g,TREAT1.g, TREAT2.g), dataset.names = c(d.CONTROL1, d.CONTROL2, d.TREAT1, d.TREAT2), pairs=FALSE, namecolumn=namecolumn, fullmatchcolumn=fullmatchcolumn, title=analysis.name, pch=16, normalize=normalize, norm.function=norm.function, labelgenes=overlap.depleted, labelcolor="orange", center=FALSE, aggregated=TRUE)
-```
-
 
 ```{r annotate-for-hit-candidate, echo=FALSE, message=FALSE,warning=FALSE}
 
@@ -1297,18 +1349,6 @@ knitr::kable(data.analysis.enriched[,c(2:7)])
 
 \newpage
 
-__3D Scatterplot__  
-This plot shows you the p-value of overlapping enriched genes of all three methods. The best hits will show up in the upper right corner.
-
-```{r HT-3d-enriched, echo=FALSE, sanitize=TRUE}
-#,fig.width=10,fig.height=10
-par(mfrow=c(1,1))
-compared = compare.analysis( wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="enriched", cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=TRUE, cutoff.hits=number.enriched.counter, output="3dplot", sort.by=c("mageck","rank","rank"), plot.method=c("wilcox","deseq","mageck"), plot.feature=c("pval","pval","fdr"))
-
-```
-
-\newpage
-
 ### Depleted
 
 
@@ -1325,61 +1365,6 @@ knitr::kable(data.analysis.depleted[,c(2:7)])
 ```
 
 \newpage
-
-
-__3D Scatterplot__  
-
-This plot shows you the p-value of overlapping depleted genes of all three methods. The best hits will show up in the upper right corner.
-
-```{r HT-3d-depleted, echo=FALSE, sanitize=TRUE}
-par(mfrow=c(1,1))
-compared2 = compare.analysis( wilcox=data.wilcox, deseq=data.deseq, mageck=data.mageck, type="depleted",  cutoff.deseq = sig.pval.deseq, cutoff.wilcox = sig.pval.wilcox, cutoff.mageck = sig.pval.mageck, cutoff.override=TRUE, cutoff.hits=number.depleted.counter, output="3dplot", sort.by=c("mageck","rank","rank"), plot.method=c("wilcox","deseq","mageck"), plot.feature=c("pval","pval","fdr"))
-
-```
-
-
-\newpage
-
-## Visualize Analysis
-
-The following pages present a visual representation of the p-value for single genes within all analysis methods.  
-_Significantly_ enriched genes, which had a corrected p-value below the threshold set for each method, are highlighted in __red__.  
-_Significantly_ depleted genes, which had a corrected p-value below the threshold set for each method, are highlighted in __blue__.  
-
-Moreover, the number of significant sgRNAs is presented for MAGeCK as well.
-
-### Wilcox
-
-```{r HT-visualization-wilcox, echo=FALSE, sanitize=TRUE}
-#, fig.height=10, fig.width=15
-wilcox.result = carpools.hitident(data.wilcox, type="wilcox", title=paste(analysis.name, "wilcox", sep=" "), print.names=TRUE, offsetplot=1.2, plot.p=sig.pval.wilcox, separate=TRUE)
-
-```
-
-\newpage
-
-### DESeq2
-
-```{r HT-visualization-deseq, echo=FALSE, sanitize=TRUE}
-#, fig.height=10, fig.width=15
-deseq.result = carpools.hitident(data.deseq, type="deseq2", title=paste(analysis.name, "DESeq2", sep=" "), print.names=TRUE, plot.p=sig.pval.deseq, separate=TRUE, offsetplot=1.2, sgRNA.top=sgRNAs.top.deseq)
-
-
-```
-
-\newpage
-
-### MAGeCK
-
-```{r HT-visualization-mageck, echo=FALSE, sanitize=TRUE}
-#, fig.height=10, fig.width=15
-
-mageck.result = carpools.hitident(data.mageck, type="mageck", title=paste(analysis.name, "MAGeCK", sep=" "), inches=0.1, print.names=TRUE, separate=TRUE, plot.p=sig.pval.mageck, offsetplot=1.2, sgRNA.top=sgRNAs.top.mageck)
-
-```
-
-\newpage
-
 
 # Final Gene Table
 

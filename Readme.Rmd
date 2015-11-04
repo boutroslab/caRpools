@@ -42,6 +42,10 @@ Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zha
 
 # Changelog
 
+### 0.82.5 (latest CRAN)
+* updated R documentation
+* improved speed
+
 ### 0.82.4
 * updated R documentation
 * modified carpools.read.count.vs for automatic replicate detection

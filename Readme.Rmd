@@ -37,8 +37,7 @@ Web http://www.dkfz-heidelberg.de/en/signaling
 
 #### Reference
 
-Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zhan, T., Boutros, M. (2015). caRpools: A tool for exploratory data analysis and documentation of pooled CRISPR/Cas9 screens, _manuscript in preparation_
-
+Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zhan, T., Boutros, M. (2015) caRpools: An R package for exploratory data analysis and documentation of pooled CRISPR/Cas9 screens. _Bioinformatics_
 
 # Changelog
 

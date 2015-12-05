@@ -3,6 +3,11 @@
 caRpools - a software package for the analysis CRISPR/Cas9 pooled screens
 ==============
 
+==============
+Attention: Due to the downtime of the community-server of biomaRt, caRpools 0.82.5 does not function properly.
+A hotfix package 0.83 is released soon that uses by default the Ensembl servers for data annotation.
+==============
+
 CaRpools is an R package forexploratory data analysis of pooled CRISPR/Cas9 screens. It aims to provide a user-friendly pipeline for end-to-end analysis of screening data. As an output, it generates standardized PDF and HTML reports that include:
 
 * In-depth analysis of screening quality

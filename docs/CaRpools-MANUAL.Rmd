@@ -863,12 +863,14 @@ For further information about biomaRt conversion, please see the [biomaRt Manual
 # Convert HGNC gene symbol to EnsemblID
 CONTROL1 = get.gene.info(
   CONTROL1, namecolumn=1, extractpattern=expression("^(.+?)(_.+)"),
-  database="ensembl", dataset="hsapiens_gene_ensembl", filters="hgnc_symbol",
+  host="www.ensembl.org",
+  database="ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl", filters="hgnc_symbol",
   attributes = "ensembl_gene_id", return.val = "dataset")
 # Also convert the library reference
 libFILE = get.gene.info(
   libFILE, namecolumn=1, extractpattern=expression("^(.+?)(_.+)"),
-  database="ensembl", dataset="hsapiens_gene_ensembl", filters="hgnc_symbol",
+  host="www.ensembl.org",
+  database="ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl", filters="hgnc_symbol",
   attributes = "ensembl_gene_id", return.val = "dataset")
 ```
 
@@ -877,7 +879,7 @@ This will convert a gene identifier, which is extracted by a PERL Regular Expres
 #### get.gene.info()
 
 **Usage**  
-`get.gene.info = function(data, namecolumn=1, extractpattern=expression("^(.+?)(_.+)"), database="ensembl", dataset="hsapiens_gene_ensembl", filters="ensembl_gene_id", attributes = c("hgnc_symbol"), return.val = "dataset", controls=FALSE)`  
+`get.gene.info = function(data, namecolumn=1, extractpattern=expression("^(.+?)(_.+)"), host="www.ensembl.org", database="ensembl", dataset="hsapiens_gene_ensembl", filters="ensembl_gene_id", attributes = c("hgnc_symbol"), return.val = "dataset", controls=FALSE)`  
 
 **data**
 Data frame that contains read-count data.
@@ -895,15 +897,20 @@ e.g. in **AAK1_107_0** it will extract **AAK1**, since this is the gene identifi
 *Default* expression("^(.+?)(_.+)"), will work for most available libraries.  
 *Values* PERL regular expression with parenthesis indicating the gene identifier (expression)  
 
+**host**  
+The host which is used to retrieve biomaRt information.  
+*Default* "www.ensembl.org"  
+*Values* See biomaRt website for further information.  
+
 **database**  
 BiomaRt database to be used. See `?listMarts()` or biomaRt documentation.  
-*Default* "ensembl", is using the ensembl database  
+*Default* "ENSEMBL_MART_ENSEMBL", is using the ensembl database  
 *Values* Any biomaRt database (character)  
 
 **dataset**  
 The biomaRt data-set to be used. For *homo sapiens*, *hsapiens_gene_ensembl* is recommended. See `?listDatasets` or biomaRt documentation.  
 *Default* "hsapiens_gene_ensembl"  
-*Values* Any biomaRt data-set (character)  
+*Values* Any biomaRt dataset (character)  
 
 **filters**  
 The input filter information to retrieve biomaRt annotation, usually is the type of gene identifier used in the read-count files, e.g. "ensemble_gene_id". see `?listFilters`  
@@ -928,9 +935,9 @@ Is set to TRUE if `data` is not a data frame, but a vector.
 ##### Example: Replace Gene Identifier (EnsemblID) by Official Gene Symbol
 
 ```{r geneinfo-replace, echo=TRUE, eval=TRUE}
-CONTROL1.replaced = get.gene.info(CONTROL1, namecolumn=1,
-      extractpattern=expression("^(.+?)(_.+)"), database="ensembl", dataset="hsapiens_gene_ensembl",
-      filters="hgnc_symbol", attributes = c("ensembl_gene_id"), return.val = "dataset")
+CONTROL1.replaced = get.gene.info(CONTROL1, namecolumn=1, host="www.ensembl.org",
+      extractpattern=expression("^(.+?)(_.+)"), database="ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
+      filters="hgnc_symbol", attributes =c("ensembl_gene_id"), return.val = "dataset")
 
 knitr::kable(CONTROL1.replaced[1:10,])
 ```
@@ -938,8 +945,8 @@ knitr::kable(CONTROL1.replaced[1:10,])
 ##### Example: Enrich Dataset by Gene Description
 
 ```{r geneinfo-replace2, echo=TRUE, eval=TRUE}
-CONTROL1.replaced.info = get.gene.info(CONTROL1, namecolumn=1,
-      extractpattern=expression("^(.+?)(_.+)"), database="ensembl", dataset="hsapiens_gene_ensembl",
+CONTROL1.replaced.info = get.gene.info(CONTROL1, namecolumn=1, host="www.ensembl.org",
+      extractpattern=expression("^(.+?)(_.+)"), database="ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl",
       filters="hgnc_symbol", attributes = c("ensembl_gene_id","description"), return.val = "info")
 
 knitr::kable(CONTROL1.replaced.info[1:10,])

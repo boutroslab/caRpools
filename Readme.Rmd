@@ -36,6 +36,13 @@ You can download the R package either
 * [CaRpools - full manual](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.Rmd)
 * [CaRpools - full manual PDF](https://github.com/boutroslab/caRpools/blob/master/docs/CaRpools-MANUAL.pdf)
 
+### Tip for Mac Users
+If you can't get RStudio to call system commands, you need to start Rstudio from command line.  
+In order to allow RStudio to start system commands, please start RStudio via the terminal by typing:
+
+__open -a rstudio__
+
+
 #### Contact
 Jan Winter (jan.winter@dkfz.de)
 Web http://www.dkfz-heidelberg.de/en/signaling

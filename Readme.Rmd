@@ -2,7 +2,7 @@
 
 caRpools - a software package for the analysis CRISPR/Cas9 pooled screens
 ==============
-http://cranlogs.r-pkg.org/badges/grand-total/caRpools
+/badges[/{summary}]/{caRpools}[?color={color}]
 
 __Attention:__ Due to the downtime of the community-server of biomaRt, caRpools 0.82.5 does not function properly.
 Use 0.83 that uses by default the Ensembl servers for data annotation.

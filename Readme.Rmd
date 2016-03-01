@@ -4,11 +4,22 @@ caRpools - a software package for the analysis CRISPR/Cas9 pooled screens
 ==============
 ![](http://cranlogs.r-pkg.org/badges/grand-total/caRpools)
 
+# Issues
+
 __If you have issues or problems PLEASE us the [ISSUES](https://github.com/boutroslab/caRpools/issues) page.__
 
 __Attention:__ Due to the downtime of the community-server of biomaRt, caRpools 0.82.5 does not function properly.
 Use 0.83 that uses by default the Ensembl servers for data annotation.
 
+# Additional Information
+
+Dear users, the latest CRAN version is not compatible with the virtual machine due to rJava issues. 
+I am right now working on a new version without any java dependencies and will release it for alpha/beta testing via the __releases channel__.
+In case you are interested in beta testing the new caRpools version, please send me an email (jan.winter@dkfz.de) so that I know who is using it and provide further support. In general, the beta release will be avaible for everyone.
+
+Once the manual and vignette is updated for the new, far advanced version, it will be released on CRAN.
+
+# Description
 
 CaRpools is an R package forexploratory data analysis of pooled CRISPR/Cas9 screens. It aims to provide a user-friendly pipeline for end-to-end analysis of screening data. As an output, it generates standardized PDF and HTML reports that include:
 

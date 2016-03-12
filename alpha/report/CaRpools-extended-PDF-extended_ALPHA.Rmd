@@ -1,0 +1,1377 @@
+---
+title: "CaRpools Report - CRISPR Screen Analysis"
+output:
+  pdf_document:
+    fig_height: 6
+    fig_width: 11
+    highlight: null
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: yes
+    toc_depth: 3
+---
+
+```{r loadlibs, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
+if("caRpools" %in% rownames(installed.packages()) == FALSE) {install.packages("caRpools")}
+library(caRpools,warn.conflicts = FALSE, quietly = TRUE,verbose =FALSE)
+if(identical(load.packages(),FALSE))
+{
+  stop("Package Loading failed. Please check the dependencies of caRpools.")
+}
+
+```
+
+\newpage
+
+\begin{center}
+\includegraphics{CaRpools.png}
+\end{center}
+
+```{r settings-setup, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE}
+### Load PARAMETER FILE
+#miaccs.file = "2016-02-28_MIACCS_HEK-TCF-WNT3_WntCTRL_day15_R1-R2.xlsx"
+#miaccs.file = "2016-03-10_IRIS_Migration.xlsx"
+
+miaccs.file <- "MIACCS-new.xlsx"
+
+load.file(miaccs = miaccs.file, type="MIACCS")
+
+# Proxy is set in the MIACCS file
+
+```
+
+\newpage
+
+# Screen
+
+Screen | Information
+------ | --------
+__Screen ID__ | `r cp$miaccs$screen.id`
+__Screening Date__ | `r cp$miaccs$screen.date`
+__Organism__ | `r cp$miaccs$screen.organism`
+__Cell Line__ | `r cp$miaccs$screen.cell`
+__Drug__ | `r cp$miaccs$screen.drug`
+__Control__ | `r cp$miaccs$screen.control`
+__Number of Target__ | `r cp$miaccs$screen.targets`
+__Designs per Gene__ | `r cp$miaccs$screen.despergene`
+__Library__ | `r cp$miaccs$screen.library`
+__Library Reference File__ | `r cp$miaccs$referencefile`
+__NGS__ | `r cp$miaccs$screen.NGS`
+
+
+__MIACCS__  
+The MIACCS-file can be found at  
+
+`r paste("_", cp$miaccs$datapath, "/", "_" , sep="")`  
+
+`r paste("__", "MIACCS.xls" ,"__", sep="")`
+
+__Description__  
+`r cp$miaccs$screen.description`  
+
+```{r plasmid-screen-overview, echo=FALSE}
+## Prepare for plotting overviews
+if(cp$miaccs$assay.plasmids.image != "none" && !is.na(cp$miaccs$assay.plasmids.image))
+  {
+    plasmid.image = strsplit(cp$miaccs$assay.plasmids.image, split=",")
+    for(i in 1:length(unlist(plasmid.image)))
+      {
+        cat("\n")
+        cat("\\newpage","\n")
+        cat("\n")
+        cat("#","Plasmid Overview","\n")
+        cat("![](",paste(cp$miaccs$datapath, plasmid.image[[1]][i], sep="/"), ")" )
+      }
+   
+  }
+
+if(cp$miaccs$cell.setup.image != "none"&& !is.na(cp$miaccs$cell.setup.image))
+  {
+    screen.image = strsplit(cp$miaccs$cell.setup.image, split=",")
+    for(i in 1:length(unlist(screen.image)))
+      {
+        cat("\n")
+        cat("\\newpage","\n")
+        cat("\n")
+        cat("#","Experimental Setup","\n")
+        cat("![](",paste(cp$miaccs$datapath, screen.image[[1]][i], sep="/"),")" )
+      }
+  }
+
+```
+
+\newpage
+
+# Load Data
+
+```{r datainput, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE, results='hide'}
+# We just load the files passed on to the list, nothing more using load.file
+# Depending on the settings within the MIACCS file, data will be extracted from FASTQ files and mapped.
+
+load.file(files = cp$miaccs$files, filenames=cp$miaccs$file.names, group=cp$miaccs$group, libraryfasta=cp$miaccs$referencefile, gff=NULL, path.to.scripts=cp$miaccs$scriptpath, path.to.data=cp$miaccs$datapath, seq.pattern = cp$miaccs$seq.pattern, sensitivity = cp$miaccs$sensitivity, match = cp$miaccs$match, reversecomplement = FALSE, threads = cp$miaccs$threads, bowtieparams = cp$miaccs$bowtieparams, header= TRUE, sep="\t", comment.char="", type = "none", agg.function=sum, extractpattern = cp$miaccs$g.extractpattern, quality.report = TRUE)
+
+# After Loeading, sgRNA read count is aggregated to gene level as well
+aggregateok <- aggregatetogenes(agg.function=sum, extractpattern = cp$miaccs$g.extractpattern)
+
+```
+
+
+
+```{r geneidentifier, echo=FALSE, echo=FALSE, error=FALSE, warning=FALSE, message=FALSE, results='hide'}
+
+if(identical(cp$miaccs$g.convert,TRUE))
+{
+  cat("## Convert Gene Identifiers", "\n")
+  
+  cat("Gene identifiers are converted from","\n", "__", cp$miaccs$g.identifier, "__" ,"to __",cp$miaccs$g.identifier.new,"__", "using the __", cp$miaccs$a.dataset,"__ database." ,"\n")
+}
+
+ 
+# convert (if user wants) and annotate (if user wants)
+get.gene.info(extractpattern=cp$miaccs$g.extractpattern, database=cp$miaccs$a.database, dataset=cp$miaccs$a.dataset, filter=cp$miaccs$g.identifier, attribute = c(cp$miaccs$g.identifier,cp$miaccs$a.annotate), annotate=cp$miaccs$a.annotate.hits) 
+
+# Normalize data
+cpnorm <- carpools.normalize()
+
+# Calculate Percentage into gene rows
+number.enriched.counter = ceiling((nrow(cp$aggregated.readcount)/100)*cp$miaccs["number.hits.plot.enriched"][[1]])
+number.depleted.counter = ceiling((nrow(cp$aggregated.readcount)/100)*cp$miaccs["number.hits.plot.depleted"][[1]])
+
+```
+
+\newpage
+
+# FASTQ Data Quality
+
+```{r fastq-quality-qscore, eval=TRUE, echo=FALSE, results='asis'}
+# Generate fastq quality report
+if(!exists("fastq.qa", envir=cp))
+{
+  cat("\n__No fastq files were provided.__\n")
+}else {
+  cat("\n")
+  cat("## Q-Score", "\n")
+  cat("\n")
+  cat("The QScores describe the sequencing quality for each individual basepair position.","\n")
+  
+  fastq.quality(type = "qscore", dataframe= FALSE)
+  
+  cat("\n")
+  cat("\\newpage","\n")
+  
+  fastq.quality(type = "qscore.heatmap", dataframe= FALSE)
+  cat("\n")
+}
+
+```
+
+
+```{r fastq-quality-readquality, eval=TRUE, echo=FALSE, results='asis', warning=FALSE}
+if(exists("fastq.qa", envir=cp))
+{
+cat("\n")
+cat("\\newpage","\n")
+  cat("## Sequencing Read Quality","\n")
+  fastq.quality(type = "read.quality", dataframe= FALSE)
+  cat("\n")
+}
+```
+
+```{r fastq-quality-readwidth, eval=TRUE, echo=FALSE, results='asis', warning=FALSE}
+if(exists("fastq.qa", envir=cp))
+{
+  cat("\n")
+  cat("\\newpage","\n")
+  cat("## Read Width","\n")
+  fastq.quality(type = "read.width", dataframe= FALSE)
+  cat("\n")
+}
+```
+
+```{r fastq-quality-basecall, eval=TRUE, echo=FALSE, results='asis', warning=FALSE}
+if(exists("fastq.qa", envir=cp))
+{ 
+  cat("\n")
+  cat("\\newpage","\n")
+  cat("## Bases Called (Content)","\n")
+  fastq.quality(type = "basecall", dataframe= FALSE)
+  cat("\n")
+}
+```
+
+
+\newpage
+
+
+# Stats
+
+All file-based output (e.g. tables) is stored in:  
+_`r cp$miaccs$datapath`_.
+
+## Basic Statistics
+
+General stats can be found in  
+__`r paste(cp$miaccs$analysis.name, "STATS.xlsx", sep="-")`__.  
+The following read count statistics were calculated for the single datasets.  
+
+```{r stats-general, echo=FALSE, warning=FALSE}
+# General
+stats.general <- stats.data(output=TRUE)
+stats.general.sgRNA <- stats.data(output=FALSE, type="dataset")
+
+```
+
+In depth dataset read count stats can be found in  
+
+`r paste("_", cp$miaccs$datapath, "/", "_" , sep="")`  
+
+`r paste("__", paste(cp$miaccs$analysis.name, "STATS.xlsx", sep="-") ,"__", sep="" ) `
+
+In brief, the basic statistics for each dataset are shown on the next pages.
+
+```{r, stats-all, echo=FALSE, warning=FALSE}
+# Dataset Detail statistics
+
+if(!is.null(cp$miaccs$controls.nontarget))
+{
+  cat("\n","Some basic statistics of the genes specified as non-targeting controls:","\n","\n")
+  stats.detail <- stats.data(type="controls", controls.nontarget = cp$miaccs$controls.nontarget, output=TRUE)
+}
+
+if(!is.null(cp$miaccs$controls.target))
+{
+  cat("\n","\n","Some basic statistics of the genes specified as targeting controls:","\n","\n")
+  stats.detail <- stats.data(type="controls", controls.target = cp$miaccs$controls.target, output=TRUE)
+}
+
+
+```
+
+\newpage
+
+## Missing sgRNAs in Datasets
+
+Information of how many sgRNA per gene were not present in the mapped datasets is stored in:  
+
+`r paste("_", cp$miaccs$datapath, "/", "_", sep="")`  
+
+`r paste("__", paste(cp$miaccs$analysis.name, "DROPOUT.xlsx", sep="_") ,"__", sep="") `  
+
+```{r stat-dropout-overview, echo=FALSE, warning=FALSE}
+# Calculate unmapped sgRNAs and show basic plots
+dropout <- unmapped.genes()
+```
+
+
+In brief, the following number of genes or sgRNAs had a _read count of 0_ in the datasets, and are thus considered missing: 
+
+
+```{r stats-dropout, echo=FALSE, warning=FALSE}
+knitr::kable(cp$unmapped)
+```
+
+
+
+```{r stat-dropout-controls, echo=FALSE, warning=FALSE}
+# plot dropout of lethal controls
+
+if(!is.null(cp$miaccs$controls.target) || !is.null(cp$miaccs$controls.nontarget))
+{
+  cat("\n","\newpage","n")
+}
+
+if(!is.null(cp$miaccs$controls.nontarget))
+{
+  cat("Among the genes specified as non-targeting controls, the percentage of sgRNAs missing in each dataset is shown below:","\n","\n")
+  unmapped.genes(plotgenes = cp$miaccs$controls.nontarget, type="single")
+}
+
+if(!is.null(cp$miaccs$controls.target))
+{
+  cat("\n","Among the genes specified as targeting controls, the percentage of sgRNAs missing in each dataset is shown below:","\n")
+  unmapped.genes(plotgenes = cp$miaccs$controls.target, type="single")
+}
+
+```
+
+\newpage
+
+### Heatmap: missing sgRNAs
+
+The following heatmap visualizes the absence of sgRNAs per gene.  
+
+```{r stat-dropout-heatmap-all, echo=FALSE, dpi=300, height=20, width=15, dev='pdf', warning=FALSE}
+unmapped.genes(type="all", dataframe=FALSE)
+```
+
+\newpage
+
+### Clustered Heatmap
+
+This clustered heatmap shows the percentage of sgRNAs per gene, that revealed a read count within the **highest 5 % of all sgRNAs**.
+
+```{r stats-enriched-cluster-top, echo=FALSE, dpi=300, height=100, width=30, dev='pdf', warning=FALSE}
+## Show highest 90% of readcounts
+
+gene.heatmap(allplot="threshold", threshold=0.95, type="enriched", cluster=TRUE,centers = 10, log = TRUE)
+```
+
+\newpage
+
+This clustered heatmap shows the percentage of sgRNAs per gene, that revealed a read count within the **lowest 5 % of all sgRNAs**.
+
+```{r stats-enriched-cluster-bottom, echo=FALSE,dpi=300, height=30, dev='pdf', warning=FALSE}
+## Show lowest 5%
+
+try(gene.heatmap(allplot="threshold", threshold=0.05, type="depleted", cluster=TRUE,centers = 10, log = TRUE))
+```
+
+
+\newpage
+
+This clustered heatmap shows the percentage of read counts per gene, compared to all reads.
+
+```{r stats-enriched-cluster-fraction, echo=FALSE,dpi=72, height=30, dev='pdf', warning=FALSE}
+try(gene.heatmap(allplot="fraction", cluster=TRUE, centers = 5, log = TRUE))
+```
+
+\newpage
+
+This clustered heatmap shows the normalized read counts per gene.
+
+```{r stats-readcount-cluster-fraction-normalized, echo=FALSE,dpi=72, height=30, dev='pdf', warning=FALSE}
+try(gene.heatmap(allplot="readcount", cluster=TRUE, base="normgenes", centers=5, log = TRUE))
+```
+
+
+\newpage
+
+# Quality Control
+
+## Read Distribution
+These plots show how the read count of the sgRNAs for each dataset is distributed.
+Depending on the treatment stringency, e.g. in resistance or dropout screens, the data can show asymmetry. 
+However, the major population should be more or less normally distributed.
+
+
+```{r QC-distribution, echo=FALSE, sanitize=TRUE, warning=FALSE}
+
+par(mfrow=c(1,1))
+
+carpools.read.distribution(statistics=cp$miaccs$plot.statistic) 
+
+# add new page
+cat("\\newpage", "\n")
+
+carpools.read.distribution(statistics=cp$miaccs$plot.statistic, type="whisker") 
+
+```
+
+\pagebreak
+
+## Read Depth
+
+The following plot shows the read count for each gene normalized to the number of sgRNAs. Spikes indicate a higher read count per sgRNA for this particular gene.  
+One would expect no outstanding spikes within the untreated data samples, however spikes within the treated datasets indicate a read count enrichment for this particular gene.  
+If a non-targeting control has been set in the MIACCS file, this control is highlighted in __orange__ color.
+
+```{r QC-readdepth, echo=FALSE, sanitize=TRUE, warning=FALSE}
+
+carpools.read.depth(statistics=cp$miaccs$plot.statistic, labelgenes = NULL, controls.target = cp$miaccs$controls.target, controls.nontarget=cp$miaccs$controls.nontarget)
+
+par(mfrow=c(1,1))
+```
+
+\pagebreak
+
+## Designs per Gene
+These plots provide an overview of the representation of sgRNAs per gene within your data.  
+Depending on the number of sgRNAs per gene in the library, one would expect a representation of more than 80 % of sgRNAs per gene in the untreated samples.
+Moreover, genes with a low percentage of present sgRNAs will also show a reduced readcount.
+
+```{r QC-despergene, echo=FALSE, sanitize=TRUE, warning=FALSE}
+#, fig.width=10, fig.height=10
+par(mfrow=c(2,2))
+
+carpools.reads.genedesigns(extractpattern = cp$miaccs$g.extractpattern)
+
+par(mfrow=c(1,1))
+```
+
+\newpage
+
+```{r echo=FALSE, eval=FALSE, warning=FALSE}
+if(!is.null(controls.nontarget))
+  { 
+    cat("\n")
+    #cat("\\blandscape","\n")
+  }
+```
+
+## Controls
+
+### Non-Targeting
+
+Non-targeting controls are sgRNAs that do either not target the genome at all (so called random or scramble sgRNAs) or target a gene that does not show a phenotype in the screen.  
+Therefore, the scatter for these, which are highlighted in __blue__, will be distributed within the main cloud of scatter points.
+
+`r if(is.null(cp$miaccs$controls.nontarget)) {print("Unfortunately, no Non-Targeting controls were set.")}`
+
+```{r QC-non-targeting-scatter, echo=FALSE, sanitize=TRUE, fig.width=8, fig.height=8, warning=FALSE}
+
+# Plot non-targeting controls
+#, fig.height=20, fig.width=30,
+if(!is.null(cp$miaccs$controls.nontarget))
+  {
+    cat("Non-targeting control: ", cp$miaccs$controls.nontarget ,"\n")  
+    cat("\n")
+    carpools.read.count.vs(pairs=TRUE, normalize=cp$miaccs$normalize, norm.function=cp$miaccs$norm.function, labelgenes=cp$miaccs$controls.nontarget, labelcolor="blue", aggregated=FALSE)
+  } else {
+    cat("No non-targeting control has been set in the MIACCS file.")
+  }
+
+```
+
+```{r echo=FALSE, eval=FALSE, warning=FALSE}
+if(!is.null(cp$miaccs$controls.nontarget))
+  { 
+    cat("\n")
+    #cat("\\elandscape","\n")
+  }
+```
+
+\newpage
+
+### Positive Controls
+SgRNAs targeting genes that will show a phenotype in the screening setup can be used as positive controls.  
+These will show either an enrichment (in resistance screens) or a depletion (in dropout screens) in the treatment.  
+Within the scatter
+
+```{r QC-targeting-scatter, echo=FALSE, sanitize=TRUE, fig.width=8, fig.height=8, warning=FALSE}
+if(!is.null(cp$miaccs$controls.target))
+  {
+    cat("Positive Control: ", as.character(cp$miaccs$controls.target) ,"\n")  
+    cat("\n")
+    carpools.read.count.vs( pairs=TRUE, normalize=cp$miaccs$normalize, norm.function=cp$miaccs$norm.function, labelgenes=cp$miaccs$controls.target, labelcolor="red", aggregated=FALSE)
+  } else {
+    cat("No positive control has been set in the MIACCS file.")
+  }
+
+```
+
+\newpage
+
+# Hit Analysis
+
+Hit analsysis is performed using three different methods:  
+
+* Wilcox
+* DESeq2
+* MAGeCK  
+* sgRSEA  
+* EdgeR  
+* BAGEL (for essential genes only)
+
+For each analysis method, separate plots will be created and analysis files will be written to __`r paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_")`__. See below for further information.
+
+The following adjusted p-values are used to determine significance levels:  
+
+Method | p-value
+------ | -----
+Wilcox | `r cp$miaccs$sig.pval.wilcox`
+DESeq2 | `r cp$miaccs$sig.pval.deseq`
+MAGeCK | `r cp$miaccs$sig.pval.mageck`
+sgRSEA | `r cp$miaccs$sig.pval.rsea`
+EdgeR | `r cp$miaccs$sig.pval.edger`
+
+__Wilcox__
+
+Within this approach, the read counts of all sgRNAs in one dataset are first normalized by the function set in the MIACCS file. By default, normalization is done by read count division with the dataset median.  
+Then, the fold change of each population of sgRNAs for a gene is tested against the population of either the non-targeting controls or randomly picked sgRNAs, as defined by the random picks option within the MIACCS file, using a two-sided Mann-Whitney test with FDR correction.  
+
+__DESeq2__
+
+For the DESeq2 analysis implementation, the read counts of all sgRNAs for a given gene are first summed up to increase the available read count.  
+Then, DESeq2 analysis is perfomed, which includes the estimation of size-factors, the variance stabilization using a parametric fit and a Wald-Test for differnece in log2 fold changes between the untreated and treated data.  
+More information about this can be found in _Love et al._  
+[Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2](http://www.ncbi.nlm.nih.gov/pubmed/25516281)  
+_Genome Biology_ 2014  
+
+__MAGeCK__
+
+MAGeCK analysis uses a rank-based model to test for a change in abundance of sgRNAs after median normalization of the dataset.  
+Further information can be found at the [MAGeCK Homepage](http://sourceforge.net/projects/mageck/).
+
+__sgRSEA__
+
+
+
+__EdgeR__
+
+
+
+
+\newpage
+
+## Wilcox
+
+All analysis data can be found in the __`r paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_")`__ file.  
+
+```{r HT-method-wilcox, echo=FALSE, warning=FALSE}
+# wilcox
+
+if(is.null(cp$miacs$controls.nontarget))
+  {
+    cat("\n")
+    cat(paste("**Since no non-targeting controls were set,", cp$miaccs$control.picks, "sgRNAs are picked from the datset as reference population.**", sep=" "))
+    cat("\n")
+  }
+data.wilcox = stat.wilcox(normalize=cp$miaccs$normalize, sorting=FALSE, controls=cp$miaccs$controls.nontarget, control.picks=cp$miaccs$control.picks)
+
+
+wb <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb = wb , sheetName = "Wilcox", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "Wilcox", x = data.wilcox,  tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(wb , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/") , overwrite = TRUE)
+```
+
+### P-Value Distribution
+
+For all genes present in the data, the -log10 corrected p-values are plotted to estimate how well the analysis method performed for this screen. A straight line of points with only small differences in the p-value indicates that the analysis method did not perform well. 
+Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
+
+```{r HT-wilcox-pval-distribution, echo=FALSE, warning=FALSE}
+carpools.waterfall.pval(type="wilcox", dataset=data.wilcox, pval=cp$miaccs$sig.pval.wilcox, log=TRUE)
+```
+
+### Enriched
+
+The following genes showed enrichment in the treatment datasets with a __p-value smaller than `r cp$miaccs$sig.pval.wilcox`__:  
+
+```{r HT-method-wilcox-enriched, echo=FALSE, warning=FALSE}
+data.wilcox.plot.enriched = data.wilcox[data.wilcox$foldchange > 1,]
+data.wilcox.plot.enriched = data.wilcox.plot.enriched[order(data.wilcox.plot.enriched$p.value, na.last=TRUE),]
+if(nrow(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < cp$miaccs$sig.pval.wilcox,]) > 0)
+  {
+ knitr::kable(data.wilcox.plot.enriched[data.wilcox.plot.enriched$p.value < cp$miaccs$sig.pval.wilcox,])
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", cp$miaccs$sig.pval.wilcox, "**")}
+
+
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.enriched` % enriched genes__ were:  
+
+`r knitr::kable(data.wilcox.plot.enriched[1:number.enriched.counter,])`
+
+\newpage
+
+### Depleted
+
+The following genes showed depletion in the treatment datasets with a __p-value smaller than `r cp$miaccs["sig.pval.wilcox"][[1]]`__:  
+
+```{r HT-method-wilcox-depleted, echo=FALSE, warning=FALSE}
+data.wilcox.plot.depleted = data.wilcox[data.wilcox$foldchange < 1,]
+data.wilcox.plot.depleted = data.wilcox.plot.depleted[order(data.wilcox.plot.depleted$p.value, na.last=TRUE),]
+if(nrow(data.wilcox.plot.depleted[data.wilcox.plot.depleted$p.value < cp$miaccs$sig.pval.wilcox,]) > 0)
+  {
+ knitr::kable(data.wilcox.plot.depleted[data.wilcox.plot.depleted$p.value < cp$miaccs$sig.pval.wilcox,])
+  } else { cat("**No genes showed significant depletion with a p-value lower than", cp$miaccs$sig.pval.wilcox, "**")}
+
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.depleted` % depleted genes__ were:  
+
+`r knitr::kable(data.wilcox.plot.depleted[1:number.depleted.counter,])`
+
+\newpage
+
+## DESeq2
+
+All analysis data can be found in the __`r paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_")`__ file.  
+
+```{r HT-method-DESeq2, echo=FALSE, message=FALSE,warning=FALSE, warning=FALSE}
+# DESeq2
+data.deseq = stat.DESeq(extractpattern=cp$miaccs$g.extractpattern, sorting=FALSE, filename.deseq = paste(cp$miaccs$analysis.name, "-ANALYSIS-DESeq2-sgRNA.tab", sep=""), sgRNA.pval = cp$miaccs$sig.pval.deseq, fitType="mean")
+
+if(file.exists(paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/")))
+{
+  wb <- openxlsx::loadWorkbook(file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/"))
+} else {wb <- openxlsx::createWorkbook()}
+
+openxlsx::addWorksheet(wb = wb , sheetName = "DESeq2", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "DESeq2", x = as.data.frame(data.deseq$genes),  tableStyle = "TableStyleLight2")
+openxlsx::addWorksheet(wb = wb , sheetName = "DESeq2 sgRNA", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "DESeq2 sgRNA", x = as.data.frame(data.deseq$sgRNA),  tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(wb , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/") , overwrite = TRUE)
+
+
+```
+
+### P-Value Distribution
+
+For all genes present in the data, the -log10 corrected p-values are plotted to estimate how well the analysis method performed for this screen. A straight line of points with only small differences in the p-value indicates that the analysis method did not perform well. 
+Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
+
+```{r HT-deseq-pval-distribution, echo=FALSE, warning=FALSE}
+carpools.waterfall.pval(type="deseq2", dataset=data.deseq, pval=cp$miaccs$sig.pval.deseq, log=TRUE)
+```
+
+
+### Enriched
+
+The following genes showed enrichment in the treatment datasets with a __p-value smaller than `r cp$miaccs$sig.pval.deseq`__:  
+
+```{r HT-method-deseq-enriched, echo=FALSE, warning=FALSE}
+data.deseq.plot.enriched = as.data.frame(data.deseq[[1]][data.deseq[[1]]$log2FoldChange > 0,])
+data.deseq.plot.enriched = data.deseq.plot.enriched[order(data.deseq.plot.enriched$padj, na.last=TRUE),]
+if(nrow(data.deseq.plot.enriched[data.deseq.plot.enriched$padj < cp$miaccs["sig.pval.deseq"][[1]],c(2,3,6,7)]) > 0)
+  {
+ knitr::kable(data.deseq.plot.enriched[data.deseq.plot.enriched$padj < cp$miaccs$sig.pval.deseq,c(2,3,6,7)])
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", cp$miaccs$sig.pval.deseq, "**")}
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.enriched` % enriched genes__ were:  
+
+`r knitr::kable(data.deseq.plot.enriched[1:number.enriched.counter,c(2,3,6,7)])`
+
+\newpage
+
+### Depleted
+
+The following genes showed depletion in the treatment datasets with a __p-value smaller than `r cp$miaccs["sig.pval.deseq"][[1]]`__:  
+
+```{r HT-method-deseq-depleted, echo=FALSE, warning=FALSE}
+data.deseq.plot.depleted = data.deseq[[1]][data.deseq[[1]]$log2FoldChange < 0,]
+data.deseq.plot.depleted = data.deseq.plot.depleted[order(data.deseq.plot.depleted$padj, na.last=TRUE),]
+if(nrow(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < cp$miaccs$sig.pval.deseq,c(2,3,6,7)]) > 0)
+  {
+ knitr::kable(data.deseq.plot.depleted[data.deseq.plot.depleted$padj < cp$miaccs$sig.pval.deseq,c(2,3,6,7)])
+  } else { cat("**No genes showed significant depletion with a p-value lower than", cp$miaccs$sig.pval.deseq, "**")}
+
+
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.depleted` % depleted genes__ were:  
+
+`r knitr::kable(data.deseq.plot.depleted[1:number.depleted.counter,c(2,3,6,7)])`
+
+\newpage
+
+
+## MAGeCK
+
+All analysis data for MAGeCK can be found in the __`r paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_")`__ file.  
+
+```{r HT-method-MAGeCK, echo=FALSE, warning=FALSE}
+# MAGeCK
+data.mageck = stat.mageck(norm.fun="median", extractpattern=cp$miaccs$g.extractpattern, mageckfolder=NULL, sort.criteria="neg", adjust.method="fdr", filename = paste(cp$miaccs$analysis.name, "-ANALYSIS-MAGeCK-RAW", sep=""), fdr.pval=cp$miaccs$sig.pval.mageck)
+
+if(file.exists(paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/")))
+{
+  wb <- openxlsx::loadWorkbook(file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/"))
+} else {wb <- openxlsx::createWorkbook()}
+
+openxlsx::addWorksheet(wb = wb , sheetName = "MAGeCK", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "MAGeCK", x = as.data.frame(data.mageck$genes),  tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(wb , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/") , overwrite = TRUE)
+
+mageck.cutoff = nrow(data.mageck[[1]][data.mageck[[1]]$pos < cp$miaccs$sig.pval.mageck,]) + nrow(data.mageck[[1]][data.mageck[[1]]$neg < cp$miaccs$sig.pval.mageck,])
+```
+
+### P-Value Distribution
+
+For all genes present in the data, the -log10 corrected p-values are plotted to estimate how well the analysis method performed for this screen. A straight line of points with only small differences in the p-value indicates that the analysis method did not perform well. 
+Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
+
+```{r HT-mageck-pval-distribution, echo=FALSE, warning=FALSE}
+carpools.waterfall.pval(type="mageck", dataset=data.mageck, pval=cp$miaccs$sig.pval.mageck, log=TRUE)
+```
+
+
+### Enriched
+
+The following genes showed enrichment in the treatment datasets with __a p-value smaller than `r cp$miaccs$sig.pval.mageck`__:  
+
+```{r HT-method-mageck-enriched, echo=FALSE, warning=FALSE}
+data.mageck.plot.enriched = data.mageck[[1]][data.mageck[[1]]$pos < cp$miaccs$sig.pval.mageck,]
+data.mageck.plot.enriched = data.mageck.plot.enriched[order(data.mageck.plot.enriched$rank.pos, na.last=TRUE),]
+if(nrow(data.mageck.plot.enriched) > 0)
+  {
+ knitr::kable(data.mageck.plot.enriched[,c(2,3,4,5,6,7)])
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", cp$miaccs$sig.pval.mageck, "**")}
+
+data.mageck.plot.enriched = data.mageck[[1]][order(data.mageck[[1]]$rank.pos, na.last=TRUE),]
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.enriched` % enriched genes__ were:  
+
+`r knitr::kable(data.mageck.plot.enriched[1:number.enriched.counter,c(2,3,4,5,6,7)])`
+
+\newpage
+
+### Depleted
+
+The following genes showed depletion in the treatment datasets with a __p-value smaller than `r cp$miaccs["sig.pval.mageck"][[1]]`__:  
+
+```{r HT-method-mageck-depleted, echo=FALSE, warning=FALSE}
+data.mageck.plot.depleted = data.mageck[[1]][data.mageck[[1]]$neg < cp$miaccs$sig.pval.mageck,]
+data.mageck.plot.depleted = data.mageck.plot.depleted[order(data.mageck.plot.depleted$rank.neg, na.last=TRUE),]
+if(nrow(data.mageck.plot.depleted) > 0)
+  {
+  knitr::kable(data.mageck.plot.depleted[,c(2,3,4,5,6,7)])
+  } else { cat("**No genes showed significant depletion with a p-value lower than", cp$miaccs$sig.pval.mageck, "**")}
+
+data.mageck.plot.depleted = data.mageck[[1]][order(data.mageck[[1]]$rank.neg, na.last=TRUE),]
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.depleted` % depleted genes__ were:  
+
+`r knitr::kable(data.mageck.plot.depleted[1:number.depleted.counter,c(2,3,4,5,6,7)])`
+
+\newpage
+
+## sgRSEA
+
+```{r HT-method-sgRSEA, echo=FALSE, warning=FALSE}
+# sgRSEA
+data.rsea = stat.RSEA(extractpattern = cp$miaccs$g.extractpattern, sorting=FALSE, normalize = TRUE)
+
+if(file.exists(paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/")))
+{
+  wb <- openxlsx::loadWorkbook(file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/"))
+} else {wb <- openxlsx::createWorkbook()}
+
+openxlsx::addWorksheet(wb = wb , sheetName = "sgRSEA Enriched", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "sgRSEA Enriched", x = as.data.frame(data.rsea$gene.pos),  tableStyle = "TableStyleLight2")
+openxlsx::addWorksheet(wb = wb , sheetName = "sgRSEA Depleted", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "sgRSEA Depleted", x = as.data.frame(data.rsea$gene.neg),  tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(wb , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/") , overwrite = TRUE)
+
+```
+
+### P-Value Distribution
+
+For all genes present in the data, the -log10 corrected p-values are plotted to estimate how well the analysis method performed for this screen. A straight line of points with only small differences in the p-value indicates that the analysis method did not perform well. 
+Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
+
+```{r HT-sgRSEA-pval-distribution-enriched, echo=FALSE, warning=FALSE}
+carpools.waterfall.pval(type="sgrsea", dataset=cp$rsea, pval=cp$miaccs$sig.pval.rsea, log=TRUE, mageck.type = "pos")
+```
+
+```{r HT-sgRSEA-pval-distribution-depleted, echo=FALSE, warning=FALSE}
+carpools.waterfall.pval(type="sgrsea", dataset=cp$rsea, pval=cp$miaccs$sig.pval.rsea, log=TRUE, mageck.type = "neg")
+```
+
+### Enriched
+
+The following genes showed enrichment in the treatment datasets with a __p-value smaller than `r cp$miaccs$sig.pval.rsea`__:  
+
+```{r HT-method-rsea-enriched, echo=FALSE, warning=FALSE}
+rsea.plot.enriched = as.data.frame(cp$rsea$gene.pos[order(cp$rsea$gene.pos[,"FDR.pos"], na.last=TRUE),])
+if(nrow(rsea.plot.enriched[rsea.plot.enriched[,"FDR.pos"] < cp$miaccs$sig.pval.rsea,]) > 0)
+  {
+ knitr::kable(rsea.plot.enriched[rsea.plot.enriched[,"FDR.pos"] < cp$miaccs$sig.pval.rsea,])
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", cp$miaccs$sig.pval.rsea, "**")}
+
+
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.enriched` % enriched genes__ were:  
+
+`r knitr::kable(rsea.plot.enriched[1:number.enriched.counter,])`
+
+\newpage
+
+### Depleted
+
+The following genes showed depletion in the treatment datasets with a __p-value smaller than `r cp$miaccs$sig.pval.rsea`__:  
+
+```{r HT-method-rsea-depleted, echo=FALSE, warning=FALSE}
+rsea.plot.depleted = as.data.frame(cp$rsea$gene.neg[order(cp$rsea$gene.neg[,"FDR.neg"], na.last=TRUE),])
+if(nrow(rsea.plot.depleted[rsea.plot.depleted[,"FDR.neg"] < cp$miaccs$sig.pval.rsea,]) > 0)
+  {
+ knitr::kable(rsea.plot.depleted[rsea.plot.depleted[,"FDR.neg"] < cp$miaccs$sig.pval.rsea,])
+  } else { cat("**No genes showed significant depletion with a p-value lower than", cp$miaccs$sig.pval.rsea, "**")}
+
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.depleted` % depleted genes__ were:  
+
+`r knitr::kable(rsea.plot.depleted[1:number.depleted.counter,])`
+
+
+\newpage
+
+## EdgeR
+
+```{r HT-method-edgeR, echo=FALSE, warning=FALSE}
+# EdgeR
+data.edger = stat.edgeR(extractpattern = cp$miaccs$g.extractpattern, sorting=FALSE)
+
+if(file.exists(paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/")))
+{
+  wb <- openxlsx::loadWorkbook(file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/"))
+} else {wb <- openxlsx::createWorkbook()}
+
+openxlsx::addWorksheet(wb = wb , sheetName = "EdgeR", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "EdgeR", x = as.data.frame(data.edger$genes),  tableStyle = "TableStyleLight2")
+openxlsx::addWorksheet(wb = wb , sheetName = "EdgeR sgRNA", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb , sheet = "EdgeR sgRNA", x = as.data.frame(data.edger$sgRNA),  tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(wb , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/") , overwrite = TRUE)
+
+#xlsx::write.xlsx(cp$edger$genes, file=paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "HIT-CALLING.xlsx", sep="_"), sep="/"), sheetName="EdgeR", append=TRUE)
+
+```
+
+### P-Value Distribution
+
+For all genes present in the data, the -log10 corrected p-values are plotted to estimate how well the analysis method performed for this screen. A straight line of points with only small differences in the p-value indicates that the analysis method did not perform well. 
+Genes that resulted in a p-value below the threshold set in the MIACCS file are highlighted in red color.  
+
+```{r HT-edger-pval-distribution-enriched, echo=FALSE, warning=FALSE}
+carpools.waterfall.pval(type="edger", dataset=cp$edger, pval=cp$miaccs$sig.pval.edger, log=TRUE, mageck.type = "pos")
+```
+
+
+
+### Enriched
+
+The following genes showed enrichment in the treatment datasets with a __p-value smaller than `r cp$miaccs$sig.pval.edger`__:  
+
+```{r HT-method-edger-enriched, echo=FALSE, warning=FALSE}
+edger.plot.enriched = cp$edger$genes[cp$edger$genes[,"Direction"] == "Up",]
+edger.plot.enriched = edger.plot.enriched[order(edger.plot.enriched[,"FDR"], na.last=TRUE),]
+if(nrow(edger.plot.enriched[edger.plot.enriched[,"FDR"] < cp$miaccs$sig.pval.edger,]) > 0)
+  {
+ knitr::kable(edger.plot.enriched[edger.plot.enriched[,"FDR"] < cp$miaccs$sig.pval.edger,])
+  } else { cat("**No genes showed significant enrichment with a p-value lower than", cp$miaccs$sig.pval.edger, "**")}
+
+
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.enriched` % enriched genes__ were:  
+
+`r knitr::kable(edger.plot.enriched[1:number.enriched.counter,])`
+
+\newpage
+
+### Depleted
+
+The following genes showed depletion in the treatment datasets with a __p-value smaller than `r cp$miaccs$sig.pval.edger`__:  
+
+```{r HT-method-edger-depleted, echo=FALSE, warning=FALSE}
+edger.plot.depleted = cp$edger$genes[cp$edger$genes[,"Direction"] == "Down",]
+edger.plot.depleted = edger.plot.depleted[order(edger.plot.depleted[,"FDR"], na.last=TRUE),]
+if(nrow(edger.plot.depleted[edger.plot.depleted[,"FDR"] < cp$miaccs$sig.pval.edger,]) > 0)
+  {
+ knitr::kable(edger.plot.depleted[edger.plot.depleted[,"FDR"] < cp$miaccs$sig.pval.edger,])
+  } else { cat("**No genes showed significant depletion with a p-value lower than", cp$miaccs$sig.pval.edger, "**")}
+
+```
+
+According to the value set, the __top `r cp$miaccs$number.hits.plot.depleted` % depleted genes__ were:  
+
+`r knitr::kable(edger.plot.depleted[1:number.depleted.counter,])`
+
+
+\newpage
+
+# Hit Candidate Overview
+
+## Overview
+
+Genes which showed enrichment or depletion within the individual analysis methods are presented in the following section.  
+All genes that showed _significant_ __enrichment__ within Wilcox, DESeq2 and MAGeCK with the given p-value cutoffs are highlighted in __red__ color.  
+All genes that showed _significant_ __depletion__ within Wilcox, DESeq2 and MAGeCK with the given p-value cutoffs are highlighted in __blue__ color.  
+
+Moreover, all genes that showed up as _significantly_ enriched or depleted in any of the analysis methods are highlighted in __orange__ color.
+Genes that showed no significant effect are presented in grey or black color.  
+
+
+```{r HT-overview-hits, echo=FALSE, sanitize=TRUE, warning=FALSE}
+try(carpools.hit.overview())
+```
+
+
+```{r HT-overlaps, echo=FALSE, sanitize=TRUE, warning=FALSE}
+
+overlap.enriched = generate.hits(type="enriched", plot.genes="overlapping")
+
+overlap.depleted = generate.hits(type="depleted", plot.genes="overlapping")
+
+# Combine datasets for overlapping hits
+overlap.enriched.dataset = data.frame(
+  gene = overlap.enriched,
+  log2FC = data.deseq[[1]][rownames(data.deseq[[1]]) %in% overlap.enriched, "log2FoldChange"],
+  wilcox.pval = data.wilcox[rownames(data.wilcox) %in% overlap.enriched,"p.value"],
+  deseq2.pval = data.deseq[[1]][rownames(data.deseq[[1]]) %in% overlap.enriched,"padj"],
+  mageck.pval = data.mageck[[1]][rownames(data.mageck[[1]]) %in% overlap.enriched,"pos"],
+  stringsAsFactors=FALSE)
+
+overlap.depleted.dataset = data.frame(
+  gene = overlap.depleted,
+  log2FC = data.deseq[[1]][rownames(data.deseq[[1]]) %in% overlap.depleted, "log2FoldChange"],
+  wilcox.pval = data.wilcox[rownames(data.wilcox) %in% overlap.depleted,"p.value"],
+  deseq2.pval = data.deseq[[1]][rownames(data.deseq[[1]]) %in% overlap.depleted,"padj"],
+  mageck.pval = data.mageck[[1]][rownames(data.mageck[[1]]) %in% overlap.depleted,"neg"],
+  stringsAsFactors=FALSE)
+```
+
+\newpage
+
+## Overlaps in Enrichment Analysis
+
+```{r HT-comparevenn-enriched, echo=FALSE, sanitize=TRUE, warning=FALSE}
+if(nrow(overlap.enriched.dataset) > 0)
+  {
+    cat("The following genes showed enrichment in all analysis methods.", "\n")
+    knitr::kable(overlap.enriched.dataset)
+    cutoff.override.enriched = cp$miaccs$cutoff.override
+  
+  } else {
+    cat("\n")
+    cat("**ATTENTION**  \n")
+    cat("**No overlapping enriched genes were found between all three methods.** ", "\n \n")
+    cat("Therefore, the overlap from the", cp$miaccs$number.hits.plot.enriched, "% of genes within all methods is used for plotting possible gene candidates.","\n" )
+    cat("\n")
+    cat("We strongly advise you to have a closer look at the individual outputs of the analysis methods and to carefully look at the following candidate genes.")
+    
+    cutoff.override.enriched=TRUE
+    
+    overlap.enriched = generate.hits(type="enriched",cutoff.override = cutoff.override.enriched, cutoff.hits=number.enriched.counter, plot.genes="overlapping")
+    
+    overlap.enriched.dataset = data.frame(
+  gene = overlap.enriched,
+  log2FC = data.deseq[[1]][rownames(data.deseq[[1]]) %in% overlap.enriched, "log2FoldChange"],
+  wilcox.pval = data.wilcox[rownames(data.wilcox) %in% overlap.enriched,"p.value"],
+  deseq2.pval = data.deseq[[1]][rownames(data.deseq[[1]]) %in% overlap.enriched,"padj"],
+  mageck.pval = data.mageck[[1]][rownames(data.mageck[[1]]) %in% overlap.enriched,"pos"],
+  stringsAsFactors=FALSE)
+    
+  }
+
+```
+  
+
+Within the __top enriched hits__, the overlap of enriched hits per analysis method is displayed as follows:  
+
+```{r HT-compare-enriched-overlap, echo=FALSE,sanitize=TRUE, message=FALSE,warning=FALSE}
+venn.enriched = compare.analysis(type="enriched", cutoff.override=cutoff.override.enriched, cutoff.hits=number.enriched.counter, output="venn")
+
+require(VennDiagram)
+grid::grid.draw(VennDiagram::venn.diagram(venn.enriched, file=NULL, fill=c("lightgreen","lightblue2","lightgray","lightyellow","orange"), na="remove", cex=2,lty=2, cat.cex=2))
+```
+
+\newpage
+
+## Overlaps in Depletion Analysis
+
+```{r HT-comparevenn-depleted, echo=FALSE, sanitize=TRUE, warning=FALSE}
+if(nrow(overlap.depleted.dataset) > 0)
+  {
+    cat("The following genes showed depletion in all analysis methods.", "\n")
+    knitr::kable(overlap.depleted.dataset)
+    cutoff.override.depleted=cp$miaccs$cutoff.override
+    
+  } else {
+    cat("\n")
+    cat("**ATTENTION**  \n")
+    cat("**No overlapping depleted genes were found between all three methods.**", "\n \n")
+    cat("Therefore, the overlap from the", cp$miaccs$number.hits.plot.depleted, "% of genes within all methods is used for plotting possible hit candidates.","\n" )
+    cat("\n")
+    cat("We strongly advise you to have a closer look at the individual outputs of the analysis methods and to carefully look at the following candidate genes.")
+    
+    cutoff.override.depleted = TRUE
+    
+    overlap.depleted = generate.hits(type="depleted", cutoff.override=cutoff.override.depleted, cutoff.hits=number.depleted.counter, plot.genes="overlapping")
+    
+    overlap.depleted.dataset = data.frame(
+  gene = overlap.depleted,
+  log2FC = data.deseq[[1]][data.deseq[[1]]$genes %in% overlap.depleted, "log2FoldChange"],
+  wilcox.pval = data.wilcox[rownames(data.wilcox) %in% overlap.depleted,"p.value"],
+  deseq2.pval = data.deseq[[1]][rownames(data.deseq[[1]]) %in% overlap.depleted,"padj"],
+  mageck.pval = data.mageck[[1]][rownames(data.mageck[[1]]) %in% overlap.depleted,"neg"],
+  stringsAsFactors=FALSE)
+
+  }
+
+```
+
+
+Within the __top depleted hits__, the overlap of depleted hits per analysis method is displayed as follows:  
+
+```{r HT-compare-depleted-overlap, echo=FALSE,sanitize=TRUE, message=FALSE,warning=FALSE}
+venn.depleted = compare.analysis(type="depleted", cutoff.override=cutoff.override.depleted, cutoff.hits=number.depleted.counter, output="venn")
+
+require(VennDiagram)
+grid::grid.draw(VennDiagram::venn.diagram(venn.depleted, file=NULL, fill=c("lightgreen","lightblue2","lightgray","lightyellow","orange"), na="remove", cex=2,lty=2, cat.cex=2))
+```
+
+\newpage
+
+## Enriched Overlapping Hit Candidates
+
+All overlapping genes which showed enrichment are highlighted in __orange__ color in the following plots.
+
+```{r HT-compare-overlap-enriched-scatter, echo=FALSE, sanitize=TRUE,fig.width=8,fig.height=8, warning=FALSE}
+# make Hit Scatter with all HITS enriched in a 4x4 square
+
+carpools.read.count.vs(title=cp$miaccs$analysis.name, pch=16, normalize=cp$miaccs$normalize, norm.function=cp$miaccs$norm.function, labelgenes=overlap.enriched,labelcolor="orange", aggregated=TRUE)
+```
+
+## Depleted Overlapping Hit Candidates
+
+All overlapping genes which showed depletion are highlighted in __orange__ color in the following plots.
+
+```{r HT-compare-overlap-depleted-scatter, echo=FALSE, sanitize=TRUE,fig.width=8,fig.height=8, warning=FALSE}
+
+carpools.read.count.vs(pairs=FALSE, title=cp$miaccs$analysis.name, pch=16, normalize=cp$miaccs$normalize, norm.function=cp$miaccs$norm.function, labelgenes=overlap.depleted,labelcolor="orange", aggregated=TRUE)
+```
+
+
+```{r final-table, echo=FALSE, sanitize=TRUE}
+# create final table with all genes + hit analysis results
+final.tab = final.table(type="all")
+```
+
+\newpage
+
+# Hit Candidates
+
+Scatterplots representing the gene read count as well as sgRNA read count for all overlapping hits are plotted in this section.
+
+***
+
+If there were _signficantly_ enriched or depleted genes that overlapped in all analysis methods, they will be presented here.  
+Therefore, the top overlapping hits of each Hit Analysis with a p-value below the thresholds  
+for each analysis method are highlighted in the scatter plots.  
+
+In the case that no _significantly_ enriched or depleted genes did overlap in all methods, those that overlapped within the `r cp$miaccs$number.hits.plot.enriched ` % of top enriched and the top `r cp$miaccs$number.hits.plot.depleted ` % depleted genes are used.  
+Therefore, the top overlapping hits of each Hit Analysis are highlighted in the scatter plots as well in this case.
+
+***
+
+This allows a fast and easy view for single genes and its individual sgRNAs.  
+Moreover, individual sgRNA effects are plotted as well as the corresponding target sequence.  
+
+In this section, the following plots are __generated for each hit candidate__:  
+
+* Scatterplot with gene read count within all datasets
+* Scatterplot with sgRNA read count within all datasets
+* sgRNA log2 fold changes
+* sgRNA log2 fold change distribution in comparison to all sgRNAs or given controls
+* sgRNA target sequence list
+
+
+The scatter plots show the median normalized, log read count of each genes/sgRNA.
+Moreover, the __blue lines indicate a read count foldchange of 2__, the __green lines indicate a read count foldchange of 4__.
+
+\newpage
+
+## Enriched
+
+```{r HT-enriched-candidates, echo=FALSE, sanitize=TRUE, results="asis", warning=FALSE}
+# get overlap.enriched as list of genes
+count = 0
+for(i in overlap.enriched)
+  {
+    cat("\n")
+    cat("\n")
+    cat("###", i,"\n")
+    
+    # Prepare Output of Gene Annotation
+    if(identical(cp$miaccs$a.annotate.hits,TRUE))
+      {
+      cat("In addition to the plots below, the following information has been retrieved via biomaRt:  ","\n","\n")
+      cat("__ENSEMBL ID__ (links to Ensembl)","\n" ,paste("[", cp$annotation[cp$annotation[,"gene"] == i,"ensembl_gene_id"] ,"]", "(", "http://www.ensembl.org/id/",cp$annotation[cp$annotation[,"gene"] == i,"ensembl_gene_id"], ")", sep=""),"  \n","\n")
+    cat("__HGNC SYMBOL__ (links to GeneCards)", "\n",paste("[", cp$annotation[cp$annotation[,"gene"] == i,"hgnc_symbol"] ,"]", "(", "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",cp$annotation[cp$annotation[,"gene"] == i,"hgnc_symbol"], ")", sep="") ,"  \n","\n")
+    cat("__GENE DESCRIPTION__ ", "\n",cp$annotation[cp$annotation[,"gene"] == i,"description"] ,"  \n","\n")
+    cat("__GO TERM__ ","\n", cp$annotation[cp$annotation[,"gene"] == i,"name_1006"] ,"  \n","\n")
+    cat("__MIM GENE DESCRIPTION__ ","\n",cp$annotation[cp$annotation[,"gene"] == i,"mim_gene_description"] ,"  \n","\n")
+    cat("__ENSEMBL PROTEIN ID__ ","\n", cp$annotation[cp$annotation[,"gene"] == i,"ensembl_peptide_id"] ,"  \n","\n")
+    cat("__PROTEIN FAMILY DESCRIPTION__ ","\n",cp$annotation[cp$annotation[,"gene"] == i,"family_description"] ,"  \n","\n")
+    cat("\n")
+    # Significantly?
+    sig.pval.candidate = final.tab$genes[final.tab$genes[,"name"] == i,c("wilcox.pval","deseq2.pval","mageck.fdr.pos","edger.fdr","rsea.FDR.pos", "rsea.FDR.neg")]
+    cat("__Wilcox p-value:__", cp$miaccs$sig.pval.wilcox,"\n \n")
+    cat("__DESeq2 p-value:__", cp$miaccs$sig.pval.deseq,"\n \n")
+    cat("__MAGeCK p-value:__", cp$miaccs$sig.pval.mageck,"\n \n")
+    cat("__EdgeR p-value:__", cp$miaccs$sig.pval.edger,"\n \n")
+    cat("__sgRSEA enriched p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+    cat("__sgRSEA depleted p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+    
+    cat("\n")
+    cat("\\newpage","\n")
+    cat("\n")  
+      }
+    else
+      {
+        # Significantly?
+        sig.pval.candidate = final.tab$genes[final.tab$genes[,"name"] == i,c("wilcox.pval","deseq2.pval","mageck.fdr.pos","edger.fdr","rsea.FDR.pos", "rsea.FDR.neg")]
+    cat("__Wilcox p-value:__", cp$miaccs$sig.pval.wilcox,"\n \n")
+    cat("__DESeq2 p-value:__", cp$miaccs$sig.pval.deseq,"\n \n")
+    cat("__MAGeCK p-value:__", cp$miaccs$sig.pval.mageck,"\n \n")
+    cat("__EdgeR p-value:__", cp$miaccs$sig.pval.edger,"\n \n")
+    cat("__sgRSEA enriched p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+    cat("__sgRSEA depleted p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+      }
+  
+    # Scatterplot PAIRS GENES
+    plothitsscatter.enriched = carpools.hit.scatter(title=cp$miaccs$analysis.name, labelgenes=i, aggregated=TRUE, type="enriched", cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched, pch=16)
+    
+    cat("\n")
+    #cat("\\newpage","\n")
+    #cat("\n")
+    
+    # Scatterplot PAIRS sgRNA
+    plothitsscatter.enriched = carpools.hit.scatter(title=cp$miaccs$analysis.name, labelgenes=i, aggregated=FALSE, type="enriched", cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched,  pch=16)
+    
+    cat("\n")
+    cat("\\newpage","\n")
+    cat("\n")
+    
+    sgrnas.en = carpools.hit.sgrna(put.names=TRUE, type="enriched", labelgenes=i, plot.type=NULL, cutoff.hits=number.hits.plot.enriched, controls.target=cp$miaccs$controls.target, controls.nontarget=cp$miaccs$controls.nontarget)
+    
+    par(mfrow=c(1,1))
+
+    cat("\n")
+    cat("\\newpage","\n")
+    cat("\n")
+    
+    # sgRNA table
+    if(count==0)
+      {
+      # Write list of genes
+      wb <- openxlsx::createWorkbook()
+      openxlsx::addWorksheet(wb = wb , sheetName = "List of Genes", gridLines = FALSE)
+      openxlsx::writeDataTable(wb = wb , sheet = "List of Genes", x = as.data.frame(overlap.enriched),  tableStyle = "TableStyleLight2")
+      openxlsx::saveWorkbook(wb , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, paste("HITS-sgRNA", paste("enriched", "xlsx", sep="."), sep="-"), sep="_"), sep="/") , overwrite = TRUE)
+
+      }
+    
+  sgrnas.en.table = carpools.sgrna.table(norm.function=cp$miaccs$norm.function, extractpattern=cp$miaccs$g.extractpattern, type="enriched", labelgenes=i, cutoff.override=cutoff.override.enriched, cutoff.hits=number.hits.plot.enriched, write=FALSE)
+
+  openxlsx::loadWorkbook(file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, paste("HITS-sgRNA", paste("enriched", "xlsx", sep="."), sep="-"), sep="_"), sep="/"))
+  openxlsx::addWorksheet(wb, sheetName = as.character(i))
+  openxlsx::writeDataTable(wb, sheet = as.character(i), x = sgrnas.en.table, tableStyle = "TableStyleLight2")
+  openxlsx::saveWorkbook(wb, file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, paste("HITS-sgRNA", paste("enriched", "xlsx", sep="."), sep="-"), sep="_"), sep="/"),overwrite = TRUE)
+
+cat(knitr::kable(sgrnas.en.table))
+  cat("\n")
+  cat("\\newpage","\n")
+
+count = count + 1
+}
+
+```
+
+\newpage
+
+```{r HT-depleted-candidates, echo=FALSE, sanitize=TRUE, eval=TRUE, warning=FALSE}
+
+cat("##", "Depleted ","\n")
+count=0
+# get overlap.enriched as list of genes
+for(i in overlap.depleted)
+  {
+    cat("\n")
+    cat("\\newpage","\n")
+    cat("\n")
+    cat("###", i,"\n")
+    
+    if(identical(cp$miaccs$a.annotate.hits,TRUE))
+      {
+      # Prepare Output of Gene Annotation
+    cat("In addition to the plots below, the following information has been retrieved via biomaRt:  ","\n","\n")
+      cat("__ENSEMBL ID__ (links to Ensembl)","\n" ,paste("[", cp$annotation[cp$annotation[,"gene"] == i,"ensembl_gene_id"] ,"]", "(", "http://www.ensembl.org/id/",cp$annotation[cp$annotation[,"gene"] == i,"ensembl_gene_id"], ")", sep=""),"  \n","\n")
+    cat("__HGNC SYMBOL__ (links to GeneCards)", "\n",paste("[", cp$annotation[cp$annotation[,"gene"] == i,"hgnc_symbol"] ,"]", "(", "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",cp$annotation[cp$annotation[,"gene"] == i,"hgnc_symbol"], ")", sep="") ,"  \n","\n")
+    cat("__GENE DESCRIPTION__ ", "\n",cp$annotation[cp$annotation[,"gene"] == i,"description"] ,"  \n","\n")
+    cat("__GO TERM__ ","\n", cp$annotation[cp$annotation[,"gene"] == i,"name_1006"] ,"  \n","\n")
+    cat("__MIM GENE DESCRIPTION__ ","\n",cp$annotation[cp$annotation[,"gene"] == i,"mim_gene_description"] ,"  \n","\n")
+    cat("__ENSEMBL PROTEIN ID__ ","\n", cp$annotation[cp$annotation[,"gene"] == i,"ensembl_peptide_id"] ,"  \n","\n")
+    cat("__PROTEIN FAMILY DESCRIPTION__ ","\n",cp$annotation[cp$annotation[,"gene"] == i,"family_description"] ,"  \n","\n")
+    cat("\n")
+    # Significantly?
+        sig.pval.candidate = final.tab$genes[final.tab$genes[,"name"] == i,c("wilcox.pval","deseq2.pval","mageck.fdr.pos","edger.fdr","rsea.FDR.pos", "rsea.FDR.neg")]
+    cat("__Wilcox p-value:__", cp$miaccs$sig.pval.wilcox,"\n \n")
+    cat("__DESeq2 p-value:__", cp$miaccs$sig.pval.deseq,"\n \n")
+    cat("__MAGeCK p-value:__", cp$miaccs$sig.pval.mageck,"\n \n")
+    cat("__EdgeR p-value:__", cp$miaccs$sig.pval.edger,"\n \n")
+    cat("__sgRSEA enriched p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+    cat("__sgRSEA depleted p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+    
+    cat("\n")
+    cat("\\newpage","\n")
+    cat("\n")  
+      }
+    else
+      {
+    # Significantly?
+    sig.pval.candidate = final.tab$genes[final.tab$genes[,"name"] == i,c("wilcox.pval","deseq2.pval","mageck.fdr.pos","edger.fdr","rsea.FDR.pos", "rsea.FDR.neg")]
+    cat("__Wilcox p-value:__", cp$miaccs$sig.pval.wilcox,"\n \n")
+    cat("__DESeq2 p-value:__", cp$miaccs$sig.pval.deseq,"\n \n")
+    cat("__MAGeCK p-value:__", cp$miaccs$sig.pval.mageck,"\n \n")
+    cat("__EdgeR p-value:__", cp$miaccs$sig.pval.edger,"\n \n")
+    cat("__sgRSEA enriched p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+    cat("__sgRSEA depleted p-value:__", cp$miaccs$sig.pval.rsea,"\n \n")
+      }
+
+  # Scatterplot PAIRS GENES
+  plothitsscatter.depleted = carpools.hit.scatter(title=cp$miaccs$analysis.name, labelgenes=i, aggregated=TRUE, type="depleted", cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched, pch=16)
+    cat("\n")
+    #cat("\\newpage","\n")
+    #cat("\n")
+    # Scatterplot PAIRS sgRNA
+    plothitsscatter.depleted = carpools.hit.scatter(title=cp$miaccs$analysis.name, labelgenes=i, aggregated=FALSE, type="depleted", cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched,  pch=16)
+    cat("\n")
+    cat("\\newpage","\n")
+    cat("\n")
+    # SgRNA foldchange, Z-Ratio, Vioplot
+  
+    # SgRNA foldchange, Z-Ratio, Vioplot
+    sgrnas.dep = carpools.hit.sgrna(put.names=TRUE, type="depleted", labelgenes=i, plot.type=NULL, cutoff.override=cp$miaccs$cutoff.override, cutoff.hits=number.hits.plot.enriched, controls.target=cp$miaccs$controls.target, controls.nontarget=cp$miaccs$controls.nontarget)
+  
+  par(mfrow=c(1,1))
+  
+    cat("\n")
+    cat("\\newpage","\n")
+    cat("\n")
+    # sgRNA table
+ if(count==0)
+      {
+    # Write list of genes
+      wb <- openxlsx::createWorkbook()
+      openxlsx::addWorksheet(wb = wb , sheetName = "List of Genes", gridLines = FALSE)
+      openxlsx::writeDataTable(wb = wb , sheet = "List of Genes", x = as.data.frame(overlap.depleted),  tableStyle = "TableStyleLight2")
+      openxlsx::saveWorkbook(wb , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, paste("HITS-sgRNA", paste("depleted", "xlsx", sep="."), sep="-"), sep="_"), sep="/") , overwrite = TRUE)
+
+      }
+ 
+  sgrnas.dep.table = carpools.sgrna.table(extractpattern=cp$miaccs$g.extractpattern, type="depleted", labelgenes=i, cutoff.override=cutoff.override.depleted, cutoff.hits=number.hits.plot.enriched, write=FALSE)
+ 
+  openxlsx::loadWorkbook(file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, paste("HITS-sgRNA", paste("depleted", "xlsx", sep="."), sep="-"), sep="_"), sep="/"))
+  openxlsx::addWorksheet(wb, sheetName = as.character(i))
+  openxlsx::writeDataTable(wb, sheet = as.character(i), x = sgrnas.dep.table, tableStyle = "TableStyleLight2")
+  openxlsx::saveWorkbook(wb, file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, paste("HITS-sgRNA", paste("depleted", "xlsx", sep="."), sep="-"), sep="_"), sep="/"), overwrite = TRUE)
+
+
+cat(knitr::kable(sgrnas.dep.table))
+
+cat("\n")
+
+count = count + 1
+}
+
+```
+
+
+\newpage
+
+## Compare Analysis
+
+On the following pages, a comparison between the hit analysis methods is generated.  
+
+### Enriched
+
+__List__  
+
+Moreover, the __`r cp$miaccs$number.hits.plot.enriched` % top enriched hits__ sorted according to __MAGeCK__ are stored in __`r paste(cp$miaccs$analysis.name, "-COMPARE-HITS.xls", sep="")`__ and are listed below:  
+
+```{r HT-comparetable-enriched, echo=FALSE, sanitize=TRUE, warning=FALSE}
+data.analysis.enriched = compare.analysis(type="enriched", cutoff.override = TRUE, cutoff.hits=number.enriched.counter, output="list")
+
+compare.analysis.xlsx <- openxlsx::createWorkbook()
+openxlsx::addWorksheet(wb = compare.analysis.xlsx , sheetName = "Enriched", gridLines = FALSE)
+openxlsx::writeDataTable(wb = compare.analysis.xlsx , sheet = "Enriched", x = data.analysis.enriched,  tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(compare.analysis.xlsx , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "COMPARE-HITS.xlsx", sep="_"), sep="/") , overwrite = TRUE)
+
+knitr::kable(data.analysis.enriched)
+```
+
+
+\newpage
+
+
+### Depleted
+
+
+__List__  
+
+Moreover, the __`r cp$miaccs$number.hits.plot.depleted` % top depleted hits__ sorted according to __MAGeCK_ are stored in __`r paste(cp$miaccs$analysis.name, "-COMPARE-HITS.xls", sep="")`__ and are listed below:  
+
+```{r HT-comparetable-depleted, echo=FALSE, sanitize=TRUE, warning=FALSE}
+data.analysis.depleted = compare.analysis(type="depleted", cutoff.override=TRUE, cutoff.hits=number.depleted.counter, output="list")
+
+wb <- openxlsx::loadWorkbook(file = paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "COMPARE-HITS.xlsx", sep="_"), sep="/") )
+openxlsx::addWorksheet(wb = wb, sheetName = "Depleted", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb, sheet = "Depleted", x = data.analysis.depleted,tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(compare.analysis.xlsx , paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "COMPARE-HITS.xlsx", sep="_"), sep="/") , overwrite = TRUE)
+
+knitr::kable(data.analysis.depleted)
+```
+
+
+\newpage
+
+# Final Gene Table
+
+A final table with all information for each gene is stored in  
+__`r paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "FINAL.xls", sep="_"), sep="/")`__.
+
+
+\newpage
+
+# Annotate Hit Candidates
+
+```{r annotate, echo=FALSE, warning=FALSE}
+
+if(identical(cp$miaccs$a.annotate.hits, TRUE))
+  {
+    cat("\n All genes are annotated with additional information from __biomaRt__. \n")
+    cat("\n The following information is retrieved: \n")
+    cat("__Database:__", " ", cp$miaccs$a.database,"\n")
+    cat("__Dataset:__", " ", cp$miaccs$a.dataset,"\n")
+    cat("__Filters:__", " ", cp$miaccs$a.annotate,"\n","\n")
+    
+    cat("The annotated list of all genes is stored in", "\n","\n")
+    cat("_", cp$miaccs$datapath,"_", "\n", "\n")
+    cat("**", paste(cp$miaccs$analysis.name, "ANNOTATION.xlsx", sep="_"),"**", "\n")
+  
+    openxlsx::createWorkbook(wb)
+    openxlsx::addWorksheet(wb = wb, sheetName = "All Genes", gridLines = FALSE)
+openxlsx::writeDataTable(wb = wb, sheet = "All Genes", x = cp$annotation, tableStyle = "TableStyleLight2")
+openxlsx::saveWorkbook(wb, file=paste(cp$miaccs$datapath, paste(cp$miaccs$analysis.name, "ANNOTATION.xlsx", sep="_"), sep="/"), overwrite = TRUE )
+
+  } else
+  {
+    cat("\n Gene are __not annotated__ with additional information from __biomaRt__. \n")
+  }
+
+save.image(paste(miaccs.file,"RData",sep=".",collapse="") )
+```
+
+
+# Data Extraction, Mapping and Files
+
+
+The data is located in  
+_`r cp$miaccs$datapath`_  
+
+and the script files for data extraction and mapping are located in  
+_`r cp$miaccs$scriptpath`_.  
+
+__All file-based output (e.g. tables) from MAGeCK is stored in:__  
+_`r getwd()`_.  
+
+
+Parameter | Value
+---- | ----
+Reverse Complement Sequence | `r cp$miaccs$reversecomplement`
+Pattern of Data Extraction  | `r cp$miaccs$seq.pattern`
+Maschine Identifier FASTq  | `r cp$miaccs$maschine.pattern`
+Create Bowtie2 Index? | `r cp$miaccs$createindex`
+Reference .fasta File | `r cp$miaccs$referencefile`
+Bt2 Threads | `r cp$miaccs$threads`
+Bt2 Sensitivity | `r cp$miaccs$sensitivity`
+sgRNA Oligo Match | `r cp$miaccs$match`
+

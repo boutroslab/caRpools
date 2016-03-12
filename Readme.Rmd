@@ -66,12 +66,13 @@ Winter, J., Breinig, M., Heigwer, F., Brueggemann, D., Leible, S., Pelz, O., Zha
 
 # Changelog
 
-### 1.0 (will be available soon)
-* major overhaul to undelrying R code
+### 1.0.241 ALPHA RELEASE
+* major overhaul to underlying R code
 * new MIACCS file structure with easier use
 * multiple replicates possible with automatic detection
 * comparing groups made straight-forward
 * more to follow...
+* ALPHA VERSION, if issues occur, please tell me! NO DOCUMENTATION SO FAR.
 
 ### 0.83 (latest CRAN)
 * changed data annotation to use Ensembl server for biomaRt - please see the changes in the miaccs file for "database"

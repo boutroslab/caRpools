@@ -4,10 +4,6 @@ caRpools - a software package for the analysis CRISPR/Cas9 pooled screens
 ==============
 ![](http://cranlogs.r-pkg.org/badges/grand-total/caRpools)
 
-# Register for Beta of caRpoolsInteractive
-Anyone interested in the new, browser-based caRpoolsInteractive can drop me an email at jan.winter@dkfz-heidelberg.de and I will come back to you once we release the beta.
-No software installation will be necessary.
-
 # Issues
 
 __If you have issues or problems PLEASE us the [ISSUES](https://github.com/boutroslab/caRpools/issues) page.__

@@ -11,6 +11,21 @@ __If you have issues or problems PLEASE us the [ISSUES](https://github.com/boutr
 __Attention:__ Due to the downtime of the community-server of biomaRt, caRpools 0.82.5 does not function properly.
 Use 0.83 that uses by default the Ensembl servers for data annotation.
 
+---
+
+# Our new tool is soon available!
+
+![CRISPRAnalyzeR](https://github.com/boutroslab/crispr-analyzer/blob/master/images/CRISPRAnalyzR_logo5.png)
+
+**Platform-independent, fully-interactive and exploratory screening analysis including comprehensive documentation**
+
+Visit the **[Github](https://github.com/boutroslab/crispr-analyzer) page**
+
+Visit the **[Live Demo](http://www.crispr-analyzer.org)**
+
+---
+
+
 # Additional Information
 
 Dear users, the latest CRAN version is not compatible with the virtual machine due to rJava issues. 

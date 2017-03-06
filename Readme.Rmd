@@ -1,3 +1,23 @@
+
+---
+
+# Attention: Our new tool is available now!
+
+![CRISPRAnalyzeR](https://github.com/boutroslab/crispr-analyzer/blob/master/images/CRISPRAnalyzR_logo5.png)
+
+**Platform-independent, interactive and exploratory analysis, annotation and documentation of CRISPR screens**
+
+Visit the **[Github](https://github.com/boutroslab/CRISPRAnalyzeR) page**
+
+Visit the **[Live Demo](http://www.crispr-analyzer.org)**
+
+---
+
+---
+
+---
+
+
 ![](https://cdn.rawgit.com/boutroslab/caRpools/master/data/CaRpools.png)
 
 caRpools - a software package for the analysis CRISPR/Cas9 pooled screens
@@ -11,21 +31,7 @@ __If you have issues or problems PLEASE us the [ISSUES](https://github.com/boutr
 __Attention:__ Due to the downtime of the community-server of biomaRt, caRpools 0.82.5 does not function properly.
 Use 0.83 that uses by default the Ensembl servers for data annotation.
 
----
 
----
-
-# Our new tool is available!
-
-![CRISPRAnalyzeR](https://github.com/boutroslab/crispr-analyzer/blob/master/images/CRISPRAnalyzR_logo5.png)
-
-**Platform-independent, fully-interactive and exploratory screening analysis including comprehensive documentation**
-
-Visit the **[Github](https://github.com/boutroslab/CRISPRAnalyzeR) page**
-
-Visit the **[Live Demo](http://www.crispr-analyzer.org)**
-
----
 
 ---
 
